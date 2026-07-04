@@ -396,14 +396,20 @@ header h1 em {
     box-shadow: 0 2px 20px rgba(106, 59, 191, .35);
 }
 
-@media(max-width:600px) {
-    .cards-row {
-        gap: .85rem;
-    }
+/* 1. Large Phones / Small Tablets (481px to 640px): 3 cards look great here */
+@media(max-width: 640px) {
+    .cards-row { grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+}
 
-    .card-slot {
-        min-width: 120px;
-    }
+/* 2. Standard Mobile Phones (361px to 480px): Force exactly 2 cards here */
+@media(max-width: 480px) {
+    .cards-row { grid-template-columns: repeat(2, 1fr); gap: .85rem; }
+    .card-slot { min-width: 0; }
+}
+
+/* 3. Tiny Legacy Phones (0px to 360px): Still 2 cards, just smaller text/gaps */
+@media(max-width: 360px) {
+    .cards-row { gap: .5rem; }
 }
 
 /* - COLLECTION -- */
