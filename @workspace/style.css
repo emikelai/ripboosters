@@ -262,33 +262,19 @@ header h1 em {
     height: 1px;
     background: var(--border);
 }
-/*
-.cards-row {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1.5rem;
-}
-*/
-/* -- CARD - */
-/*.card-slot {
-
-    flex: 1 1 160px;
-    max-width: 200px;
-    min-width: 150px;
-}
-*/
 
 .cards-row {
     display: grid;
-    /* This creates rigid, perfectly uniform columns that automatically wrap */
-    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    /* Desktop: many cards per row, wrap naturally */
+    /* Portrait mobile: 2 cards per row when width is <600px */
+    /* Landscape mobile: 3+ cards per row */
+    grid-template-columns: repeat(auto-fill, minmax(145px, 1fr));
     gap: 1.5rem;
 }
 
 .card-slot {
-    width: 100%; /* Simply fills the strict box provided by the grid */
+    width: 100%;
 }
-
 
 .card {
 
@@ -337,7 +323,6 @@ header h1 em {
     width: 100%;
     height: auto;
     display: block;
-    
 }
 
 .flip-hint {
@@ -348,7 +333,7 @@ header h1 em {
     color: var(--muted);
     margin-top: .4rem;
     opacity: 0;
-    transition: opacity .43;
+    transition: opacity .43s;
 }
 
 .card-slot:hover .flip-hint {
@@ -392,27 +377,44 @@ header h1 em {
 
 .card-slot.spectra .card {
     border: 2px solid #6a3bbf;
-
     box-shadow: 0 2px 20px rgba(106, 59, 191, .35);
 }
 
-/* 1. Large Phones / Small Tablets (481px to 640px): 3 cards look great here */
+/* ==================== RESPONSIVE DESIGN ==================== */
+
 @media(max-width: 640px) {
-    .cards-row { grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+    /* Portrait mobile (iPhone in portrait ~375-428px, large phones up to 600px): 2 cards per row */
+    .cards-row {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.25rem;
+    }
+
+    .card-slot {
+        min-width: 0;
+    }
 }
 
-/* 2. Standard Mobile Phones (361px to 480px): Force exactly 2 cards here */
 @media(max-width: 480px) {
-    .cards-row { grid-template-columns: repeat(2, 1fr); gap: .85rem; }
-    .card-slot { min-width: 0; }
+    /* Small portrait / Landscape on small phones: ~3 cards per row */
+    .cards-row {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1rem;
+    }
 }
 
-/* 3. Tiny Legacy Phones (0px to 360px): Still 2 cards, just smaller text/gaps */
 @media(max-width: 360px) {
-    .cards-row { gap: .5rem; }
+    /* Very small screens: maintain 2 columns but allow smaller cards */
+    .cards-row {
+        grid-template-columns: repeat(2, 1fr);
+        gap: .85rem;
+    }
+
+    .card-slot {
+        min-width: 90px;
+    }
 }
 
-/* - COLLECTION -- */
+/* - COLLECTION - */
 .collection-section {
     max-width: 920px;
     margin: 0 auto;
@@ -451,7 +453,9 @@ header h1 em {
 
 .collection-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(72px, 1fr));
+    /* Desktop: many small cards */
+    /* Mobile: fewer larger cards */
+    grid-template-columns: repeat(auto-fill, minmax(min(72px, 3vw), 1fr));
     gap: .6rem;
 }
 
@@ -467,7 +471,7 @@ header h1 em {
     justify-content: center;
     gap: .25rem;
     padding: .3rem;
-    transition: border-color .23, box-shadow .23;
+    transition: border-color .23s, box-shadow .23s;
     cursor: default;
 }
 
@@ -588,7 +592,7 @@ header h1 em {
     color: #fff;
 }
 
-@media(max-width:700px) {
+@media(max-width: 700px) {
     #lightbox {
         flex-direction: column;
         gap: 1rem;
@@ -599,88 +603,4 @@ header h1 em {
         max-height: 42vh;
     }
 
-}
-
-
-
-/* --- SHARED STICKY HEADER SYSTEM --- */
-header {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    z-index: 1000; /* Keeps the header floating comfortably on top of everything else */
-    background: rgba(244, 242, 238, 0.96); /* Matches your page background with a slight transparency look */
-    backdrop-filter: blur(8px); /* Modern glassy effect */
-    border-bottom: 1px solid var(--border);
-    padding: 1.5rem 1.5rem;
-    text-align: center;
-}
-
-/* Pushes all your normal content down safely below the new fixed header box */
-body {
-    padding-top: 5.5rem; 
-}
-
-/* Centers and aligns the "All Sets" back link inside the floating header */
-.back-link {
-    position: absolute;
-    left: 1.5rem;
-    top: 50%;
-    transform: translateY(-50%);
-    text-decoration: none;
-    color: var(--muted);
-    font-size: 0.9rem;
-    font-family: var(--font-sans);
-    transition: color .15s;
-}
-
-.back-link:hover {
-    color: var(--fg);
-}
-
-/* --- NEW BUTTON ALIGNMENT STYLES (ADDED HERE) --- */
-.header-extra-links {
-    position: absolute;
-    right: 1.5rem;
-    top: 50%;
-    transform: translateY(-50%); /* Keeps buttons perfectly vertically centered */
-    display: flex;
-    gap: .75rem;
-}
-
-.header-btn {
-    background: #ffffff;
-    border: 1px solid var(--border);
-    padding: .45rem .9rem;
-    font-size: .85rem;
-    text-decoration: none;
-    color: var(--fg);
-    border-radius: 4px;
-    font-family: var(--font-sans);
-    white-space: nowrap; /* Prevents button text from breaking into 2 lines */
-    transition: background .12s, border-color .12s;
-}
-
-.header-btn:hover {
-    background: #fdfcfb;
-    border-color: #d1cfcb;
-}
-
-.header-btn.coffee {
-    background: #ffdd00; /* Classic buy me a coffee signature yellow */
-    border-color: #e6c600;
-    color: #000000;
-    font-weight: 500;
-}
-
-.header-btn.coffee:hover {
-    background: #ffea33;
-}
-
-/* Hide extra layout buttons on narrow phones so titles don't overlap */
-@media (max-width: 768px) {
-    .header-extra-links {
-        display: none; 
-    }
 }

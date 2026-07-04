@@ -1,46 +1,57 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Marvel Universe 1990 - Pack Opener</title>
     <link rel="stylesheet" href="style.css">
+    <script src="load-header.js"></script>
     <style>
         :root {
             --spectra: #1a3a8a;
         }
+
         .card-slot.holo .card {
             border-color: var(--spectra);
             box-shadow: 0 2px 20px rgba(26, 58, 138, .35);
         }
+
         .holo-label .pip {
             background: linear-gradient(135deg, #4a90d9, #1a3a8a);
         }
+
         .holo-label::after {
-            background: linear-gradient(90deg, rgba(26, 58, 138,.3),transparent);
+            background: linear-gradient(90deg, rgba(26, 58, 138, .3), transparent);
         }
+
         .holo-label {
             color: var(--spectra);
         }
+
         .collection-title-sub {
             color: var(--spectra);
         }
     </style>
 </head>
+
 <body>
-    <header>
-        <a href="index.html" class="back-link">&larr; All Sets</a>
-        <h1><em>Marvel Universe</em> &nbsp;&middot;&nbsp; 1990 Series I &nbsp;&middot;&nbsp; Impel</h1>
-    </header>
+    <header id="global-header" data-main="Marvel Universe" data-sub="1990 Series I &middot; Impel"></header>
 
     <div class="pack-section">
         <div class="pack-row">
             <div class="pack-wrapper" id="packWrapper">
                 <div class="pack" id="pack">
-                    <div style="width:100%;height:100%;background:linear-gradient(165deg,#0a0a20 0%,#1a1a4a 50%,#0a0a20 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;color:#d4382a;font-family:Georgia,serif;border-radius:6px;">
-                        <div style="font-size:2.4rem;font-weight:700;line-height:1;text-shadow:0 0 16px rgba(212,56,42,.5)">MU</div>
-                        <div style="font-size:.5rem;letter-spacing:.22em;text-transform:uppercase;color:#aaa;margin-top:.4rem">Marvel Universe</div>
-                        <div style="font-size:.5rem;letter-spacing:.14em;color:#d4382a;margin-top:.3rem">1990 &middot; Series I</div>
+                    <div
+                        style="width:100%;height:100%;background:linear-gradient(165deg,#0a0a20 0%,#1a1a4a 50%,#0a0a20 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;color:#d4382a;font-family:Georgia,serif;border-radius:6px;">
+                        <div
+                            style="font-size:2.4rem;font-weight:700;line-height:1;text-shadow:0 0 16px rgba(212,56,42,.5)">
+                            MU</div>
+                        <div
+                            style="font-size:.5rem;letter-spacing:.22em;text-transform:uppercase;color:#aaa;margin-top:.4rem">
+                            Marvel Universe</div>
+                        <div style="font-size:.5rem;letter-spacing:.14em;color:#d4382a;margin-top:.3rem">1990 &middot;
+                            Series I</div>
                     </div>
                 </div>
             </div>
@@ -62,7 +73,8 @@
 
     <div class="cards-section" id="cardsSection">
         <div class="spectra-row" id="holoRow">
-            <div class="spectra-label holo-label"><span class="pip"></span>Hologram Insert &mdash; rare pull (~1 per box)</div>
+            <div class="spectra-label holo-label"><span class="pip"></span>Hologram Insert &mdash; rare pull (~1 per
+                box)</div>
             <div class="cards-row" id="slots-holo"></div>
         </div>
         <div>
@@ -97,4 +109,5 @@
     </div>
 
 </body>
+
 </html>
