@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Marvel Masterpieces '1993 - Pack Opener</title>
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+        :root {
+            --dyna: #1a6a1a;
+        }
+
+        .card-slot.dyna .card {
+            border-color: var(--dyna);
+            box-shadow: 0 2px 20px rgba(26, 106, 26, .35);
+        }
+
+        .dyna-label {
+            color: var(--dyna);
+        }
+
+        .dyna-label .pip {
+            background: linear-gradient(135deg, #4ade80, #166534);
+        }
+
+        .dyna-label::after {
+            background: linear-gradient(90deg, rgba(26, 106, 26, .3), transparent);
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+
+        <a href="index.html" class="back-link">&larr; All Sets</a>
+
+        <h1><em>Marvel Masterpieces</em> &nbsp;&middot;&nbsp;1993 Series II &nbsp;&middot;&nbsp; SkyBox</h1>
+    </header>
+
+    <div class="pack-section">
+        <div class="pack-row">
+            <div class="pack-wrapper" id="packWrapper">
+                <div class="pack" id="pack">
+                    <div
+                        style="width:100%;height:100%;background:linear-gradient(165deg,#1a0a00 0%,#3a1a00 50%,#1a0a00 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;border-radius:6px;">
+                        <div style="font-family:Georgia,serif;font-size:2.4rem;font-weight:700;color:#c9a84c;line-height:1;text-shadow:0 0 16px
+rgba(201,168,76,.5)">M</div>
+                        <div style="font-size:.5rem;letter-spacing:.22em;text-transform:uppercase;color:#888;margin-top:.4rem">
+                            Masterpieces</div>
+                        <div style="font-size:.5rem;letter-spacing:.14em;color:#c9a84c;margin-top:.3rem">1993 &middot;
+                            Series II</div>
+                    </div>
+                </div>
+            </div>
+            <div class="pack-counter">
+                <span class="counter-num" id="packsTotal">0</span>
+                <span class="counter-label">Total Packs<br>Opened</span>
+                <span class="counter-divider"></span>
+                <span class="counter-num counter-num--session" id="packsSession">0</span>
+                <span class="counter-label">This<br>Session</span>
+            </div>
+        </div>
+        <button class="open-btn" id="openBtn" onclick="openPack()">Open Pack</button>
+        <span class="pack-label" id="packLabel"></span>
+        <p class="pack-instructions">Drag across the pack to tear it open,<br>or click the button above.</p>
+    </div>
+
+    <div class="section-divider" id="divider"><span>Cards Pulled</span></div>
+
+    <div class="cards-section" id="cardsSection">
+        <div class="spectra-row" id="dynaRow">
+            <div class="spectra-label dyna-label"><span class="pip"></span>X-Men 2099 Dyna&#8209;Etch Insert &mdash; 1:9
+                packs</div>
+            <div class="cards-row" id="slots-dyna"></div>
+        </div>
+        <div>
+            <div class="row-label">Base Set &mdash; 90 cards &middot; click to view</div>
+            <div class="cards-row" id="slots-base"></div>
+        </div>
+    </div>
+
+    <div class="collection-section">
+        <div class="collection-header">
+            <div>
+                <h2 class="collection-title">Collection</h2>
+                <p class="collection-sub dyna-label">X-Men 2099 Dyna&#8209;Etch &mdash; 8 cards</p>
+            </div>
+            <span class="collection-count" id="collectionCount">0 / 98</span>
+        </div>
+        <div class="collection-grid" id="dynaGrid"></div>
+        <div class="collection-header" style="margin-top:2rem;">
+            <div>
+                <p class="collection-sub">Base Set &mdash; 90 cards</p>
+            </div>
+
+        </div>
+        <div class="collection-grid" id="collectionGrid"></div>
+    </div>
+
+    <script src="script-mm1993.js"></script>
+
+    <div id="lightbox" onclick="closeLightbox()">
+        <button id="lightbox-close" onclick="closeLightbox()">&times;</button>
+        <img id="lightbox-front" src="" alt="Card front">
+        <img id="lightbox-back" src="" alt="Card back">
+    </div>
+
+</body>
+
+</html>
