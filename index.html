@@ -32,61 +32,9 @@
             min-height: 100vh;
         }
 
-        header {
-            border-bottom: 1px solid var(--border);
-            padding: 2rem 2.5rem 1.5rem;
-            display: flex;
-            align-items: baseline;
-            justify-content: space-between;
-        }
-
-        .site-title {
-            font-family: var(--font-serif);
-            font-size: 1.4rem;
-            font-weight: normal;
-            letter-spacing: .04em;
-        }
-
-        .site-title span {
-            color: var(--red);
-            font-style: italic;
-        }
-
-        .header-nav {
-            display: flex;
-            align-items: center;
-            gap: 1.5rem;
-        }
-
-        .header-nav a {
-            font-size: .75rem;
-            letter-spacing: .1em;
-            text-transform: uppercase;
-            color: var(--muted);
+        /* Clean base fix: turns off browser text outlines/underlines inside index.html */
+        a {
             text-decoration: none;
-            transition: color .15s;
-        }
-
-        .header-nav a:hover {
-            color: var(--fg);
-        }
-
-        .header-nav .coffee-btn {
-            background: #ffdd00;
-            color: #1a1a1a;
-            padding: .35rem .85rem;
-            border-radius: 20px;
-            font-size: .72rem;
-            font-weight: 600;
-            letter-spacing: .06em;
-            text-transform: none;
-            transition: background .15s, transform .1s;
-        }
-
-        .header-nav .coffee-btn:hover {
-            background: #ffe933;
-            transform: translateY(-1px);
-            color: #1a1a1a;
         }
 
         main {
@@ -100,7 +48,6 @@
         }
 
         .category-label {
-
             font-size: 1.1rem;
             font-family: var(--font-serif);
             font-weight: normal;
@@ -137,7 +84,6 @@
             border: 1px solid var(--border);
             border-radius: 10px;
             overflow: hidden;
-            text-decoration: none;
             color: inherit;
             display: block;
             transition: border-color .153, box-shadow .15s, transform .15s;
@@ -240,23 +186,8 @@
 
 <body>
     <header id="global-header" data-main="Rip Boosters" data-sub=""></header>
-<!-- 
-    <header>
 
-        <div class="site-title"><span>Rip</span> Boosters</div>
-        <nav class="header-nav">
-            <a href="about.html">About</a>
-            <a href="mailto:?subject=Rip Boosters Feedback">Feedback</a>
-
-            <a href="https://www.buymeacoffee.com" target="_blank" class="coffee-btn">&#9749; Buy me a coffee</a>
-        </nav>
-
-    </header>
--->
     <main>
-
-        <!-- MARVEL -->
-
         <div class="category-block">
             <div class="category-label">Marvel</div>
             <div class="category-sub">4 sets available</div>
@@ -278,8 +209,7 @@
 
                 <a href="marvel-masterpieces-1993.html" class="set-card" id="card-mm1993">
                     <div class="set-cover">
-                        <div style="width:100%;height:100%;background:linear-gradient(165deg,#1a0a00,#3a1a00,#1a0a00);display:flex;align-items:center;justify-content:center;font-family:Georgia,serif;font-size:2.8rem;font-weight:700;color:#c9a84c;text-shadow:0 0 14px
-rgba(201,168,76,.4)">M</div>
+                        <div style="width:100%;height:100%;background:linear-gradient(165deg,#1a0a00,#3a1a00,#1a0a00);display:flex;align-items:center;justify-content:center;font-family:Georgia,serif;font-size:2.8rem;font-weight:700;color:#c9a84c;text-shadow:0 0 14px rgba(201,168,76,.4)">M</div>
                     </div>
                     <div class="set-body">
                         <div class="set-name">Marvel Masterpieces</div>
@@ -293,9 +223,7 @@ rgba(201,168,76,.4)">M</div>
 
                 <a href="marvel-universe-1990.html" class="set-card" id="card-mu1990">
                     <div class="set-cover">
-                        <div
-                            style="width:100%;height:100%;background:linear-gradient(165deg,#0a0a20,#1a1a4a,#0a0a20);display:flex;align-items:center;justify-content:center;font-family:Georgia,serif;font-size:2.4rem;font-weight:700;color:#d4382a;">
-                            MU</div>
+                        <div style="width:100%;height:100%;background:linear-gradient(165deg,#0a0a20,#1a1a4a,#0a0a20);display:flex;align-items:center;justify-content:center;font-family:Georgia,serif;font-size:2.4rem;font-weight:700;color:#d4382a;">MU</div>
                     </div>
                     <div class="set-body">
                         <div class="set-name">Marvel Universe</div>
@@ -309,8 +237,7 @@ rgba(201,168,76,.4)">M</div>
 
                 <a href="xmen-1992.html" class="set-card" id="card-xmen1992">
                     <div class="set-cover">
-                        <div style="width:100%;height:100%;background:linear-gradient(165deg,#0a0010,#1a0040,#0a0010);display:flex;align-items:center;justify-content:center;font-family:Georgia,serif;font-size:1.5rem;font-weight:900;color:#ffcc00;text-shadow:0 0 12px
-rgba(255,204,0,.6)">X-MEN</div>
+                        <div style="width:100%;height:100%;background:linear-gradient(165deg,#0a0010,#1a0040,#0a0010);display:flex;align-items:center;justify-content:center;font-family:Georgia,serif;font-size:1.5rem;font-weight:900;color:#ffcc00;text-shadow:0 0 12px rgba(255,204,0,.6)">X-MEN</div>
                     </div>
                     <div class="set-body">
                         <div class="set-name">The Uncanny X-Men</div>
@@ -320,13 +247,10 @@ rgba(255,204,0,.6)">X-MEN</div>
                         </div>
                         <div class="set-progress-label" id="label-xmen1992">0 / 105 collected</div>
                     </div>
-
                 </a>
 
             </div>
         </div>
-
-        <!-- GARBAGE PAIL KIDS -->
 
         <div class="category-block">
             <div class="category-label">Garbage Pail Kids</div>
@@ -335,16 +259,10 @@ rgba(255,204,0,.6)">X-MEN</div>
 
                 <a href="gpk-series1.html" class="set-card" id="card-gpk1">
                     <div class="set-cover">
-                        <div
-                            style="width:100%;height:100%;background:linear-gradient(165deg,#1a0020,#4a0060,#1a0020);display:flex;flex-direction:column;align-items:center;justify-content:center;">
-                            <div
-                                style="font-family:Georgia,serif;font-size:1.6rem;font-weight:700;color:#ff6b00;text-shadow:0 0 12px rgba(255,107,0,.6);line-height:1">
-                                GPK</div>
-                            <div
-                                style="font-size:.48rem;letter-spacing:.2em;text-transform:uppercase;color:#cc88ff;margin-top:.4rem">
-                                Garbage Pail Kids</div>
-                            <div style="font-size:.48rem;letter-spacing:.14em;color:#ff6b00;margin-top:.3rem">1985
-                                &middot; Series 1</div>
+                        <div style="width:100%;height:100%;background:linear-gradient(165deg,#1a0020,#4a0060,#1a0020);display:flex;flex-direction:column;align-items:center;justify-content:center;">
+                            <div style="font-family:Georgia,serif;font-size:1.6rem;font-weight:700;color:#ff6b00;text-shadow:0 0 12px rgba(255,107,0,.6);line-height:1">GPK</div>
+                            <div style="font-size:.48rem;letter-spacing:.2em;text-transform:uppercase;color:#cc88ff;margin-top:.4rem">Garbage Pail Kids</div>
+                            <div style="font-size:.48rem;letter-spacing:.14em;color:#ff6b00;margin-top:.3rem">1985 &middot; Series 1</div>
                         </div>
                     </div>
                     <div class="set-body">
@@ -359,8 +277,6 @@ rgba(255,204,0,.6)">X-MEN</div>
 
             </div>
         </div>
-
-        <!-- COMING SOON -->
 
         <div class="coming-soon-block">
             <div class="category-label" style="color:var(--muted)">Coming Soon</div>
@@ -402,7 +318,6 @@ rgba(255,204,0,.6)">X-MEN</div>
 
             </div>
         </div>
-
     </main>
 
     <script>
@@ -425,9 +340,7 @@ rgba(255,204,0,.6)">X-MEN</div>
                 document.getElementById(set.labelId).textContent = collected + ' / ' + set.total + ' collected';
             } catch (e) { }
         });
-
     </script>
-
 </body>
 
 </html>

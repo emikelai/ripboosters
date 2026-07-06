@@ -21,44 +21,28 @@ body {
     background: var(--bg);
     color: var(--fg);
     font-family: var(--font-sans);
+    padding-top: 5.5rem; /* Pushes content down cleanly beneath the fixed layout header banner */
 }
 
-/* - HEADER- */
-header {
-
-    text-align: center;
-    padding: 2.5rem 1rem 0;
-}
-
-header h1 {
+/* - HEADER TEXT FORMATTING - */
+header h1, 
+#global-header-title {
     font-family: var(--font-serif);
     font-size: 1.1rem;
     font-weight: normal;
     letter-spacing: .18em;
     text-transform: uppercase;
     color: var(--muted);
+    display: inline-block; /* Keeps the text frame tight so absolute items stay on its horizon */
 }
 
-header h1 em {
+header h1 em, 
+#global-header-title em {
     color: var(--fg);
     font-style: normal;
 }
 
-.back-link {
-    display: inline-block;
-    margin-bottom: .75rem;
-    font-size: .72rem;
-    letter-spacing: .12em;
-    text-transform: uppercase;
-    color: var(--muted);
-    text-decoration: none;
-}
-
-.back-link:hover {
-    color: var(--fg);
-}
-
-/* - PACK - */
+/* - PACK SECTION - */
 .pack-section {
     display: flex;
     flex-direction: column;
@@ -143,12 +127,10 @@ header h1 em {
         transform: scaleY(1) translateY(0);
         opacity: 1;
     }
-
     40% {
-        transform: scaleY(1.06)translateY(-8px);
+        transform: scaleY(1.06) translateY(-8px);
         opacity: .8;
     }
-
     100% {
         transform: scaleY(0) translateY(-40px);
         opacity: 0;
@@ -190,20 +172,17 @@ header h1 em {
     text-transform: uppercase;
     color: var(--muted);
     min-height: 1em;
-
 }
 
 .pack-instructions {
-
     font-size: .72rem;
     color: var(--muted);
     text-align: center;
     line-height: 1.6;
     margin-top: -1.25rem;
-
 }
 
-/* - DIVIDER - */
+/* - SECTION DIVIDER - */
 .section-divider {
     max-width: 920px;
     margin: 0 auto;
@@ -235,7 +214,7 @@ header h1 em {
     white-space: nowrap;
 }
 
-/* - CARDS SECTION - */
+/* - CARDS GRID SECTION - */
 .cards-section {
     max-width: 920px;
     margin: 0 auto;
@@ -262,49 +241,26 @@ header h1 em {
     height: 1px;
     background: var(--border);
 }
-/*
-.cards-row {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1.5rem;
-}
-*/
-/* -- CARD - */
-/*.card-slot {
-
-    flex: 1 1 160px;
-    max-width: 200px;
-    min-width: 150px;
-}
-*/
 
 .cards-row {
     display: grid;
-    /* This creates rigid, perfectly uniform columns that automatically wrap */
     grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
     gap: 1.5rem;
 }
 
 .card-slot {
-    width: 100%; /* Simply fills the strict box provided by the grid */
+    width: 100%;
 }
 
-
 .card {
-
     position: relative;
-
     border-radius: 8px;
-
     overflow: hidden;
-
     border: 2px solid var(--gold);
     box-shadow: 0 3px 16px rgba(0, 0, 0, .18);
     cursor: pointer;
-
     opacity: 0;
     transition: box-shadow .2s, transform .2s;
-
 }
 
 .card:hover {
@@ -321,12 +277,10 @@ header h1 em {
         opacity: 0;
         transform: translateY(40px) scale(.9);
     }
-
     65% {
         opacity: 1;
         transform: translateY(-5px) scale(1.02);
     }
-
     100% {
         opacity: 1;
         transform: translateY(0) scale(1);
@@ -337,7 +291,6 @@ header h1 em {
     width: 100%;
     height: auto;
     display: block;
-    
 }
 
 .flip-hint {
@@ -355,7 +308,7 @@ header h1 em {
     opacity: 1;
 }
 
-/* - SPECTRA-ETCH / INSERT ROW- */
+/* - SPECTRA INSERT PROPERTIES - */
 .spectra-row {
     display: none;
 }
@@ -392,27 +345,24 @@ header h1 em {
 
 .card-slot.spectra .card {
     border: 2px solid #6a3bbf;
-
     box-shadow: 0 2px 20px rgba(106, 59, 191, .35);
 }
 
-/* 1. Large Phones / Small Tablets (481px to 640px): 3 cards look great here */
+/* - RESPONSIVE MEDIA BREAKPOINTS - */
 @media(max-width: 640px) {
     .cards-row { grid-template-columns: repeat(3, 1fr); gap: 1rem; }
 }
 
-/* 2. Standard Mobile Phones (361px to 480px): Force exactly 2 cards here */
 @media(max-width: 480px) {
     .cards-row { grid-template-columns: repeat(2, 1fr); gap: .85rem; }
     .card-slot { min-width: 0; }
 }
 
-/* 3. Tiny Legacy Phones (0px to 360px): Still 2 cards, just smaller text/gaps */
 @media(max-width: 360px) {
     .cards-row { gap: .5rem; }
 }
 
-/* - COLLECTION -- */
+/* - COLLECTION VIEWS - */
 .collection-section {
     max-width: 920px;
     margin: 0 auto;
@@ -523,28 +473,16 @@ header h1 em {
 }
 
 @keyframes slotFill {
-    0% {
-        opacity: 0;
-        transform: scale(.85);
-    }
-
-    70% {
-        opacity: 1;
-        transform: scale(1.06);
-    }
-
-    100% {
-        opacity: 1;
-        transform: scale(1);
-    }
-
+    0% { opacity: 0; transform: scale(.85); }
+    70% { opacity: 1; transform: scale(1.06); }
+    100% { opacity: 1; transform: scale(1); }
 }
 
 .col-slot.filling {
     animation: slotFill .4s ease-out forwards;
 }
 
-/* - LIGHTBOX - */
+/* - LIGHTBOX OVERLAYS - */
 #lightbox {
     display: none;
     position: fixed;
@@ -589,19 +527,14 @@ header h1 em {
 }
 
 @media(max-width:700px) {
-    #lightbox {
-        flex-direction: column;
-        gap: 1rem;
-    }
-
-    #lightbox img {
-        max-width: 90vw;
-        max-height: 42vh;
-    }
-
+    #lightbox { flex-direction: column; gap: 1rem; }
+    #lightbox img { max-width: 90vw; max-height: 42vh; }
 }
 
-
+/* --- GLOBAL LAYOUT RESET --- */
+a {
+    text-decoration: none;
+}
 
 /* --- SHARED STICKY HEADER SYSTEM --- */
 header {
@@ -609,26 +542,22 @@ header {
     top: 0;
     left: 0;
     right: 0;
-    z-index: 1000; /* Keeps the header floating comfortably on top of everything else */
-    background: rgba(244, 242, 238, 0.96); /* Matches your page background with a slight transparency look */
-    backdrop-filter: blur(8px); /* Modern glassy effect */
+    width: 100%;
+    box-sizing: border-box;
+    z-index: 1000; 
+    background: rgba(244, 242, 238, 0.96); 
+    backdrop-filter: blur(8px); 
     border-bottom: 1px solid var(--border);
     padding: 1.5rem 1.5rem;
     text-align: center;
 }
 
-/* Pushes all your normal content down safely below the new fixed header box */
-body {
-    padding-top: 5.5rem; 
-}
-
-/* Centers and aligns the "All Sets" back link inside the floating header */
+/* Left-aligned absolute anchor layout for the gallery return links */
 .back-link {
     position: absolute;
     left: 1.5rem;
     top: 50%;
     transform: translateY(-50%);
-    text-decoration: none;
     color: var(--muted);
     font-size: 0.9rem;
     font-family: var(--font-sans);
@@ -639,46 +568,44 @@ body {
     color: var(--fg);
 }
 
-/* --- NEW BUTTON ALIGNMENT STYLES (ADDED HERE) --- */
+/* --- UNIFIED UTILITY DESIGN LINK SYSTEM --- */
 .header-extra-links {
     position: absolute;
     right: 1.5rem;
     top: 50%;
-    transform: translateY(-50%); /* Keeps buttons perfectly vertically centered */
+    transform: translateY(-50%);
     display: flex;
-    gap: .75rem;
+    gap: 1.25rem;
+    align-items: center; /* Locks text baselines perfectly on a linear line */
 }
 
 .header-btn {
-    background: #ffffff;
-    border: 1px solid var(--border);
-    padding: .45rem .9rem;
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: .5rem 0;
     font-size: .85rem;
-    text-decoration: none;
-    color: var(--fg);
-    border-radius: 4px;
+    color: var(--muted);
     font-family: var(--font-sans);
-    white-space: nowrap; /* Prevents button text from breaking into 2 lines */
-    transition: background .12s, border-color .12s;
+    white-space: nowrap; 
+    font-weight: 500;
+    line-height: 1;
+    transition: color .15s ease;
 }
 
 .header-btn:hover {
-    background: #fdfcfb;
-    border-color: #d1cfcb;
+    color: var(--fg);
 }
 
 .header-btn.coffee {
-    background: #ffdd00; /* Classic buy me a coffee signature yellow */
-    border-color: #e6c600;
-    color: #000000;
-    font-weight: 500;
+    color: #b58900; 
 }
 
 .header-btn.coffee:hover {
-    background: #ffea33;
+    color: #e6a100;
 }
 
-/* Hide extra layout buttons on narrow phones so titles don't overlap */
+/* Structural media block to keep titles layout-safe on small device screens */
 @media (max-width: 768px) {
     .header-extra-links {
         display: none; 
