@@ -5,342 +5,403 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Rip Boosters</title>
-    <script src="load-header.js"></script>
+    <link rel="stylesheet" href="style.css">
     <style>
-        :root {
-            --bg: #f4f2ee;
-            --fg: #1a1a1a;
-            --muted: #888;
-            --border: #ddd8cf;
-            --gold: #c9a84c;
-            --gold-light: #e8d08a;
-            --red: #b91c1c;
-            --font-serif: 'Georgia', 'Times New Roman', serif;
-            --font-sans: 'Helvetica Neue', Arial, sans-serif;
-        }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
-        body {
-            background: var(--bg);
-            color: var(--fg);
-            font-family: var(--font-sans);
-            min-height: 100vh;
-        }
-
-        /* Clean base fix: turns off browser text outlines/underlines inside index.html */
-        a {
-            text-decoration: none;
-        }
-
-        main {
-            max-width: 960px;
-            margin: 0 auto;
-            padding: 3rem 2.5rem 6rem;
-        }
-
-        .category-block {
-            margin-bottom: 3rem;
-        }
-
-        .category-label {
-            font-size: 1.1rem;
-            font-family: var(--font-serif);
-            font-weight: normal;
-            color: var(--fg);
-            margin-bottom: .4rem;
-        }
-
-        .category-sub {
-            font-size: .65rem;
-            letter-spacing: .16em;
-            text-transform: uppercase;
-            color: var(--muted);
-            margin-bottom: 1.25rem;
-            display: flex;
-            align-items: center;
-            gap: .75rem;
-        }
-
-        .category-sub::after {
-            content: "";
-            flex: 1;
-            height: 1px;
-            background: var(--border);
-        }
-
-        .sets-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 1.25rem;
-        }
-
-        .set-card {
-            background: #fff;
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            overflow: hidden;
-            color: inherit;
-            display: block;
-            transition: border-color .153, box-shadow .15s, transform .15s;
-        }
-
-        .set-card:hover {
-            border-color: var(--gold);
-            box-shadow: 0 6px 24px rgba(0, 0, 0, .1);
-            transform: translateY(-3px);
-        }
-
-        .set-card.locked {
-            opacity: .5;
-            cursor: default;
-            pointer-events: none;
-        }
-
-        .set-cover {
-            height: 130px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .set-cover img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .set-cover-placeholder {
-            width: 100%;
-            height: 100%;
-            background: #e8e4dc;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--border);
-            font-size: 2rem;
-        }
-
-        .set-body {
-            padding: .85rem 1rem 1rem;
-            border-top: 1px solid var(--border);
-        }
-
-        .set-name {
-            font-family: var(--font-serif);
-            font-size: 1rem;
-            font-weight: normal;
-            margin-bottom: .2rem;
-            line-height: 1.3;
-        }
-
-        .set-meta {
-            font-size: .68rem;
-            color: var(--muted);
-            letter-spacing: .05em;
-            margin-bottom: .65rem;
-        }
-
-        .set-progress-track {
-            height: 3px;
-            background: var(--border);
-            border-radius: 2px;
-            overflow: hidden;
-            margin-bottom: .35rem;
-        }
-
-        .set-progress-bar {
-            height: 100%;
-            background: var(--gold);
-            border-radius: 2px;
-            transition: width .4s ease;
-        }
-
-        .set-progress-label {
-            font-size: .6rem;
-            color: var(--muted);
-            letter-spacing: .06em;
-        }
-
-        .lock-label {
-            font-size: .6rem;
-            letter-spacing: .14em;
-            text-transform: uppercase;
-            color: var(--muted);
-            margin-top: .4rem;
-        }
-
-        .coming-soon-block {
-            margin-top: 3rem;
-            padding-top: 2rem;
-            border-top: 1px solid var(--border);
-        }
+        .category-block { margin-bottom: 3rem; }
+        .category-label { font-size: 1.1rem; font-family: var(--font-serif); font-weight: normal; color: var(--fg); margin-bottom: .4rem; }
+        .category-sub { font-size: .65rem; letter-spacing: .16em; text-transform: uppercase; color: var(--muted); margin-bottom: 1.25rem; display: flex; align-items: center; gap: .75rem; }
+        .category-sub::after { content: ""; flex: 1; height: 1px; background: var(--border); }
+        .sets-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1.25rem; }
+        .set-card { background: #fff; border: 1px solid var(--border); border-radius: 10px; overflow: hidden; color: inherit; display: block; transition: border-color .15s, box-shadow .15s, transform .15s; cursor: pointer; }
+        .set-card:hover { border-color: var(--gold); box-shadow: 0 6px 24px rgba(0, 0, 0, .1); transform: translateY(-3px); }
+        .set-cover { height: 130px; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; }
+        .set-cover img { width: 100%; height: 100%; object-fit: cover; }
+        .set-body { padding: .85rem 1rem 1rem; border-top: 1px solid var(--border); }
+        .set-name { font-family: var(--font-serif); font-size: 1rem; font-weight: normal; margin-bottom: .2rem; line-height: 1.3; }
+        .set-meta { font-size: .68rem; color: var(--muted); letter-spacing: .05em; margin-bottom: .65rem; }
+        .set-progress-track { height: 3px; background: var(--border); border-radius: 2px; overflow: hidden; margin-bottom: .35rem; }
+        .set-progress-bar { height: 100%; background: var(--gold); border-radius: 2px; transition: width .4s ease; }
+        .set-progress-label { font-size: .6rem; color: var(--muted); letter-spacing: .06em; }
     </style>
 </head>
 
 <body>
-    <header id="global-header" data-main="Rip Boosters" data-sub=""></header>
+    <header id="global-header">
+        <a href="#" class="back-link" id="spa-back-btn" style="visibility: hidden;">&larr; All Sets</a>
+        <h1 id="global-header-title"><em id="header-main-title">Rip Boosters</em> <span id="header-subtitle"></span></h1>
+        <div class="header-extra-links">
+            <a href="#feedback-form" class="header-btn">Feedback</a>
+            <a href="https://buymeacoffee.com/yourlink" target="_blank" class="header-btn coffee">☕ Buy Me a Coffee</a>
+        </div>
+    </header>
 
-    <main>
-        <div class="category-block">
-            <div class="category-label">Marvel</div>
-            <div class="category-sub">4 sets available</div>
-            <div class="sets-grid">
-
-                <a href="marvel-masterpieces-1992.html" class="set-card" id="card-mm1992">
-                    <div class="set-cover">
-                        <img src="card_images/pack_cover1.webp" alt="Marvel Masterpieces 1992 pack">
-                    </div>
-                    <div class="set-body">
-                        <div class="set-name">Marvel Masterpieces</div>
-                        <div class="set-meta">1992 &middot; SkyBox &middot; 105 cards</div>
-                        <div class="set-progress-track">
-                            <div class="set-progress-bar" id="prog-mm1992" style="width:0%"></div>
+    <main id="spa-app-container">
+        <div id="view-dashboard">
+            <!-- MARVEL SECTION -->
+            <div class="category-block">
+                <div class="category-label">Marvel</div>
+                <div class="category-sub">4 sets available</div>
+                <div class="sets-grid">
+                    
+                    <!-- MM1992 -->
+                    <div class="set-card" data-set-key="mm1992">
+                        <div class="set-cover"><img src="card_images/pack_cover1.webp" alt="Marvel Masterpieces 1992 pack"></div>
+                        <div class="set-body">
+                            <div class="set-name">Marvel Masterpieces</div>
+                            <div class="set-meta">1992 &middot; SkyBox &middot; 105 cards</div>
+                            <div class="set-progress-track"><div class="set-progress-bar" id="prog-mm1992" style="width:0%"></div></div>
+                            <div class="set-progress-label" id="label-mm1992">0 / 105 collected</div>
                         </div>
-                        <div class="set-progress-label" id="label-mm1992">0 / 105 collected</div>
                     </div>
-                </a>
 
-                <a href="marvel-masterpieces-1993.html" class="set-card" id="card-mm1993">
-                    <div class="set-cover">
-                        <div style="width:100%;height:100%;background:linear-gradient(165deg,#1a0a00,#3a1a00,#1a0a00);display:flex;align-items:center;justify-content:center;font-family:Georgia,serif;font-size:2.8rem;font-weight:700;color:#c9a84c;text-shadow:0 0 14px rgba(201,168,76,.4)">M</div>
-                    </div>
-                    <div class="set-body">
-                        <div class="set-name">Marvel Masterpieces</div>
-                        <div class="set-meta">1993 &middot; SkyBox &middot; 98 cards</div>
-                        <div class="set-progress-track">
-                            <div class="set-progress-bar" id="prog-mm1993" style="width:0%"></div>
+                    <!-- MM1993 -->
+                    <div class="set-card" data-set-key="mm1993">
+                        <div class="set-cover">
+                            <div style="width:100%;height:100%;background:linear-gradient(165deg,#1a0a00,#3a1a00,#1a0a00);display:flex;align-items:center;justify-content:center;font-family:Georgia,serif;font-size:2.8rem;font-weight:700;color:#c9a84c;">M</div>
                         </div>
-                        <div class="set-progress-label" id="label-mm1993">0 / 98 collected</div>
-                    </div>
-                </a>
-
-                <a href="marvel-universe-1990.html" class="set-card" id="card-mu1990">
-                    <div class="set-cover">
-                        <div style="width:100%;height:100%;background:linear-gradient(165deg,#0a0a20,#1a1a4a,#0a0a20);display:flex;align-items:center;justify-content:center;font-family:Georgia,serif;font-size:2.4rem;font-weight:700;color:#d4382a;">MU</div>
-                    </div>
-                    <div class="set-body">
-                        <div class="set-name">Marvel Universe</div>
-                        <div class="set-meta">1990 &middot; lmpel &middot; 167 cards</div>
-                        <div class="set-progress-track">
-                            <div class="set-progress-bar" id="prog-mu1990" style="width:0%;background:#d4382a"></div>
+                        <div class="set-body">
+                            <div class="set-name">Marvel Masterpieces</div>
+                            <div class="set-meta">1993 &middot; SkyBox &middot; 98 cards</div>
+                            <div class="set-progress-track"><div class="set-progress-bar" id="prog-mm1993" style="width:0%"></div></div>
+                            <div class="set-progress-label" id="label-mm1993">0 / 98 collected</div>
                         </div>
-                        <div class="set-progress-label" id="label-mu1990">0 / 167 collected</div>
                     </div>
-                </a>
 
-                <a href="xmen-1992.html" class="set-card" id="card-xmen1992">
-                    <div class="set-cover">
-                        <div style="width:100%;height:100%;background:linear-gradient(165deg,#0a0010,#1a0040,#0a0010);display:flex;align-items:center;justify-content:center;font-family:Georgia,serif;font-size:1.5rem;font-weight:900;color:#ffcc00;text-shadow:0 0 12px rgba(255,204,0,.6)">X-MEN</div>
-                    </div>
-                    <div class="set-body">
-                        <div class="set-name">The Uncanny X-Men</div>
-                        <div class="set-meta">1992 &middot;Impel&middot;105 cards</div>
-                        <div class="set-progress-track">
-                            <div class="set-progress-bar" id="prog-xmen1992" style="width:0%;background:#ffcc00"></div>
+                    <!-- MU1990 -->
+                    <div class="set-card" data-set-key="mu1990">
+                        <div class="set-cover">
+                            <div style="width:100%;height:100%;background:linear-gradient(165deg,#0a0a20,#1a1a4a,#0a0a20);display:flex;align-items:center;justify-content:center;font-family:Georgia,serif;font-size:2.4rem;font-weight:700;color:#d4382a;">MU</div>
                         </div>
-                        <div class="set-progress-label" id="label-xmen1992">0 / 105 collected</div>
+                        <div class="set-body">
+                            <div class="set-name">Marvel Universe</div>
+                            <div class="set-meta">1990 &middot; lmpel &middot; 167 cards</div>
+                            <div class="set-progress-track"><div class="set-progress-bar" id="prog-mu1990" style="width:0%;background:#d4382a"></div></div>
+                            <div class="set-progress-label" id="label-mu1990">0 / 167 collected</div>
+                        </div>
                     </div>
-                </a>
 
+                    <!-- XMEN1992 -->
+                    <div class="set-card" data-set-key="xmen1992">
+                        <div class="set-cover">
+                            <div style="width:100%;height:100%;background:linear-gradient(165deg,#0a0010,#1a0040,#0a0010);display:flex;align-items:center;justify-content:center;font-family:Georgia,serif;font-size:1.5rem;font-weight:900;color:#ffcc00;">X-MEN</div>
+                        </div>
+                        <div class="set-body">
+                            <div class="set-name">The Uncanny X-Men</div>
+                            <div class="set-meta">1992 &middot; Impel &middot; 105 cards</div>
+                            <div class="set-progress-track"><div class="set-progress-bar" id="prog-xmen1992" style="width:0%;background:#ffcc00"></div></div>
+                            <div class="set-progress-label" id="label-xmen1992">0 / 105 collected</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- GARBAGE PAIL KIDS SECTION -->
+            <div class="category-block">
+                <div class="category-label">Garbage Pail Kids</div>
+                <div class="category-sub">1 set available</div>
+                <div class="sets-grid">
+                    <div class="set-card" data-set-key="gpk1">
+                        <div class="set-cover">
+                            <div style="width:100%;height:100%;background:linear-gradient(165deg,#1a0020,#4a0060,#1a0020);display:flex;flex-direction:column;align-items:center;justify-content:center;">
+                                <div style="font-family:Georgia,serif;font-size:1.6rem;font-weight:700;color:#ff6b00;">GPK</div>
+                            </div>
+                        </div>
+                        <div class="set-body">
+                            <div class="set-name">Garbage Pail Kids</div>
+                            <div class="set-meta">1985 &middot; Topps &middot; 82 stickers</div>
+                            <div class="set-progress-track"><div class="set-progress-bar" id="prog-gpk1" style="width:0%;background:#ff6b00"></div></div>
+                            <div class="set-progress-label" id="label-gpk1">0 / 82 collected</div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <div class="category-block">
-            <div class="category-label">Garbage Pail Kids</div>
-            <div class="category-sub">1 set available</div>
-            <div class="sets-grid">
-
-                <a href="gpk-series1.html" class="set-card" id="card-gpk1">
-                    <div class="set-cover">
-                        <div style="width:100%;height:100%;background:linear-gradient(165deg,#1a0020,#4a0060,#1a0020);display:flex;flex-direction:column;align-items:center;justify-content:center;">
-                            <div style="font-family:Georgia,serif;font-size:1.6rem;font-weight:700;color:#ff6b00;text-shadow:0 0 12px rgba(255,107,0,.6);line-height:1">GPK</div>
-                            <div style="font-size:.48rem;letter-spacing:.2em;text-transform:uppercase;color:#cc88ff;margin-top:.4rem">Garbage Pail Kids</div>
-                            <div style="font-size:.48rem;letter-spacing:.14em;color:#ff6b00;margin-top:.3rem">1985 &middot; Series 1</div>
-                        </div>
-                    </div>
-                    <div class="set-body">
-                        <div class="set-name">Garbage Pail Kids</div>
-                        <div class="set-meta">1985 &middot; Topps &middot; 82 stickers</div>
-                        <div class="set-progress-track">
-                            <div class="set-progress-bar" id="prog-gpk1" style="width:0%;background:#ff6b00"></div>
-                        </div>
-                        <div class="set-progress-label" id="label-gpk1">0 / 82 collected</div>
-                    </div>
-                </a>
-
-            </div>
-        </div>
-
-        <div class="coming-soon-block">
-            <div class="category-label" style="color:var(--muted)">Coming Soon</div>
-            <div class="category-sub" style="margin-top:.4rem">More sets on the way</div>
-            <div class="sets-grid">
-
-                <div class="set-card locked">
-                    <div class="set-cover">
-                        <div class="set-cover-placeholder">&#128274;</div>
-                    </div>
-                    <div class="set-body">
-                        <div class="set-name">X-Men Series 1</div>
-                        <div class="set-meta">1992 &middot; Impel</div>
-                        <div class="lock-label">Coming soon</div>
-                    </div>
-                </div>
-
-                <div class="set-card locked">
-                    <div class="set-cover">
-                        <div class="set-cover-placeholder">&#128274;</div>
-                    </div>
-                    <div class="set-body">
-                        <div class="set-name">Marvel Universe</div>
-                        <div class="set-meta">1991 &middot; lmpel &middot; Series 2</div>
-                        <div class="lock-label">Coming soon</div>
-                    </div>
-                </div>
-
-                <div class="set-card locked">
-                    <div class="set-cover">
-                        <div class="set-cover-placeholder">&#128274;</div>
-                    </div>
-                    <div class="set-body">
-                        <div class="set-name">Garbage Pail Kids</div>
-                        <div class="set-meta">1985 &middot; Series 2</div>
-                        <div class="lock-label">Coming soon</div>
-                    </div>
-                </div>
-
-            </div>
-        </div>
+        <div id="view-app-portal" style="display: none;"></div>
     </main>
 
-    <script>
-        var sets = [
-            { key: 'mm1992', total: 105, barId: 'prog-mm1992', labelId: 'label-mm1992' },
-            { key: 'mm1993', total: 98, barId: 'prog-mm1993', labelId: 'label-mm1993', holoKey: 'dyna' },
-            { key: 'mu1990', total: 167, barId: 'prog-mu1990', labelId: 'label-mu1990', holoKey: 'holos' },
-            { key: 'gpk1', total: 82, barId: 'prog-gpk1', labelId: 'label-gpk1' },
-            { key: 'xmen1992', total: 105, barId: 'prog-xmen1992', labelId: 'label-xmen1992', holoKey: 'holos' }
-        ];
+    <script type="module">
+        import { MM1992_DATA } from './data-mm1992.js';
+        import { MM1993_DATA } from './data-mm1993.js';
+        import { MU1990_DATA } from './data-mu1990.js';
+        import { XMEN1992_DATA } from './data-xmen1992.js';
+        import { GPK1_DATA } from './data-gpk1.js';
 
-        sets.forEach(function (set) {
-            try {
-                var saved = JSON.parse(localStorage.getItem(set.key)) || {};
-                var baseCount = (saved.base || saved.cards || []).length;
-                var insertCount = (saved.spectra || saved[set.holoKey] || []).length;
-                var collected = baseCount + insertCount;
-                var pct = Math.round((collected / set.total) * 100);
-                document.getElementById(set.barId).style.width = pct + '%';
-                document.getElementById(set.labelId).textContent = collected + ' / ' + set.total + ' collected';
-            } catch (e) { }
+        const DATA_MAP = { mm1992: MM1992_DATA, mm1993: MM1993_DATA, mu1990: MU1990_DATA, xmen1992: XMEN1992_DATA, gpk1: GPK1_DATA };
+        const APP_ROUTES = {
+            'mm1992': { mainTitle: 'Marvel Masterpieces', subTitle: '1992 Series I &middot; SkyBox' },
+            'mm1993': { mainTitle: 'Marvel Masterpieces', subTitle: '1993 Series II &middot; SkyBox' },
+            'mu1990': { mainTitle: 'Marvel Universe', subTitle: '1990 Series I &middot; Impel' },
+            'xmen1992': { mainTitle: 'The Uncanny X-Men', subTitle: '1992 Series I &middot; Impel' },
+            'gpk1': { mainTitle: 'Garbage Pail Kids', subTitle: '1985 Series 1 &middot; Topps' }
+        };
+
+        const viewDashboard = document.getElementById('view-dashboard');
+        const viewAppPortal = document.getElementById('view-app-portal');
+        const spaBackBtn = document.getElementById('spa-back-btn');
+        const headerMainTitle = document.getElementById('header-main-title');
+        const headerSubtitle = document.getElementById('header-subtitle');
+
+        function navigateToView(setKey) {
+            window.openingPackState = false;
+            if (!setKey) {
+                viewAppPortal.style.display = 'none'; viewAppPortal.innerHTML = ''; viewDashboard.style.display = 'block'; spaBackBtn.style.visibility = 'hidden';
+                headerMainTitle.textContent = "Rip Boosters"; headerSubtitle.innerHTML = ""; updateDashboardProgressTracks();
+            } else {
+                const metadata = APP_ROUTES[setKey]; viewDashboard.style.display = 'none'; viewAppPortal.style.display = 'block'; spaBackBtn.style.visibility = 'visible';
+                headerMainTitle.textContent = metadata.mainTitle; headerSubtitle.innerHTML = ` &nbsp;&middot;&nbsp; ${metadata.subTitle}`;
+                loadViewLayout(setKey);
+            }
+        }
+
+        function loadViewLayout(setKey) {
+            let rowLabelHTML = '', collectionHeaderHTML = '', packCoverHTML = '';
+            if (setKey === 'gpk1') {
+                rowLabelHTML = '<div class="row-label">Series 1 &mdash; 5 stickers per pack &middot; click to view back</div>';
+                collectionHeaderHTML = `<div class="collection-header"><div><h2 class="collection-title">Collection</h2><p class="collection-sub">82 stickers &mdash; 41 pairs</p></div><span class="collection-count" id="collectionCount">0 / 82</span></div><div class="collection-grid" id="collectionGrid"></div>`;
+                packCoverHTML = `<div style="width:100%;height:100%;background:linear-gradient(165deg,#1a0020,#4a0060,#1a0020);display:flex;flex-direction:column;align-items:center;justify-content:center;border-radius:6px;"><div style="font-family:Georgia,serif;font-size:2rem;font-weight:900;color:#ff6b00;">GPK</div></div>`;
+            } else if (setKey === 'mm1992') {
+                rowLabelHTML = `<div class="spectra-row" id="spectraRow" style="display:none;"><div class="spectra-label"><span class="pip"></span>Battle Spectra&#8209;Etch Insert</div><div class="cards-row" id="slots-spectra"></div></div><div><div class="row-label">Base Set &mdash; Joe Jusko Art</div></div>`;
+                collectionHeaderHTML = `<div class="collection-header"><div><h2 class="collection-title">Collection</h2><p class="collection-sub" style="color:var(--spectra)">Battle Spectra &mdash; 5 cards</p></div><span class="collection-count" id="collectionCount">0/105</span></div><div class="collection-grid" id="spectraGrid"></div><div class="collection-header" style="margin-top:2rem;"><div><p class="collection-sub">Base Set &mdash; 100 cards</p></div></div><div class="collection-grid" id="collectionGrid"></div>`;
+                packCoverHTML = `<img src="card_images/pack_cover1.webp" alt="Pack" style="width:100%;height:100%;object-fit:cover;border-radius:6px;">`;
+            } else if (setKey === 'mm1993') {
+                rowLabelHTML = `<div class="spectra-row" id="dynaRow" style="display:none;"><div class="spectra-label" style="color:#1a6a1a;"><span class="pip" style="background:#1a6a1a;"></span>X-Men 2099 Dyna&#8209;Etch Insert</div><div class="cards-row" id="slots-dyna"></div></div><div><div class="row-label">Base Set &mdash; 90 cards</div></div>`;
+                collectionHeaderHTML = `<div class="collection-header"><div><h2 class="collection-title">Collection</h2><p class="collection-sub" style="color:#1a6a1a;">Dyna-Etch &mdash; 8 cards</p></div><span class="collection-count" id="collectionCount">0/98</span></div><div class="collection-grid" id="dynaGrid"></div><div class="collection-header" style="margin-top:2rem;"><div><p class="collection-sub">Base Set &mdash; 90 cards</p></div></div><div class="collection-grid" id="collectionGrid"></div>`;
+                packCoverHTML = `<div style="width:100%;height:100%;background:linear-gradient(165deg,#1a0a00,#3a1a00,#1a0a00);display:flex;align-items:center;justify-content:center;color:#c9a84c;font-family:Georgia,serif;font-size:2.4rem;border-radius:6px;">M</div>`;
+            } else if (setKey === 'mu1990') {
+                rowLabelHTML = `<div class="spectra-row" id="holoRow" style="display:none;"><div class="spectra-label" style="color:#1a3a8a;"><span class="pip" style="background:#1a3a8a;"></span>Hologram Insert</div><div class="cards-row" id="slots-holo"></div></div><div><div class="row-label">Base Set &mdash; 162 cards</div></div>`;
+                collectionHeaderHTML = `<div class="collection-header"><div><h2 class="collection-title">Collection</h2><p class="collection-sub" style="color:#1a3a8a;">Holograms &mdash; 5 cards</p></div><span class="collection-count" id="collectionCount">0/167</span></div><div class="collection-grid" id="holoGrid"></div><div class="collection-header" style="margin-top:2rem;"><div><p class="collection-sub">Base Set &mdash; 162 cards</p></div></div><div class="collection-grid" id="collectionGrid"></div>`;
+                packCoverHTML = `<div style="width:100%;height:100%;background:linear-gradient(165deg,#0a0a20,#1a1a4a,#0a0a20);display:flex;align-items:center;justify-content:center;color:#d4382a;font-family:Georgia,serif;font-size:2.4rem;border-radius:6px;">MU</div>`;
+            } else if (setKey === 'xmen1992') {
+                rowLabelHTML = `<div class="spectra-row" id="holoRow" style="display:none;"><div class="spectra-label" style="color:#b8860b;"><span class="pip" style="background:#b8860b;"></span>Gold Hologram</div><div class="cards-row" id="slots-holo"></div></div><div><div class="row-label">Base Set &mdash; 100 cards</div></div>`;
+                collectionHeaderHTML = `<div class="collection-header"><div><h2 class="collection-title">Collection</h2><p class="collection-sub" style="color:#b8860b">Gold Holograms &mdash; 5 cards</p></div><span class="collection-count" id="collectionCount">0/105</span></div><div class="collection-grid" id="holoGrid"></div><div class="collection-header" style="margin-top:2rem;"><div><p class="collection-sub">Base Set &mdash; 100 cards</p></div></div><div class="collection-grid" id="collectionGrid"></div>`;
+                packCoverHTML = `<div style="width:100%;height:100%;background:linear-gradient(165deg,#0a0010,#1a0040,#0a0010);display:flex;align-items:center;justify-content:center;font-family:Georgia,serif;font-size:1.5rem;color:#ffcc00;border-radius:6px;">X-MEN</div>`;
+            }
+
+            viewAppPortal.innerHTML = `
+                <div class="pack-section">
+                    <div class="pack-row">
+                        <div class="pack-wrapper" id="packWrapper">
+                            <div class="pack" id="pack">${packCoverHTML}</div>
+                        </div>
+                        <div class="pack-counter">
+                            <span class="counter-num" id="packsTotal">0</span>
+                            <span class="counter-label">Total Packs<br>Opened</span>
+                            <span class="counter-divider"></span>
+                            <span class="counter-num counter-num--session" id="packsSession">0</span>
+                            <span class="counter-label">This<br>Session</span>
+                        </div>
+                    </div>
+                    <div class="pack-action-row">
+                        <button class="open-btn" id="openBtn">Open Pack</button>
+                        <p class="pack-instructions">Drag across the pack to tear it open,<br>or click the button above.</p>
+                    </div>
+                </div>
+                <div class="section-divider" id="divider"><span>Cards Pulled</span></div>
+                <div class="cards-section" id="cardsSection">${rowLabelHTML}<div class="cards-row" id="slots-base"></div></div>
+                <div class="collection-section">${collectionHeaderHTML}</div>
+                <div id="lightbox"><button id="lightbox-close">&times;</button><div style="display:flex; gap:1rem; max-width:90vw;"><img id="lightbox-front" src=""><img id="lightbox-back" src=""></div ></div>
+            `;
+            const lb = document.getElementById('lightbox');
+            if (lb) {
+                lb.onclick = () => lb.classList.remove('open');
+                document.getElementById('lightbox-close').onclick = (e) => { e.stopPropagation(); lb.classList.remove('open'); };
+            }
+            initializePackOpenerScript(setKey);
+        }
+
+        function initializePackOpenerScript(setKey) {
+            const wrapper = document.getElementById('packWrapper'); const MIN_DRAG = 60; let dragging = false, lastX = 0, lastY = 0, cumDist = 0, canvas, ctx, points = [];
+            function initCanvas() {
+                const pack = document.getElementById('pack'); if (!pack) return; pack.style.position = 'relative'; canvas = document.createElement('canvas');
+                canvas.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;border-radius:6px;pointer-events:none;z-index:10;';
+                canvas.width = pack.offsetWidth || 150; canvas.height = pack.offsetHeight || 224; pack.appendChild(canvas); ctx = canvas.getContext('2d');
+            }
+            function getPos(e) { const rect = canvas.getBoundingClientRect(); const src = e.touches ? e.touches[0] : e; return { x: (src.clientX - rect.left) * (canvas.width / rect.width), y: (src.clientY - rect.top) * (canvas.height / rect.height) }; }
+            function drawLine() { ctx.clearRect(0, 0, canvas.width, canvas.height); if (points.length < 2) return; ctx.save(); ctx.strokeStyle = 'rgba(255,255,255,0.92)'; ctx.lineWidth = 3; ctx.lineCap = 'round'; ctx.lineJoin = 'round'; ctx.beginPath(); ctx.moveTo(points[0].x, points[0].y); for (let i = 1; i < points.length; i++) ctx.lineTo(points[i].x, points[i].y); ctx.stroke(); ctx.restore(); }
+            if (wrapper) {
+                wrapper.onpointerdown = (e) => { if (window.openingPackState) return; if (!canvas) initCanvas(); dragging = true; points = []; cumDist = 0; ctx.clearRect(0,0,canvas.width,canvas.height); const pos = getPos(e); lastX = pos.x; lastY = pos.y; points.push(pos); wrapper.setPointerCapture(e.pointerId); e.preventDefault(); };
+                wrapper.onpointermove = (e) => { if (!dragging) return; const pos = getPos(e); cumDist += Math.sqrt(Math.pow(pos.x-lastX,2)+Math.pow(pos.y-lastY,2)); lastX = pos.x; lastY = pos.y; points.push(pos); drawLine(); e.preventDefault(); };
+                wrapper.onpointerup = () => { if (!dragging) return; dragging = false; ctx.clearRect(0,0,canvas.width,canvas.height); if (cumDist >= MIN_DRAG) window.openPack(); };
+            }
+
+            const activeSetData = DATA_MAP[setKey];
+            let savedData = JSON.parse(localStorage.getItem(setKey)) || { base: [], spectra: [], dyna: [], holos: [], totalPacks: 0 };
+            if (!Array.isArray(savedData.base)) savedData.base = [];
+            if (!Array.isArray(savedData.spectra)) savedData.spectra = [];
+            if (!Array.isArray(savedData.dyna)) savedData.dyna = [];
+            if (!Array.isArray(savedData.holos)) savedData.holos = [];
+            let sessionPacks = 0;
+
+            const getImgPath = (n, side, isInsert = false, variant = '') => {
+                if (setKey === 'gpk1') return `card_images/gpk_series1/${side}_${String(n).padStart(3, '0')}${variant}.jpg`;
+                if (setKey === 'mm1992') return isInsert ? `card_images/marvel_masterpieces_1992/spectra_${side}_${n}.jpg` : `card_images/marvel_masterpieces_1992/${side}_${String(n).padStart(3, '0')}.jpg`;
+                if (setKey === 'mm1993') return isInsert ? `card_images/marvel_masterpieces_1993/dynaetch_${side}_${n}.jpg` : `card_images/marvel_masterpieces_1993/${side}_${String(n).padStart(3, '0')}.jpg`;
+                if (setKey === 'mu1990') return isInsert ? `card_images/marvel_impel_1990/holo_${side}_${n}.jpg` : `card_images/marvel_impel_1990/${side}_${String(n).padStart(3, '0')}.jpg`;
+                if (setKey === 'xmen1992') return isInsert ? `card_images/xmen_impel_1992/holo_${side}_${n}.jpg` : `card_images/xmen_impel_1992/${side}_${String(n).padStart(3, '0')}.jpg`;
+            };
+
+            const updateCounters = () => {
+                document.getElementById('packsTotal').textContent = savedData.totalPacks || 0;
+                document.getElementById('packsSession').textContent = sessionPacks;
+                const totalCollected = savedData.base.length + savedData.spectra.length + savedData.dyna.length + savedData.holos.length;
+                const maxCount = setKey === 'mu1990' ? 167 : (setKey === 'mm1993' ? 98 : (setKey === 'gpk1' ? 82 : 105));
+                document.getElementById('collectionCount').textContent = `${totalCollected} / ${maxCount}`;
+            };
+
+            const gridBase = document.getElementById('collectionGrid');
+            const gridInsert = document.getElementById('spectraGrid') || document.getElementById('dynaGrid') || document.getElementById('holoGrid');
+
+            if (gridBase) {
+                activeSetData.baseCards.forEach(card => {
+                    const slot = document.createElement('div');
+                    const matchKey = setKey === 'gpk1' ? `${card.n}${card.v}` : card.n;
+                    slot.className = `col-slot ${savedData.base.includes(matchKey) ? 'filled' : 'no-image'}`;
+                    slot.id = `col-base-${matchKey}`;
+                    if (savedData.base.includes(matchKey)) {
+                        slot.innerHTML = `<img src="${getImgPath(card.n, 'front', false, card.v || '')}">`;
+                        slot.onclick = () => showLightbox(getImgPath(card.n, 'front', false, card.v || ''), getImgPath(card.n, 'back', false, card.v || ''));
+                    } else {
+                        slot.innerHTML = `<span class="col-num">#${String(card.n).padStart(3, '0')}${card.v || ''}</span><span class="col-name">${card.name}</span>`;
+                    }
+                    gridBase.appendChild(slot);
+                });
+            }
+
+            const insertArr = activeSetData.spectraCards || activeSetData.dynaCards || activeSetData.holoCards || [];
+            const insertKey = setKey === 'mm1992' ? 'spectra' : (setKey === 'mm1993' ? 'dyna' : 'holos');
+            if (gridInsert) {
+                insertArr.forEach(card => {
+                    const slot = document.createElement('div');
+                    slot.className = `col-slot ${savedData[insertKey].includes(card.n) ? 'filled' : 'no-image'}`;
+                    slot.id = `col-insert-${card.n}`;
+                    if (savedData[insertKey].includes(card.n)) {
+                        slot.innerHTML = `<img src="${getImgPath(card.n, 'front', true)}">`;
+                        slot.onclick = () => showLightbox(getImgPath(card.n, 'front', true), getImgPath(card.n, 'back', true));
+                    } else {
+                        slot.innerHTML = `<span class="col-num">${card.id || 'S'+card.n}</span><span class="col-name">${card.name}</span>`;
+                    }
+                    gridInsert.appendChild(slot);
+                });
+            }
+
+            updateCounters();
+
+            window.openPack = function() {
+                if (window.openingPackState) return; window.openingPackState = true;
+                const btn = document.getElementById('openBtn'); if (btn) btn.disabled = true;
+                const pack = document.getElementById('pack'); if (pack) pack.classList.add('pack-tearing');
+
+                setTimeout(() => {
+                    savedData.totalPacks = (savedData.totalPacks || 0) + 1; sessionPacks++;
+                    const sBase = document.getElementById('slots-base'), sInsert = document.getElementById('slots-spectra') || document.getElementById('slots-dyna') || document.getElementById('slots-holo');
+                    const rowIns = document.getElementById('spectraRow') || document.getElementById('dynaRow') || document.getElementById('holoRow');
+                    if (sBase) sBase.innerHTML = ''; if (sInsert) sInsert.innerHTML = ''; if (rowIns) rowIns.style.display = 'none';
+                    document.getElementById('divider').classList.add('visible');
+
+                    let pullRate = setKey === 'mm1993' ? (1/9) : (setKey === 'mm1992' ? 0.25 : (1/12));
+                    let hasInsert = setKey !== 'gpk1' && Math.random() < pullRate;
+
+                    if (hasInsert && sInsert && rowIns) {
+                        const rInsert = insertArr[Math.floor(Math.random() * insertArr.length)];
+                        if (!savedData[insertKey].includes(rInsert.n)) savedData[insertKey].push(rInsert.n);
+                        rowIns.style.display = 'block';
+                        sInsert.appendChild(createPackCardElement(rInsert, true));
+                    }
+
+                    let pulled = [], targetAmt = (setKey === 'gpk1' || !hasInsert) ? 5 : 4;
+                    while (pulled.length < targetAmt) {
+                        // 🌟 BUG FIX: Clamp random selection mapping up to max index 162 for mu1990 to prevent index overflow 404 logs
+                        let maxBaseIndex = activeSetData.baseCards.length;
+                        if (setKey === 'mu1990') maxBaseIndex = 162;
+
+                        const rc = activeSetData.baseCards[Math.floor(Math.random() * maxBaseIndex)];
+                        const uniqKey = setKey === 'gpk1' ? `${rc.n}${rc.v}` : rc.n;
+                        if (!pulled.some(c => (setKey === 'gpk1' ? `${c.n}${c.v}` : c.n) === uniqKey)) {
+                            pulled.push(rc);
+                            if (!savedData.base.includes(uniqKey)) savedData.base.push(uniqKey);
+                        }
+                    }
+
+                    pulled.forEach((c, idx) => sBase.appendChild(createPackCardElement(c, false, idx)));
+                    localStorage.setItem(setKey, JSON.stringify(savedData));
+                    refreshGridSlots();
+
+                    if (pack) pack.classList.remove('pack-tearing');
+                    window.openingPackState = false; if (btn) btn.disabled = false;
+                }, 450);
+            };
+
+            if (document.getElementById('openBtn')) document.getElementById('openBtn').onclick = window.openPack;
+
+            function createPackCardElement(card, isInsert, index = 0) {
+                const slot = document.createElement('div'); slot.className = 'card-slot';
+                const cardDiv = document.createElement('div'); cardDiv.className = 'card';
+                cardDiv.innerHTML = `<img src="${getImgPath(card.n, 'front', isInsert, card.v || '')}">`;
+                cardDiv.onclick = () => showLightbox(getImgPath(card.n, 'front', isInsert, card.v || ''), getImgPath(card.n, 'back', isInsert, card.v || ''));
+                setTimeout(() => cardDiv.classList.add('revealed'), index * 100);
+                const hint = document.createElement('div'); hint.className = 'flip-hint'; hint.textContent = 'click to view';
+                slot.appendChild(cardDiv); slot.appendChild(hint); return slot;
+            }
+
+            function refreshGridSlots() {
+                savedData.base.forEach(k => {
+                    const slot = document.getElementById(`col-base-${k}`);
+                    if (slot && slot.classList.contains('no-image')) {
+                        const card = activeSetData.baseCards.find(c => (setKey === 'gpk1' ? `${c.n}${c.v}` : c.n) === k);
+                        slot.className = 'col-slot filled'; slot.innerHTML = `<img src="${getImgPath(card.n, 'front', false, card.v || '')}">`;
+                        slot.onclick = () => showLightbox(getImgPath(card.n, 'front', false, card.v || ''), getImgPath(card.n, 'back', false, card.v || ''));
+                    }
+                });
+                savedData[insertKey]?.forEach(num => {
+                    const slot = document.getElementById(`col-insert-${num}`);
+                    if (slot && slot.classList.contains('no-image')) {
+                        const card = insertArr.find(c => c.n === num);
+                        slot.className = 'col-slot filled'; slot.innerHTML = `<img src="${getImgPath(num, 'front', true)}">`;
+                        slot.onclick = () => showLightbox(getImgPath(num, 'front', true), getImgPath(num, 'back', true));
+                    }
+                });
+                updateCounters();
+            }
+
+            function showLightbox(front, back) {
+                document.getElementById('lightbox-front').src = front;
+                const backImg = document.getElementById('lightbox-back');
+                backImg.src = back; backImg.onerror = () => { backImg.src = front; };
+                document.getElementById('lightbox').classList.add('open');
+            }
+        }
+
+        function updateDashboardProgressTracks() {
+            const trackingProfile = [
+                { key: 'mm1992', total: 105, barId: 'prog-mm1992', labelId: 'label-mm1992' },
+                { key: 'mm1993', total: 98, barId: 'prog-mm1993', labelId: 'label-mm1993' },
+                { key: 'mu1990', total: 167, barId: 'prog-mu1990', labelId: 'label-mu1990' },
+                { key: 'gpk1', total: 82, barId: 'prog-gpk1', labelId: 'label-gpk1' },
+                { key: 'xmen1992', total: 105, barId: 'prog-xmen1992', labelId: 'label-xmen1992' }
+            ];
+            trackingProfile.forEach(set => {
+                try {
+                    const saved = JSON.parse(localStorage.getItem(set.key)) || {};
+                    const collected = (saved.base || []).length + (saved.spectra || []).length + (saved.dyna || []).length + (saved.holos || []).length;
+                    const pct = Math.round((collected / set.total) * 100);
+                    document.getElementById(set.barId).style.width = pct + '%';
+                    document.getElementById(set.labelId).textContent = `${collected} / ${set.total} collected`;
+                } catch (e) {}
+            });
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            updateDashboardProgressTracks();
+            document.querySelectorAll('.set-card').forEach(card => {
+                card.onclick = () => {
+                    const targetKey = card.getAttribute('data-set-key');
+                    navigateToView(targetKey);
+                };
+            });
         });
+
+        spaBackBtn.onclick = (e) => { e.preventDefault(); navigateToView(null); };
     </script>
 </body>
-
 </html>
