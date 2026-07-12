@@ -245,7 +245,6 @@
                 if (setKey === 'mm1992') return isInsert ? `card_images/marvel_masterpieces_1992/spectra_${side}_${n}.jpg` : `card_images/marvel_masterpieces_1992/${side}_${String(n).padStart(3, '0')}.jpg`;
                 if (setKey === 'mm1993') return isInsert ? `card_images/marvel_masterpieces_1993/dynaetch_${side}_${n}.jpg` : `card_images/marvel_masterpieces_1993/${side}_${String(n).padStart(3, '0')}.jpg`;
                 
-                // 🌟 UPDATED: Accurate mapping structure for mu1990 front/back assets (.png format + unified back name)
                 if (setKey === 'mu1990') {
                     return isInsert 
                         ? (side === 'front' ? `card_images/marvel_impel_1990/mh${n}_hologram_front.png` : `card_images/marvel_impel_1990/mh_hologram_back.png`)
@@ -333,7 +332,18 @@
                         delay += step;
                     }
 
-                    let pulled = [], targetAmt = (setKey === 'gpk1' || !hasInsert) ? 5 : 4;
+                    // Calculate correct base amount based on set and whether an insert dropped
+                    let targetAmt = 5; 
+                    if (setKey === 'gpk1') {
+                        targetAmt = 5;
+                    } else if (setKey === 'mu1990') {
+                        targetAmt = hasInsert ? 11 : 12;
+                    } else {
+                        // mm1992, mm1993, xmen1992 all have 6 cards total
+                        targetAmt = hasInsert ? 5 : 6;
+                    }
+
+                    let pulled = [];
                     while (pulled.length < targetAmt) {
                         let maxBaseIndex = activeSetData.baseCards.length;
                         if (setKey === 'mu1990') maxBaseIndex = 162;
