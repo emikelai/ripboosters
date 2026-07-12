@@ -142,15 +142,24 @@
         const headerMainTitle = document.getElementById('header-main-title');
         const headerSubtitle = document.getElementById('header-subtitle');
 
-        function navigateToView(setKey) {
+        function navigateToView(setKey, updateHistory = true) {
             window.openingPackState = false;
             if (!setKey) {
                 viewAppPortal.style.display = 'none'; viewAppPortal.innerHTML = ''; viewDashboard.style.display = 'block'; spaBackBtn.style.visibility = 'hidden';
                 headerMainTitle.textContent = "Rip Boosters"; headerSubtitle.innerHTML = ""; updateDashboardProgressTracks();
+                
+                if (updateHistory) {
+                    history.pushState({ set: null }, '', window.location.pathname);
+                }
             } else {
-                const metadata = APP_ROUTES[setKey]; viewDashboard.style.display = 'none'; viewAppPortal.style.display = 'block'; spaBackBtn.style.visibility = 'visible';
+                const metadata = APP_ROUTES[setKey]; if (!metadata) return navigateToView(null, true);
+                viewDashboard.style.display = 'none'; viewAppPortal.style.display = 'block'; spaBackBtn.style.visibility = 'visible';
                 headerMainTitle.textContent = metadata.mainTitle; headerSubtitle.innerHTML = ` &nbsp;&middot;&nbsp; ${metadata.subTitle}`;
                 loadViewLayout(setKey);
+                
+                if (updateHistory) {
+                    history.pushState({ set: setKey }, '', `?set=${setKey}`);
+                }
             }
         }
 
@@ -165,16 +174,16 @@
                 collectionHeaderHTML = `<div class="collection-header"><div><h2 class="collection-title">Collection</h2><p class="collection-sub" style="color:var(--spectra)">Battle Spectra &mdash; 5 cards</p></div><span class="collection-count" id="collectionCount">0/105</span></div><div class="collection-grid" id="spectraGrid"></div><div class="collection-header" style="margin-top:2rem;"><div><p class="collection-sub">Base Set &mdash; 100 cards</p></div></div><div class="collection-grid" id="collectionGrid"></div>`;
                 packCoverHTML = `<img src="card_images/pack_cover1.webp" alt="Pack" style="width:100%;height:100%;object-fit:cover;border-radius:6px;">`;
             } else if (setKey === 'mm1993') {
-                rowLabelHTML = `<div class="spectra-row" id="dynaRow" style="display:none;"><div class="spectra-label" style="color:#1a6a1a;"><span class="pip" style="background:#1a6a1a;"></span>X-Men 2099 Dyna&#8209;Etch Insert</div><div class="cards-row" id="slots-dyna"></div></div><div><div class="row-label">Base Set &mdash; 90 cards</div></div>`;
-                collectionHeaderHTML = `<div class="collection-header"><div><h2 class="collection-title">Collection</h2><p class="collection-sub" style="color:#1a6a1a;">Dyna-Etch &mdash; 8 cards</p></div><span class="collection-count" id="collectionCount">0/98</span></div><div class="collection-grid" id="dynaGrid"></div><div class="collection-header" style="margin-top:2rem;"><div><p class="collection-sub">Base Set &mdash; 90 cards</p></div></div><div class="collection-grid" id="collectionGrid"></div>`;
+                rowLabelHTML = `<div class="spectra-row" id="spectraRow" style="display:none;"><div class="spectra-label" style="color:#1a6a1a;"><span class="pip" style="background:#1a6a1a;"></span>X-Men 2099 Dyna&#8209;Etch Insert</div><div class="cards-row" id="slots-spectra"></div></div><div><div class="row-label">Base Set &mdash; 90 cards</div></div>`;
+                collectionHeaderHTML = `<div class="collection-header"><div><h2 class="collection-title">Collection</h2><p class="collection-sub" style="color:#1a6a1a;">Dyna-Etch &mdash; 8 cards</p></div><span class="collection-count" id="collectionCount">0/98</span></div><div class="collection-grid" id="spectraGrid"></div><div class="collection-header" style="margin-top:2rem;"><div><p class="collection-sub">Base Set &mdash; 90 cards</p></div></div><div class="collection-grid" id="collectionGrid"></div>`;
                 packCoverHTML = `<div style="width:100%;height:100%;background:linear-gradient(165deg,#1a0a00,#3a1a00,#1a0a00);display:flex;align-items:center;justify-content:center;color:#c9a84c;font-family:Georgia,serif;font-size:2.4rem;border-radius:6px;">M</div>`;
             } else if (setKey === 'mu1990') {
-                rowLabelHTML = `<div class="spectra-row" id="holoRow" style="display:none;"><div class="spectra-label" style="color:#1a3a8a;"><span class="pip" style="background:#1a3a8a;"></span>Hologram Insert</div><div class="cards-row" id="slots-holo"></div></div><div><div class="row-label">Base Set &mdash; 162 cards</div></div>`;
-                collectionHeaderHTML = `<div class="collection-header"><div><h2 class="collection-title">Collection</h2><p class="collection-sub" style="color:#1a3a8a;">Holograms &mdash; 5 cards</p></div><span class="collection-count" id="collectionCount">0/167</span></div><div class="collection-grid" id="holoGrid"></div><div class="collection-header" style="margin-top:2rem;"><div><p class="collection-sub">Base Set &mdash; 162 cards</p></div></div><div class="collection-grid" id="collectionGrid"></div>`;
+                rowLabelHTML = `<div class="spectra-row" id="spectraRow" style="display:none;"><div class="spectra-label" style="color:#1a3a8a;"><span class="pip" style="background:#1a3a8a;"></span>Hologram Insert</div><div class="cards-row" id="slots-spectra"></div></div><div><div class="row-label">Base Set &mdash; 162 cards</div></div>`;
+                collectionHeaderHTML = `<div class="collection-header"><div><h2 class="collection-title">Collection</h2><p class="collection-sub" style="color:#1a3a8a;">Holograms &mdash; 5 cards</p></div><span class="collection-count" id="collectionCount">0/167</span></div><div class="collection-grid" id="spectraGrid"></div><div class="collection-header" style="margin-top:2rem;"><div><p class="collection-sub">Base Set &mdash; 162 cards</p></div></div><div class="collection-grid" id="collectionGrid"></div>`;
                 packCoverHTML = `<div style="width:100%;height:100%;background:linear-gradient(165deg,#0a0a20,#1a1a4a,#0a0a20);display:flex;align-items:center;justify-content:center;color:#d4382a;font-family:Georgia,serif;font-size:2.4rem;border-radius:6px;">MU</div>`;
             } else if (setKey === 'xmen1992') {
-                rowLabelHTML = `<div class="spectra-row" id="holoRow" style="display:none;"><div class="spectra-label" style="color:#b8860b;"><span class="pip" style="background:#b8860b;"></span>Gold Hologram</div><div class="cards-row" id="slots-holo"></div></div><div><div class="row-label">Base Set &mdash; 100 cards</div></div>`;
-                collectionHeaderHTML = `<div class="collection-header"><div><h2 class="collection-title">Collection</h2><p class="collection-sub" style="color:#b8860b">Gold Holograms &mdash; 5 cards</p></div><span class="collection-count" id="collectionCount">0/105</span></div><div class="collection-grid" id="holoGrid"></div><div class="collection-header" style="margin-top:2rem;"><div><p class="collection-sub">Base Set &mdash; 100 cards</p></div></div><div class="collection-grid" id="collectionGrid"></div>`;
+                rowLabelHTML = `<div class="spectra-row" id="spectraRow" style="display:none;"><div class="spectra-label" style="color:#b8860b;"><span class="pip" style="background:#b8860b;"></span>Gold Hologram</div><div class="cards-row" id="slots-spectra"></div></div><div><div class="row-label">Base Set &mdash; 100 cards</div></div>`;
+                collectionHeaderHTML = `<div class="collection-header"><div><h2 class="collection-title">Collection</h2><p class="collection-sub" style="color:#b8860b">Gold Holograms &mdash; 5 cards</p></div><span class="collection-count" id="collectionCount">0/105</span></div><div class="collection-grid" id="spectraGrid"></div><div class="collection-header" style="margin-top:2rem;"><div><p class="collection-sub">Base Set &mdash; 100 cards</p></div></div><div class="collection-grid" id="collectionGrid"></div>`;
                 packCoverHTML = `<div style="width:100%;height:100%;background:linear-gradient(165deg,#0a0010,#1a0040,#0a0010);display:flex;align-items:center;justify-content:center;font-family:Georgia,serif;font-size:1.5rem;color:#ffcc00;border-radius:6px;">X-MEN</div>`;
             }
 
@@ -226,34 +235,42 @@
             }
 
             const activeSetData = DATA_MAP[setKey];
-            let savedData = JSON.parse(localStorage.getItem(setKey)) || { base: [], spectra: [], dyna: [], holos: [], totalPacks: 0 };
+            let savedData = JSON.parse(localStorage.getItem(setKey)) || { base: [], spectra: [], totalPacks: 0 };
             if (!Array.isArray(savedData.base)) savedData.base = [];
             if (!Array.isArray(savedData.spectra)) savedData.spectra = [];
-            if (!Array.isArray(savedData.dyna)) savedData.dyna = [];
-            if (!Array.isArray(savedData.holos)) savedData.holos = [];
             let sessionPacks = 0;
 
             const getImgPath = (n, side, isInsert = false, variant = '') => {
                 if (setKey === 'gpk1') return `card_images/gpk_series1/${side}_${String(n).padStart(3, '0')}${variant}.jpg`;
                 if (setKey === 'mm1992') return isInsert ? `card_images/marvel_masterpieces_1992/spectra_${side}_${n}.jpg` : `card_images/marvel_masterpieces_1992/${side}_${String(n).padStart(3, '0')}.jpg`;
                 if (setKey === 'mm1993') return isInsert ? `card_images/marvel_masterpieces_1993/dynaetch_${side}_${n}.jpg` : `card_images/marvel_masterpieces_1993/${side}_${String(n).padStart(3, '0')}.jpg`;
-                if (setKey === 'mu1990') return isInsert ? `card_images/marvel_impel_1990/holo_${side}_${n}.jpg` : `card_images/marvel_impel_1990/${side}_${String(n).padStart(3, '0')}.jpg`;
+                
+                // 🌟 UPDATED: Accurate mapping structure for mu1990 front/back assets (.png format + unified back name)
+                if (setKey === 'mu1990') {
+                    return isInsert 
+                        ? (side === 'front' ? `card_images/marvel_impel_1990/mh${n}_hologram_front.png` : `card_images/marvel_impel_1990/mh_hologram_back.png`)
+                        : `card_images/marvel_impel_1990/${side}_${String(n).padStart(3, '0')}.jpg`;
+                }
+                
                 if (setKey === 'xmen1992') return isInsert ? `card_images/xmen_impel_1992/holo_${side}_${n}.jpg` : `card_images/xmen_impel_1992/${side}_${String(n).padStart(3, '0')}.jpg`;
             };
 
             const updateCounters = () => {
                 document.getElementById('packsTotal').textContent = savedData.totalPacks || 0;
                 document.getElementById('packsSession').textContent = sessionPacks;
-                const totalCollected = savedData.base.length + savedData.spectra.length + savedData.dyna.length + savedData.holos.length;
+                const totalCollected = savedData.base.length + savedData.spectra.length;
                 const maxCount = setKey === 'mu1990' ? 167 : (setKey === 'mm1993' ? 98 : (setKey === 'gpk1' ? 82 : 105));
                 document.getElementById('collectionCount').textContent = `${totalCollected} / ${maxCount}`;
             };
 
             const gridBase = document.getElementById('collectionGrid');
-            const gridInsert = document.getElementById('spectraGrid') || document.getElementById('dynaGrid') || document.getElementById('holoGrid');
+            const gridInsert = document.getElementById('spectraGrid');
 
             if (gridBase) {
-                activeSetData.baseCards.forEach(card => {
+                let maxBaseLoopCount = activeSetData.baseCards.length;
+                if (setKey === 'mu1990') maxBaseLoopCount = 162;
+
+                activeSetData.baseCards.slice(0, maxBaseLoopCount).forEach(card => {
                     const slot = document.createElement('div');
                     const matchKey = setKey === 'gpk1' ? `${card.n}${card.v}` : card.n;
                     slot.className = `col-slot ${savedData.base.includes(matchKey) ? 'filled' : 'no-image'}`;
@@ -269,13 +286,12 @@
             }
 
             const insertArr = activeSetData.spectraCards || activeSetData.dynaCards || activeSetData.holoCards || [];
-            const insertKey = setKey === 'mm1992' ? 'spectra' : (setKey === 'mm1993' ? 'dyna' : 'holos');
             if (gridInsert) {
                 insertArr.forEach(card => {
                     const slot = document.createElement('div');
-                    slot.className = `col-slot ${savedData[insertKey].includes(card.n) ? 'filled' : 'no-image'}`;
+                    slot.className = `col-slot ${savedData.spectra.includes(card.n) ? 'filled' : 'no-image'}`;
                     slot.id = `col-insert-${card.n}`;
-                    if (savedData[insertKey].includes(card.n)) {
+                    if (savedData.spectra.includes(card.n)) {
                         slot.innerHTML = `<img src="${getImgPath(card.n, 'front', true)}">`;
                         slot.onclick = () => showLightbox(getImgPath(card.n, 'front', true), getImgPath(card.n, 'back', true));
                     } else {
@@ -291,27 +307,34 @@
                 if (window.openingPackState) return; window.openingPackState = true;
                 const btn = document.getElementById('openBtn'); if (btn) btn.disabled = true;
                 const pack = document.getElementById('pack'); if (pack) pack.classList.add('pack-tearing');
+                const wrapperEl = document.getElementById('packWrapper');
+
+                savedData.totalPacks = (savedData.totalPacks || 0) + 1; sessionPacks++;
+                document.getElementById('packsTotal').textContent = savedData.totalPacks;
+                document.getElementById('packsSession').textContent = sessionPacks;
 
                 setTimeout(() => {
-                    savedData.totalPacks = (savedData.totalPacks || 0) + 1; sessionPacks++;
-                    const sBase = document.getElementById('slots-base'), sInsert = document.getElementById('slots-spectra') || document.getElementById('slots-dyna') || document.getElementById('slots-holo');
-                    const rowIns = document.getElementById('spectraRow') || document.getElementById('dynaRow') || document.getElementById('holoRow');
+                    if (wrapperEl) { wrapperEl.classList.add('opened'); wrapperEl.style.opacity = '0.35'; }
+                    const sBase = document.getElementById('slots-base'), sInsert = document.getElementById('slots-spectra');
+                    const rowIns = document.getElementById('spectraRow');
                     if (sBase) sBase.innerHTML = ''; if (sInsert) sInsert.innerHTML = ''; if (rowIns) rowIns.style.display = 'none';
                     document.getElementById('divider').classList.add('visible');
 
                     let pullRate = setKey === 'mm1993' ? (1/9) : (setKey === 'mm1992' ? 0.25 : (1/12));
                     let hasInsert = setKey !== 'gpk1' && Math.random() < pullRate;
 
+                    let delay = 0; const step = 120;
+
                     if (hasInsert && sInsert && rowIns) {
                         const rInsert = insertArr[Math.floor(Math.random() * insertArr.length)];
-                        if (!savedData[insertKey].includes(rInsert.n)) savedData[insertKey].push(rInsert.n);
+                        if (!savedData.spectra.includes(rInsert.n)) savedData.spectra.push(rInsert.n);
                         rowIns.style.display = 'block';
-                        sInsert.appendChild(createPackCardElement(rInsert, true));
+                        sInsert.appendChild(createPackCardElement(rInsert, true, delay));
+                        delay += step;
                     }
 
                     let pulled = [], targetAmt = (setKey === 'gpk1' || !hasInsert) ? 5 : 4;
                     while (pulled.length < targetAmt) {
-                        // 🌟 BUG FIX: Clamp random selection mapping up to max index 162 for mu1990 to prevent index overflow 404 logs
                         let maxBaseIndex = activeSetData.baseCards.length;
                         if (setKey === 'mu1990') maxBaseIndex = 162;
 
@@ -323,23 +346,33 @@
                         }
                     }
 
-                    pulled.forEach((c, idx) => sBase.appendChild(createPackCardElement(c, false, idx)));
+                    pulled.forEach((c) => {
+                        sBase.appendChild(createPackCardElement(c, false, delay));
+                        delay += step;
+                    });
+
                     localStorage.setItem(setKey, JSON.stringify(savedData));
                     refreshGridSlots();
 
-                    if (pack) pack.classList.remove('pack-tearing');
-                    window.openingPackState = false; if (btn) btn.disabled = false;
-                }, 450);
+                    setTimeout(() => {
+                        if (pack) pack.classList.remove('pack-tearing');
+                        if (wrapperEl) { wrapperEl.classList.remove('opened'); wrapperEl.style.opacity = '1'; }
+                        window.openingPackState = false; if (btn) { btn.disabled = false; btn.textContent = 'Open Another Pack'; }
+                    }, delay + 400);
+
+                    setTimeout(() => { document.getElementById('divider').scrollIntoView({ behavior: 'smooth', block: 'nearest' }); }, 300);
+                }, 460);
             };
 
             if (document.getElementById('openBtn')) document.getElementById('openBtn').onclick = window.openPack;
 
-            function createPackCardElement(card, isInsert, index = 0) {
+            function createPackCardElement(card, isInsert, currentDelay) {
                 const slot = document.createElement('div'); slot.className = 'card-slot';
                 const cardDiv = document.createElement('div'); cardDiv.className = 'card';
+                cardDiv.style.animationDelay = currentDelay + 'ms';
                 cardDiv.innerHTML = `<img src="${getImgPath(card.n, 'front', isInsert, card.v || '')}">`;
                 cardDiv.onclick = () => showLightbox(getImgPath(card.n, 'front', isInsert, card.v || ''), getImgPath(card.n, 'back', isInsert, card.v || ''));
-                setTimeout(() => cardDiv.classList.add('revealed'), index * 100);
+                setTimeout(() => { cardDiv.classList.add('revealed'); }, currentDelay + 20);
                 const hint = document.createElement('div'); hint.className = 'flip-hint'; hint.textContent = 'click to view';
                 slot.appendChild(cardDiv); slot.appendChild(hint); return slot;
             }
@@ -348,17 +381,22 @@
                 savedData.base.forEach(k => {
                     const slot = document.getElementById(`col-base-${k}`);
                     if (slot && slot.classList.contains('no-image')) {
-                        const card = activeSetData.baseCards.find(c => (setKey === 'gpk1' ? `${c.n}${c.v}` : c.n) === k);
-                        slot.className = 'col-slot filled'; slot.innerHTML = `<img src="${getImgPath(card.n, 'front', false, card.v || '')}">`;
-                        slot.onclick = () => showLightbox(getImgPath(card.n, 'front', false, card.v || ''), getImgPath(card.n, 'back', false, card.v || ''));
+                        const card = activeSetData.baseCards.find(c => (setKey === 'gpk1' ? `${c.n}${c.v}` : c.n) == k);
+                        if (card) {
+                            slot.className = 'col-slot filled'; slot.innerHTML = `<img src="${getImgPath(card.n, 'front', false, card.v || '')}">`;
+                            slot.onclick = () => showLightbox(getImgPath(card.n, 'front', false, card.v || ''), getImgPath(card.n, 'back', false, card.v || ''));
+                        }
                     }
                 });
-                savedData[insertKey]?.forEach(num => {
+                const explicitInserts = activeSetData.spectraCards || activeSetData.dynaCards || activeSetData.holoCards || [];
+                savedData.spectra?.forEach(num => {
                     const slot = document.getElementById(`col-insert-${num}`);
                     if (slot && slot.classList.contains('no-image')) {
-                        const card = insertArr.find(c => c.n === num);
-                        slot.className = 'col-slot filled'; slot.innerHTML = `<img src="${getImgPath(num, 'front', true)}">`;
-                        slot.onclick = () => showLightbox(getImgPath(num, 'front', true), getImgPath(num, 'back', true));
+                        const card = explicitInserts.find(c => c.n == num);
+                        if (card) {
+                            slot.className = 'col-slot filled'; slot.innerHTML = `<img src="${getImgPath(card.n, 'front', true)}">`;
+                            slot.onclick = () => showLightbox(getImgPath(card.n, 'front', true), getImgPath(card.n, 'back', true));
+                        }
                     }
                 });
                 updateCounters();
@@ -383,7 +421,7 @@
             trackingProfile.forEach(set => {
                 try {
                     const saved = JSON.parse(localStorage.getItem(set.key)) || {};
-                    const collected = (saved.base || []).length + (saved.spectra || []).length + (saved.dyna || []).length + (saved.holos || []).length;
+                    const collected = (saved.base || []).length + (saved.spectra || []).length;
                     const pct = Math.round((collected / set.total) * 100);
                     document.getElementById(set.barId).style.width = pct + '%';
                     document.getElementById(set.labelId).textContent = `${collected} / ${set.total} collected`;
@@ -393,15 +431,29 @@
 
         document.addEventListener("DOMContentLoaded", () => {
             updateDashboardProgressTracks();
+            
             document.querySelectorAll('.set-card').forEach(card => {
                 card.onclick = () => {
                     const targetKey = card.getAttribute('data-set-key');
-                    navigateToView(targetKey);
+                    navigateToView(targetKey, true);
                 };
             });
+
+            const urlParams = new URLSearchParams(window.location.search);
+            const activeSetQuery = urlParams.get('set');
+            if (activeSetQuery && DATA_MAP[activeSetQuery]) {
+                navigateToView(activeSetQuery, false);
+            } else {
+                navigateToView(null, false);
+            }
         });
 
-        spaBackBtn.onclick = (e) => { e.preventDefault(); navigateToView(null); };
+        window.onpopstate = (event) => {
+            const targetSet = event.state ? event.state.set : null;
+            navigateToView(targetSet, false);
+        };
+
+        spaBackBtn.onclick = (e) => { e.preventDefault(); navigateToView(null, true); };
     </script>
 </body>
 </html>

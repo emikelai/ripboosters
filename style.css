@@ -136,14 +136,15 @@ header h1 em, #header-main-title {
     transition: transform 0.45s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
+/* 🌟 BUG FIX: Restored the slower, classic weight animation curves */
 .pack-tearing {
-    animation: tearOut .45s forwards ease-in-out;
+    animation: tearOut .75s forwards cubic-bezier(0.25, 1, 0.5, 1);
 }
 
 @keyframes tearOut {
-    0% { transform: scale(1) rotate(0deg); opacity: 1; }
-    50% { transform: scale(0.9) translateY(-10px) rotate(-4deg); opacity: 0.5; }
-    100% { transform: scale(0.6) translateY(40px); opacity: 0; }
+    0% { transform: scale(1) rotate(0deg); opacity: 1; filter: blur(0); }
+    40% { transform: scale(0.96) translateY(-8px) rotate(-2deg); opacity: 0.9; }
+    100% { transform: scale(0.7) translateY(40px) rotate(-5deg); opacity: 0; filter: blur(4px); }
 }
 
 .pack-counter {
