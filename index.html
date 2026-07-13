@@ -241,7 +241,12 @@
             let sessionPacks = 0;
 
             const getImgPath = (n, side, isInsert = false, variant = '') => {
-                if (setKey === 'gpk1') return `card_images/gpk_series1/${side}_${String(n).padStart(3, '0')}${variant}.jpg`;
+                // 🌟 UPDATED: Accurate structural fix mapping shared 'ab.jpg' asset paths for all GPK card backs safely
+                if (setKey === 'gpk1') {
+                    return side === 'back' 
+                        ? `card_images/gpk_series1/back_${String(n).padStart(3, '0')}ab.jpg`
+                        : `card_images/gpk_series1/${side}_${String(n).padStart(3, '0')}${variant}.jpg`;
+                }
                 if (setKey === 'mm1992') return isInsert ? `card_images/marvel_masterpieces_1992/spectra_${side}_${n}.jpg` : `card_images/marvel_masterpieces_1992/${side}_${String(n).padStart(3, '0')}.jpg`;
                 if (setKey === 'mm1993') return isInsert ? `card_images/marvel_masterpieces_1993/dynaetch_${side}_${n}.jpg` : `card_images/marvel_masterpieces_1993/${side}_${String(n).padStart(3, '0')}.jpg`;
                 
@@ -332,14 +337,12 @@
                         delay += step;
                     }
 
-                    // Calculate correct base amount based on set and whether an insert dropped
                     let targetAmt = 5; 
                     if (setKey === 'gpk1') {
                         targetAmt = 5;
                     } else if (setKey === 'mu1990') {
                         targetAmt = hasInsert ? 11 : 12;
                     } else {
-                        // mm1992, mm1993, xmen1992 all have 6 cards total
                         targetAmt = hasInsert ? 5 : 6;
                     }
 
