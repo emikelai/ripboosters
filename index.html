@@ -7,7 +7,7 @@
     <title>Rip Boosters</title>
     <link rel="stylesheet" href="style.css">
     <style>
-        /* 🌟 RESPONSIBLY STRUCTURED HEADER SYSTEM */
+        /* RESPONSIBLY STRUCTURED HEADER SYSTEM */
         #global-header {
             display: flex;
             align-items: center;
@@ -33,7 +33,7 @@
             font-weight: 500;
         }
 
-        /* 🌟 NEW PAGE CANVAS TITLE CONTAINER (UNDER HEADER) */
+        /* NEW PAGE CANVAS TITLE CONTAINER (UNDER HEADER) */
         .page-title-container {
             padding: 1.5rem 1.5rem 0.5rem 1.5rem;
             max-width: 1200px;
@@ -78,12 +78,73 @@
         .set-progress-bar { height: 100%; background: var(--gold); border-radius: 2px; transition: width .4s ease; }
         .set-progress-label { font-size: .6rem; color: var(--muted); letter-spacing: .06em; }
 
+        /* NATIVE MODAL POP-UP STYLES */
+        .about-modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(4px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s ease;
+        }
+        .about-modal-overlay.open {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .about-modal-content {
+            background: #fff;
+            padding: 2rem;
+            border-radius: 12px;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+            position: relative;
+            transform: translateY(20px);
+            transition: transform 0.2s ease;
+        }
+        .about-modal-overlay.open .about-modal-content {
+            transform: translateY(0);
+        }
+        .about-modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1.25rem;
+            background: none;
+            border: none;
+            font-size: 1.75rem;
+            cursor: pointer;
+            color: var(--muted);
+            line-height: 1;
+        }
+        .about-modal-close:hover {
+            color: var(--fg);
+        }
+        .about-modal-content h3 {
+            margin-top: 0;
+            font-family: var(--font-serif);
+            font-size: 1.5rem;
+            font-weight: normal;
+            margin-bottom: 1rem;
+        }
+        .about-modal-content p {
+            font-size: 0.95rem;
+            line-height: 1.6;
+            color: #444;
+            margin-bottom: 1rem;
+        }
+
         /* Mobile specific spacing */
         @media (max-width: 480px) {
             #global-header { padding: 1rem; }
             .page-title-container { padding: 1.25rem 1rem 0.25rem 1rem; }
             #global-header-title { font-size: 1.6rem; }
             #header-subtitle { font-size: 0.95rem; }
+            .about-modal-content { padding: 1.5rem; }
         }
     </style>
 </head>
@@ -96,6 +157,7 @@
         </div>
         <div class="header-extra-links">
             <a href="#feedback-form" class="header-btn">Feedback</a>
+            <a href="#" class="header-btn" id="about-nav-btn">About</a>
             <a href="https://buymeacoffee.com/yourlink" target="_blank" class="header-btn coffee">☕ Buy Me a Coffee</a>
         </div>
     </header>
@@ -193,6 +255,17 @@
         <div id="view-app-portal" style="display: none;"></div>
     </main>
 
+    <!-- ABOUT MODAL POP-UP MARKUP WITH ERAS EXPANSION LANGUAGE -->
+    <div class="about-modal-overlay" id="aboutModal">
+        <div class="about-modal-content">
+            <button class="about-modal-close" id="aboutModalClose">&times;</button>
+            <h3>Welcome to Rip Boosters!</h3>
+            <p>Remember the thrill of walking out of the local hobby shop, tearing open a fresh foil pack, and hunting for that elusive insert card?</p>
+            <p><strong>Rip Boosters</strong> is a digital passion project built to recreate that exact pack-opening magic. Whether you are here to trip down memory lane with classic late '80s and '90s nostalgia or you want to rip into high-gloss modern sets, we’ve got you covered. Dive into full collections complete with accurate pack sizes, authentic pull rates, and high-quality card backs.</p>
+            <p style="margin-bottom: 0;">Pick your favorite era, cross your fingers for a big hit, and happy collecting!</p>
+        </div>
+    </div>
+
     <script type="module">
         import { MM1992_DATA } from './data-mm1992.js';
         import { MM1993_DATA } from './data-mm1993.js';
@@ -214,6 +287,22 @@
         const spaBackBtn = document.getElementById('spa-back-btn');
         const headerMainTitle = document.getElementById('header-main-title');
         const headerSubtitle = document.getElementById('header-subtitle');
+
+        /* ABOUT MODAL LOGIC DOM CONNECTIONS */
+        const aboutNavBtn = document.getElementById('about-nav-btn');
+        const aboutModal = document.getElementById('aboutModal');
+        const aboutModalClose = document.getElementById('aboutModalClose');
+
+        if (aboutNavBtn && aboutModal && aboutModalClose) {
+            aboutNavBtn.onclick = (e) => {
+                e.preventDefault();
+                aboutModal.classList.add('open');
+            };
+            aboutModalClose.onclick = () => aboutModal.classList.remove('open');
+            aboutModal.onclick = (e) => {
+                if (e.target === aboutModal) aboutModal.classList.remove('open');
+            };
+        }
 
         function navigateToView(setKey, updateHistory = true) {
             window.openingPackState = false;
@@ -324,7 +413,7 @@
                 
                 if (setKey === 'mu1990') {
                     return isInsert 
-                        ? (side === 'front' ? `card_images/marvel_impel_1990/mh${n}_hologram_front.png` : `card_images/marvel_impel_1990/mh_haram_back.png`)
+                        ? (side === 'front' ? `card_images/marvel_impel_1990/mh${n}_hologram_front.png` : `card_images/marvel_impel_1990/mh_hologram_back.png`)
                         : `card_images/marvel_impel_1990/${side}_${String(n).padStart(3, '0')}.jpg`;
                 }
                 
