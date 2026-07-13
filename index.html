@@ -7,6 +7,61 @@
     <title>Rip Boosters</title>
     <link rel="stylesheet" href="style.css">
     <style>
+        /* 🌟 RESPONSIBLY STRUCTURED HEADER SYSTEM */
+        #global-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid var(--border);
+            background: #fff;
+            min-height: 50px;
+        }
+        .header-left {
+            display: flex;
+            align-items: center;
+        }
+        .header-extra-links {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        .back-link {
+            white-space: nowrap;
+            text-decoration: none;
+            color: inherit;
+            font-weight: 500;
+        }
+
+        /* 🌟 NEW PAGE CANVAS TITLE CONTAINER (UNDER HEADER) */
+        .page-title-container {
+            padding: 1.5rem 1.5rem 0.5rem 1.5rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        #global-header-title {
+            font-size: 2rem;
+            margin: 0;
+            line-height: 1.2;
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+        #header-main-title {
+            font-style: normal;
+        }
+        #header-subtitle {
+            font-size: 1.1rem;
+            font-weight: normal;
+            color: var(--muted);
+        }
+
+        /* APP STYLES */
+        #spa-app-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem 1.5rem;
+        }
         .category-block { margin-bottom: 3rem; }
         .category-label { font-size: 1.1rem; font-family: var(--font-serif); font-weight: normal; color: var(--fg); margin-bottom: .4rem; }
         .category-sub { font-size: .65rem; letter-spacing: .16em; text-transform: uppercase; color: var(--muted); margin-bottom: 1.25rem; display: flex; align-items: center; gap: .75rem; }
@@ -22,18 +77,36 @@
         .set-progress-track { height: 3px; background: var(--border); border-radius: 2px; overflow: hidden; margin-bottom: .35rem; }
         .set-progress-bar { height: 100%; background: var(--gold); border-radius: 2px; transition: width .4s ease; }
         .set-progress-label { font-size: .6rem; color: var(--muted); letter-spacing: .06em; }
+
+        /* Mobile specific spacing */
+        @media (max-width: 480px) {
+            #global-header { padding: 1rem; }
+            .page-title-container { padding: 1.25rem 1rem 0.25rem 1rem; }
+            #global-header-title { font-size: 1.6rem; }
+            #header-subtitle { font-size: 0.95rem; }
+        }
     </style>
 </head>
 
 <body>
+    <!-- HEADER ONLY CARRIES UTILITY NAV TARGETS NOW -->
     <header id="global-header">
-        <a href="#" class="back-link" id="spa-back-btn" style="visibility: hidden;">&larr; All Sets</a>
-        <h1 id="global-header-title"><em id="header-main-title">Rip Boosters</em> <span id="header-subtitle"></span></h1>
+        <div class="header-left">
+            <a href="#" class="back-link" id="spa-back-btn" style="visibility: hidden;">&larr; All Sets</a>
+        </div>
         <div class="header-extra-links">
             <a href="#feedback-form" class="header-btn">Feedback</a>
             <a href="https://buymeacoffee.com/yourlink" target="_blank" class="header-btn coffee">☕ Buy Me a Coffee</a>
         </div>
     </header>
+
+    <!-- MAIN PAGE TITLE MOVED HERE (UNDER HEADER) -->
+    <div class="page-title-container">
+        <h1 id="global-header-title">
+            <span id="header-main-title">Rip Boosters</span>
+            <span id="header-subtitle"></span>
+        </h1>
+    </div>
 
     <main id="spa-app-container">
         <div id="view-dashboard">
@@ -154,7 +227,7 @@
             } else {
                 const metadata = APP_ROUTES[setKey]; if (!metadata) return navigateToView(null, true);
                 viewDashboard.style.display = 'none'; viewAppPortal.style.display = 'block'; spaBackBtn.style.visibility = 'visible';
-                headerMainTitle.textContent = metadata.mainTitle; headerSubtitle.innerHTML = ` &nbsp;&middot;&nbsp; ${metadata.subTitle}`;
+                headerMainTitle.textContent = metadata.mainTitle; headerSubtitle.innerHTML = metadata.subTitle;
                 loadViewLayout(setKey);
                 
                 if (updateHistory) {
@@ -241,7 +314,6 @@
             let sessionPacks = 0;
 
             const getImgPath = (n, side, isInsert = false, variant = '') => {
-                // 🌟 UPDATED: Accurate structural fix mapping shared 'ab.jpg' asset paths for all GPK card backs safely
                 if (setKey === 'gpk1') {
                     return side === 'back' 
                         ? `card_images/gpk_series1/back_${String(n).padStart(3, '0')}ab.jpg`
@@ -252,7 +324,7 @@
                 
                 if (setKey === 'mu1990') {
                     return isInsert 
-                        ? (side === 'front' ? `card_images/marvel_impel_1990/mh${n}_hologram_front.png` : `card_images/marvel_impel_1990/mh_hologram_back.png`)
+                        ? (side === 'front' ? `card_images/marvel_impel_1990/mh${n}_hologram_front.png` : `card_images/marvel_impel_1990/mh_haram_back.png`)
                         : `card_images/marvel_impel_1990/${side}_${String(n).padStart(3, '0')}.jpg`;
                 }
                 
