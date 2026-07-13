@@ -138,9 +138,16 @@
             margin-bottom: 1rem;
         }
 
-        /* Mobile specific spacing */
+        /* Mobile specific spacing and alignment adjustments */
         @media (max-width: 480px) {
-            #global-header { padding: 1rem; }
+            #global-header { 
+                padding: 1rem; 
+            }
+            .header-extra-links {
+                gap: 0.5rem; /* 🌟 Reduced link spacing */
+                justify-content: flex-end; /* 🌟 Right-align the links */
+                flex: 1;
+            }
             .page-title-container { padding: 1.25rem 1rem 0.25rem 1rem; }
             #global-header-title { font-size: 1.6rem; }
             #header-subtitle { font-size: 0.95rem; }
