@@ -144,8 +144,8 @@
                 padding: 1rem; 
             }
             .header-extra-links {
-                gap: 0.5rem; /* 🌟 Reduced link spacing */
-                justify-content: flex-end; /* 🌟 Right-align the links */
+                gap: 0.5rem; 
+                justify-content: flex-end; 
                 flex: 1;
             }
             .page-title-container { padding: 1.25rem 1rem 0.25rem 1rem; }
@@ -430,7 +430,11 @@
             const updateCounters = () => {
                 document.getElementById('packsTotal').textContent = savedData.totalPacks || 0;
                 document.getElementById('packsSession').textContent = sessionPacks;
-                const totalCollected = savedData.base.length + savedData.spectra.length;
+                
+                const uniqueBaseCount = new Set(savedData.base).size;
+                const uniqueSpectraCount = new Set(savedData.spectra).size;
+                const totalCollected = uniqueBaseCount + uniqueSpectraCount;
+                
                 const maxCount = setKey === 'mu1990' ? 167 : (setKey === 'mm1993' ? 98 : (setKey === 'gpk1' ? 82 : 105));
                 document.getElementById('collectionCount').textContent = `${totalCollected} / ${maxCount}`;
             };
@@ -602,7 +606,10 @@
             trackingProfile.forEach(set => {
                 try {
                     const saved = JSON.parse(localStorage.getItem(set.key)) || {};
-                    const collected = (saved.base || []).length + (saved.spectra || []).length;
+                    const uniqueBaseCount = new Set(saved.base || []).size;
+                    const uniqueSpectraCount = new Set(saved.spectra || []).size;
+                    const collected = uniqueBaseCount + uniqueSpectraCount;
+                    
                     const pct = Math.round((collected / set.total) * 100);
                     document.getElementById(set.barId).style.width = pct + '%';
                     document.getElementById(set.labelId).textContent = `${collected} / ${set.total} collected`;
