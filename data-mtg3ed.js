@@ -9,9 +9,16 @@ export const MTG3ED_CONFIG = {
     pools: {
         rare: [],
         uncommon: [],
-        common: []
+        common: [],
+        hits: [] // Isolated pool for Dual Lands + Wheel of Fortune
     }
 };
+
+const MTG_HIT_NAMES = new Set([
+    "Badlands", "Bayou", "Plateau", "Savannah", "Scrubland", 
+    "Taiga", "Tropical Island", "Tundra", "Underground Sea", "Volcanic Island",
+    "Wheel of Fortune"
+]);
 
 /**
  * Hydrates the card pool from the live Scryfall API using paginated traversal loops.
@@ -36,10 +43,13 @@ export async function ensureSetData() {
         n: index + 1,
         id: card.id,
         name: card.name,
-        rarity: card.rarity, // 'rare' | 'uncommon' | 'common' (Basic lands map to common here)
+        rarity: card.rarity, // 'rare' | 'uncommon' | 'common'
         frontImg: card.image_uris?.normal || card.card_faces?.[0]?.image_uris?.normal,
         backImg: 'https://backs.scryfall.io/large/0/a/0aeebaf5-8c7d-4636-9e82-8c27447861f7.jpg' // Standard high-res MTG card back
     }));
+
+    // Populate the Hits pool based on our target names
+    MTG3ED_CONFIG.pools.hits = MTG3ED_CONFIG.baseCards.filter(c => MTG_HIT_NAMES.has(c.name));
 
     // Isolate into rarity buckets for efficient high-speed random array selection
     MTG3ED_CONFIG.pools.rare = MTG3ED_CONFIG.baseCards.filter(c => c.rarity === 'rare' || c.rarity === 'mythic');

@@ -435,7 +435,24 @@
                         <div class="mtg-row-label common"><span class="pip"></span>Common Slots</div>
                         <div class="cards-row" id="slots-common"></div>
                     </div>`;
-                collectionHeaderHTML = `<div class="collection-header"><div><h2 class="collection-title">Collection Checklist</h2><p class="collection-sub">Revised Complete Set Master Log</p></div><span class="collection-count" id="collectionCount">0/306</span></div><div class="collection-grid" id="collectionGrid"></div>`;
+                // Add the dedicated MTG Hits Showcase grid above the standard binders check-list
+                collectionHeaderHTML = `
+                    <div class="collection-header">
+                        <div>
+                            <h2 class="collection-title">Hits Showcase</h2>
+                            <p class="collection-sub" style="color:#b08d24;">Dual Lands & Wheel of Fortune</p>
+                        </div>
+                    </div>
+                    <div class="collection-grid" id="spectraGrid"></div>
+                    
+                    <div class="collection-header" style="margin-top: 2rem;">
+                        <div>
+                            <h2 class="collection-title">Collection Checklist</h2>
+                            <p class="collection-sub">Revised Complete Set Master Log</p>
+                        </div>
+                        <span class="collection-count" id="collectionCount">0/306</span>
+                    </div>
+                    <div class="collection-grid" id="collectionGrid"></div>`;
                 packCoverHTML = `<div style="width:100%;height:100%;background:linear-gradient(165deg,#1f140e,#422b1d,#1f140e);display:flex;align-items:center;justify-content:center;color:#df9845;font-family:Georgia,serif;font-size:2.4rem;border-radius:6px;font-weight:bold;">3ED</div>`;
             }
 
@@ -554,20 +571,38 @@
                 });
             }
 
-            const insertArr = activeSetData.spectraCards || activeSetData.dynaCards || activeSetData.holoCards || [];
-            if (gridInsert && setKey !== 'mtg3ed') {
-                insertArr.forEach(card => {
-                    const slot = document.createElement('div');
-                    slot.className = `col-slot ${savedData.spectra.includes(card.n) ? 'filled' : 'no-image'}`;
-                    slot.id = `col-insert-${card.n}`;
-                    if (savedData.spectra.includes(card.n)) {
-                        slot.innerHTML = `<img src="${getImgPath(card.n, 'front', true)}">`;
-                        slot.onclick = () => showLightbox(getImgPath(card.n, 'front', true), getImgPath(card.n, 'back', true));
-                    } else {
-                        slot.innerHTML = `<span class="col-num">${card.id || 'S'+card.n}</span><span class="col-name">${card.name}</span>`;
-                    }
-                    gridInsert.appendChild(slot);
-                });
+            // Populating MTG Hits Showcase Grid natively
+            if (gridInsert) {
+                if (setKey === 'mtg3ed') {
+                    activeSetData.pools.hits.forEach(card => {
+                        const slot = document.createElement('div');
+                        const isCollected = savedData.base.includes(card.n) || savedData.spectra.includes(card.n);
+                        slot.className = `col-slot ${isCollected ? 'filled' : 'no-image'}`;
+                        slot.id = `col-insert-${card.n}`;
+                        
+                        if (isCollected) {
+                            slot.innerHTML = `<img src="${getImgPath(card.n, 'front', false)}">`;
+                            slot.onclick = () => showLightbox(getImgPath(card.n, 'front', false), getImgPath(card.n, 'back', false));
+                        } else {
+                            slot.innerHTML = `<span class="col-num">HIT</span><span class="col-name">${card.name}</span>`;
+                        }
+                        gridInsert.appendChild(slot);
+                    });
+                } else {
+                    const insertArr = activeSetData.spectraCards || activeSetData.dynaCards || activeSetData.holoCards || [];
+                    insertArr.forEach(card => {
+                        const slot = document.createElement('div');
+                        slot.className = `col-slot ${savedData.spectra.includes(card.n) ? 'filled' : 'no-image'}`;
+                        slot.id = `col-insert-${card.n}`;
+                        if (savedData.spectra.includes(card.n)) {
+                            slot.innerHTML = `<img src="${getImgPath(card.n, 'front', true)}">`;
+                            slot.onclick = () => showLightbox(getImgPath(card.n, 'front', true), getImgPath(card.n, 'back', true));
+                        } else {
+                            slot.innerHTML = `<span class="col-num">${card.id || 'S'+card.n}</span><span class="col-name">${card.name}</span>`;
+                        }
+                        gridInsert.appendChild(slot);
+                    });
+                }
             }
 
             updateCounters();
@@ -621,8 +656,16 @@
 
                         // 1. Choose 1 Rare Card
                         const pickedRare = activeSetData.pools.rare[Math.floor(Math.random() * activeSetData.pools.rare.length)];
-                        if (!savedData.spectra.includes(pickedRare.n)) savedData.spectra.push(pickedRare.n);
-                        sRare.appendChild(createPackCardElement(pickedRare, true, delay));
+                        
+                        // Mutator guard: track hits specifically in 'spectra' tracker array, standard rare in 'base' array
+                        const isHit = activeSetData.pools.hits.some(h => h.n === pickedRare.n);
+                        if (isHit) {
+                            if (!savedData.spectra.includes(pickedRare.n)) savedData.spectra.push(pickedRare.n);
+                        } else {
+                            if (!savedData.base.includes(pickedRare.n)) savedData.base.push(pickedRare.n);
+                        }
+                        
+                        sRare.appendChild(createPackCardElement(pickedRare, isHit, delay));
                         delay += step;
 
                         // 2. Choose 3 Unique Uncommon Cards
@@ -631,11 +674,11 @@
                             const rCard = activeSetData.pools.uncommon[Math.floor(Math.random() * activeSetData.pools.uncommon.length)];
                             if (!pickedUncommons.some(c => c.n === rCard.n)) {
                                 pickedUncommons.push(rCard);
-                                if (!savedData.spectra.includes(rCard.n)) savedData.spectra.push(rCard.n);
+                                if (!savedData.base.includes(rCard.n)) savedData.base.push(rCard.n);
                             }
                         }
                         pickedUncommons.forEach(c => {
-                            sUncommon.appendChild(createPackCardElement(c, true, delay));
+                            sUncommon.appendChild(createPackCardElement(c, false, delay));
                             delay += step;
                         });
 
@@ -734,7 +777,18 @@
                     }
                 });
 
-                if (setKey !== 'mtg3ed') {
+                if (setKey === 'mtg3ed') {
+                    // Update dynamic showcase hits slots as they are pulled
+                    activeSetData.pools.hits.forEach(card => {
+                        const isCollected = savedData.base.includes(card.n) || savedData.spectra.includes(card.n);
+                        const slot = document.getElementById(`col-insert-${card.n}`);
+                        if (slot && isCollected && slot.classList.contains('no-image')) {
+                            slot.className = 'col-slot filled';
+                            slot.innerHTML = `<img src="${getImgPath(card.n, 'front', false)}">`;
+                            slot.onclick = () => showLightbox(getImgPath(card.n, 'front', false), getImgPath(card.n, 'back', false));
+                        }
+                    });
+                } else {
                     const explicitInserts = activeSetData.spectraCards || activeSetData.dynaCards || activeSetData.holoCards || [];
                     savedData.spectra?.forEach(num => {
                         const slot = document.getElementById(`col-insert-${num}`);
