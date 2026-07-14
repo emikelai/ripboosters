@@ -38,7 +38,7 @@ export async function ensureSetData() {
         name: card.name,
         rarity: card.rarity, // 'rare' | 'uncommon' | 'common' (Basic lands map to common here)
         frontImg: card.image_uris?.normal || card.card_faces?.[0]?.image_uris?.normal,
-        backImg: 'https://cards.scryfall.io/large/front/0/a/0aeebaf5-8c7d-4abb-896b-e52d7ee88616.jpg'
+        backImg: 'https://backs.scryfall.io/large/0/a/0aeebaf5-8c7d-4636-9e82-8c27447861f7.jpg' // Standard high-res MTG card back
     }));
 
     // Isolate into rarity buckets for efficient high-speed random array selection
