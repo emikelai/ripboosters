@@ -138,11 +138,11 @@
             margin-bottom: 1rem;
         }
 
-        /* Inline "About" link text rules */
+        /* Inline "About" link text rules (Unbolded) */
         .set-meta-about-trigger {
             text-decoration: none;
             color: var(--gold);
-            font-weight: 600;
+            font-weight: normal;
             cursor: pointer;
         }
         .set-meta-about-trigger:hover {
@@ -244,6 +244,19 @@
                 <div class="category-sub">4 sets available</div>
                 <div class="sets-grid">
                     
+                    <!-- MU1990 -->
+                    <div class="set-card" data-set-key="mu1990">
+                        <div class="set-cover">
+                            <div style="width:100%;height:100%;background:linear-gradient(165deg,#0a0a20,#1a1a4a,#0a0a20);display:flex;align-items:center;justify-content:center;color:#d4382a;font-family:Georgia,serif;font-size:2.4rem;font-weight:700;">MU</div>
+                        </div>
+                        <div class="set-body">
+                            <div class="set-name">Marvel Universe</div>
+                            <div class="set-meta">1990 &middot; lmpel &middot; <span class="set-meta-about-trigger" data-set-key="mu1990">About</span> &middot; 167 cards</div>
+                            <div class="set-progress-track"><div class="set-progress-bar" id="prog-mu1990" style="width:0%;background:#d4382a"></div></div>
+                            <div class="set-progress-label" id="label-mu1990">0 / 167 collected</div>
+                        </div>
+                    </div>
+
                     <!-- MM1992 -->
                     <div class="set-card" data-set-key="mm1992">
                         <div class="set-cover"><img src="card_images/pack_cover1.webp" alt="Marvel Masterpieces 1992 pack"></div>
@@ -252,32 +265,6 @@
                             <div class="set-meta">1992 &middot; SkyBox &middot; <span class="set-meta-about-trigger" data-set-key="mm1992">About</span> &middot; 105 cards</div>
                             <div class="set-progress-track"><div class="set-progress-bar" id="prog-mm1992" style="width:0%"></div></div>
                             <div class="set-progress-label" id="label-mm1992">0 / 105 collected</div>
-                        </div>
-                    </div>
-
-                    <!-- MM1993 -->
-                    <div class="set-card" data-set-key="mm1993">
-                        <div class="set-cover">
-                            <div style="width:100%;height:100%;background:linear-gradient(165deg,#1a0a00,#3a1a00,#1a0a00);display:flex;align-items:center;justify-content:center;font-family:Georgia,serif;font-size:2.8rem;font-weight:700;color:#c9a84c;">M</div>
-                        </div>
-                        <div class="set-body">
-                            <div class="set-name">Marvel Masterpieces</div>
-                            <div class="set-meta">1993 &middot; SkyBox &middot; <span class="set-meta-about-trigger" data-set-key="mm1993">About</span> &middot; 98 cards</div>
-                            <div class="set-progress-track"><div class="set-progress-bar" id="prog-mm1993" style="width:0%"></div></div>
-                            <div class="set-progress-label" id="label-mm1993">0 / 98 collected</div>
-                        </div>
-                    </div>
-
-                    <!-- MU1990 -->
-                    <div class="set-card" data-set-key="mu1990">
-                        <div class="set-cover">
-                            <div style="width:100%;height:100%;background:linear-gradient(165deg,#0a0a20,#1a1a4a,#0a0a20);display:flex;align-items:center;justify-content:center;font-family:Georgia,serif;font-size:2.4rem;font-weight:700;color:#d4382a;">MU</div>
-                        </div>
-                        <div class="set-body">
-                            <div class="set-name">Marvel Universe</div>
-                            <div class="set-meta">1990 &middot; lmpel &middot; <span class="set-meta-about-trigger" data-set-key="mu1990">About</span> &middot; 167 cards</div>
-                            <div class="set-progress-track"><div class="set-progress-bar" id="prog-mu1990" style="width:0%;background:#d4382a"></div></div>
-                            <div class="set-progress-label" id="label-mu1990">0 / 167 collected</div>
                         </div>
                     </div>
 
@@ -291,6 +278,19 @@
                             <div class="set-meta">1992 &middot; Impel &middot; <span class="set-meta-about-trigger" data-set-key="xmen1992">About</span> &middot; 105 cards</div>
                             <div class="set-progress-track"><div class="set-progress-bar" id="prog-xmen1992" style="width:0%;background:#ffcc00"></div></div>
                             <div class="set-progress-label" id="label-xmen1992">0 / 105 collected</div>
+                        </div>
+                    </div>
+
+                    <!-- MM1993 -->
+                    <div class="set-card" data-set-key="mm1993">
+                        <div class="set-cover">
+                            <div style="width:100%;height:100%;background:linear-gradient(165deg,#1a0a00,#3a1a00,#1a0a00);display:flex;align-items:center;justify-content:center;font-family:Georgia,serif;font-size:2.8rem;font-weight:700;color:#c9a84c;">M</div>
+                        </div>
+                        <div class="set-body">
+                            <div class="set-name">Marvel Masterpieces</div>
+                            <div class="set-meta">1993 &middot; SkyBox &middot; <span class="set-meta-about-trigger" data-set-key="mm1993">About</span> &middot; 98 cards</div>
+                            <div class="set-progress-track"><div class="set-progress-bar" id="prog-mm1993" style="width:0%"></div></div>
+                            <div class="set-progress-label" id="label-mm1993">0 / 98 collected</div>
                         </div>
                     </div>
                 </div>
@@ -462,7 +462,9 @@
                 }
 
                 viewDashboard.style.display = 'none'; viewAppPortal.style.display = 'block'; spaBackBtn.style.visibility = 'visible';
-                headerMainTitle.textContent = metadata.mainTitle; headerSubtitle.innerHTML = metadata.subTitle;
+                headerMainTitle.textContent = metadata.mainTitle; 
+                headerSubtitle.innerHTML = `${metadata.subTitle} &middot; <span class="set-meta-about-trigger" data-set-key="${setKey}">About</span>`;
+                
                 loadViewLayout(setKey);
                 
                 if (updateHistory) {
@@ -905,13 +907,15 @@
                 };
             });
 
-            // Handle Dashboard about detail trigger links (stopping propagation)
-            document.querySelectorAll('.set-meta-about-trigger').forEach(trigger => {
-                trigger.onclick = (e) => {
+            // Global delegation event handling for about details (covers dashboard & inner views)
+            document.addEventListener('click', (e) => {
+                const trigger = e.target.closest('.set-meta-about-trigger');
+                if (trigger) {
                     e.stopPropagation();
+                    e.preventDefault();
                     const targetKey = trigger.getAttribute('data-set-key');
                     openSetAboutModal(targetKey);
-                };
+                }
             });
 
             const urlParams = new URLSearchParams(window.location.search);
