@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>X-Men 1992 -- Pack Opener</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="load-header.js"></script>
+    <style>
+        :root {
+            --holo: #ffd700;
+        }
+
+        .card-slot.holo .card {
+            border-color: var(--holo);
+            box-shadow: 0 2px 20px rgba(255, 215, 0, .4);
+        }
+
+        .holo-label {
+            color: #b8860b;
+        }
+
+        .holo-label .pip {
+            background: linear-gradient(135deg, #ffd700, #ff8c00);
+        }
+
+        .holo-label::after {
+            background: linear-gradient(90deg, rgba(255, 215, 0, .3), transparent);
+        }
+    </style>
+</head>
+
+<body>
+
+    <header id="global-header" data-main="The Uncanny X-Men" data-sub="1992 Series I &middot; Impel"></header>
+
+    <div class="pack-section">
+        <div class="pack-row">
+            <div class="pack-wrapper" id="packWrapper">
+                <div class="pack" id="pack">
+                    <div
+                        style="width:100%;height:100%;background:linear-gradient(165deg,#0a0010 0%,#1a0040 50%,#0a0010 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;border-radius:6px;">
+                        <div
+                            style="font-family:Georgia,serif;font-size:1.4rem;font-weight:900;color:#ffcc00;text-shadow:0 0 14px rgba(255,204,0,.7);line-height:1;text-align:center;letter-spacing:.05em">
+                            X-MEN</div>
+                        <div
+                            style="font-size:.48rem;letter-spacing:.2em;text-transform:uppercase;color:#aaa;margin-top:.5rem">
+                            The Uncanny</div>
+                        <div style="font-size:.48rem;letter-spacing:.12em;color:#ffcc00;margin-top:.3rem">1992 &middot;
+                            Impel</div>
+                    </div>
+                </div>
+            </div>
+            <div class="pack-counter">
+                <span class="counter-num" id="packsTotal">0</span>
+                <span class="counter-label">Total Packs<br>Opened</span>
+                <span class="counter-divider"></span>
+                <span class="counter-num counter-num--session" id="packsSession">0</span>
+                <span class="counter-label">This<br>Session</span>
+            </div>
+        </div>
+        <button class="open-btn" id="openBtn" onclick="openPack()">Open Pack</button>
+        <span class="pack-label" id="packLabel"></span>
+        <p class="pack-instructions">Drag across the pack to tear it open,<br>or click the button above.</p>
+    </div>
+
+    <div class="section-divider" id="divider"><span>Cards Pulled</span></div>
+
+    <div class="cards-section" id="cardsSection">
+        <div class="spectra-row" id="holoRow">
+            <div class="spectra-label holo-label"><span class="pip"></span>Gold Hologram &mdash; ~1 per box</div>
+            <div class="cards-row" id="slots-holo"></div>
+
+        </div>
+
+        <div>
+            <div class="row-label">Base Set &mdash; 100 cards &middot; Jim Lee art &middot; click to view</div>
+            <div class="cards-row" id="slots-base"></div>
+
+        </div>
+
+    </div>
+
+    <div class="collection-section">
+        <div class="collection-header">
+            <div>
+                <h2 class="collection-title">Collection</h2>
+                <p class="collection-sub" style="color:#b8860b">Gold Holograms &mdash; 5 cards</p>
+            </div>
+            <span class="collection-count" id="collectionCount">0/105</span>
+        </div>
+        <div class="collection-grid" id="holoGrid"></div>
+        <div class="collection-header" style="margin-top:2rem;">
+            <div>
+                <p class="collection-sub">Base Set &mdash; 100 cards</p>
+            </div>
+        </div>
+        <div class="collection-grid" id="collectionGrid"></div>
+    </div>
+
+    <script src="script-xmen1992.js"></script>
+
+    <div id="lightbox" onclick="closeLightbox()">
+        <button id="lightbox-close" onclick="closeLightbox()">&times;</button>
+        <img id="lightbox-front" src="" alt="">
+        <img id="lightbox-back" src="" alt="">
+    </div>
+
+</body>
+
+</html>
