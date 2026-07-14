@@ -228,7 +228,7 @@
                     <!-- ALPHA -->
                     <div class="set-card" data-set-key="mtglea">
                         <div class="set-cover">
-                            <div style="width:100%;height:100%;background:linear-gradient(165deg,#1f140e,#422b1d,#1f140e);display:flex;align-items:center;justify-content:center;font-family:Georgia,serif;font-size:1.8rem;font-weight:700;color:#df9845;">LEA</div>
+                            <img src="card_images/mtg_sets/mtg_alpha_beta_pack_wrapper.jpg" alt="Alpha Edition pack">
                         </div>
                         <div class="set-body">
                             <div class="set-name">Limited Edition Alpha</div>
@@ -241,7 +241,7 @@
                     <!-- BETA -->
                     <div class="set-card" data-set-key="mtgleb">
                         <div class="set-cover">
-                            <div style="width:100%;height:100%;background:linear-gradient(165deg,#0d1d2c,#1b3248,#0d1d2c);display:flex;align-items:center;justify-content:center;font-family:Georgia,serif;font-size:1.8rem;font-weight:700;color:#a5c0d6;">LEB</div>
+                            <img src="card_images/mtg_sets/mtg_alpha_beta_pack_wrapper.jpg" alt="Beta Edition pack">
                         </div>
                         <div class="set-body">
                             <div class="set-name">Limited Edition Beta</div>
@@ -592,13 +592,14 @@
                     <div class="collection-grid" id="collectionGrid"></div>`;
                 
                 if (setKey === 'mtg3ed') {
-                    // Populate dynamically using your new high-quality Revised pack wrapper
                     packCoverHTML = `<img src="card_images/mtg_sets/mtg_3ed_revised_pack_wrapper.jpg" alt="Pack" style="width:100%;height:100%;object-fit:cover;border-radius:6px;">`;
+                } else if (setKey === 'mtglea' || setKey === 'mtgleb') {
+                    packCoverHTML = `<img src="card_images/mtg_sets/mtg_alpha_beta_pack_wrapper.jpg" alt="Pack" style="width:100%;height:100%;object-fit:cover;border-radius:6px;">`;
                 } else {
-                    // Fallbacks for earlier vintage sets
-                    const textCode = setKey === 'mtglea' ? 'LEA' : (setKey === 'mtgleb' ? 'LEB' : '2ED');
-                    const gradColor = setKey === 'mtglea' ? '#1f140e,#422b1d,#1f140e' : (setKey === 'mtgleb' ? '#0d1d2c,#1b3248,#0d1d2c' : '#1b2d15,#354e2f,#1b2d15');
-                    const labelColor = setKey === 'mtglea' ? '#df9845' : (setKey === 'mtgleb' ? '#a5c0d6' : '#8bc47e');
+                    // Fallback for Unlimited (2ED)
+                    const textCode = '2ED';
+                    const gradColor = '#1b2d15,#354e2f,#1b2d15';
+                    const labelColor = '#8bc47e';
                     packCoverHTML = `<div style="width:100%;height:100%;background:linear-gradient(165deg,${gradColor});display:flex;align-items:center;justify-content:center;color:${labelColor};font-family:Georgia,serif;font-size:2.4rem;border-radius:6px;font-weight:bold;">${textCode}</div>`;
                 }
             }
