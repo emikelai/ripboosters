@@ -1,86 +1,145 @@
-// data-mtg.js
+// Magic: The Gathering Set Configuration & Scryfall API Loader
 
 export const MTG_CONFIGS = {
     mtglea: {
-        setKey: 'mtglea',
-        name: 'Limited Edition Alpha',
-        meta: '1993 · Wizards of the Coast · 15 cards per pack',
+        code: "lea",
+        name: "Limited Edition Alpha",
         maxCount: 295,
-        apiUrl: 'https://api.scryfall.com/cards/search?q=set:lea&unique=cards',
-        baseCards: [], 
+        baseCards: [],
         pools: { rare: [], uncommon: [], common: [], hits: [] }
     },
     mtgleb: {
-        setKey: 'mtgleb',
-        name: 'Limited Edition Beta',
-        meta: '1993 · Wizards of the Coast · 15 cards per pack',
+        code: "leb",
+        name: "Limited Edition Beta",
         maxCount: 302,
-        apiUrl: 'https://api.scryfall.com/cards/search?q=set:leb&unique=cards',
-        baseCards: [], 
+        baseCards: [],
         pools: { rare: [], uncommon: [], common: [], hits: [] }
     },
     mtg2ed: {
-        setKey: 'mtg2ed',
-        name: 'Unlimited Edition',
-        meta: '1993 · Wizards of the Coast · 15 cards per pack',
+        code: "2ed",
+        name: "Unlimited Edition",
         maxCount: 302,
-        apiUrl: 'https://api.scryfall.com/cards/search?q=set:2ed&unique=cards',
-        baseCards: [], 
+        baseCards: [],
+        pools: { rare: [], uncommon: [], common: [], hits: [] }
+    },
+    mtgarn: {
+        code: "arn",
+        name: "Arabian Nights",
+        maxCount: 92,
+        baseCards: [],
+        pools: { rare: [], uncommon: [], common: [], hits: [] }
+    },
+    mtgarn: {
+        code: "arn",
+        name: "Arabian Nights",
+        maxCount: 92,
+        baseCards: [],
+        pools: { rare: [], uncommon: [], common: [], hits: [] }
+    },
+    mtgatq: {
+        code: "atq",
+        name: "Antiquities",
+        maxCount: 100,
+        baseCards: [],
         pools: { rare: [], uncommon: [], common: [], hits: [] }
     },
     mtg3ed: {
-        setKey: 'mtg3ed',
-        name: 'Revised Edition',
-        meta: '1994 · Wizards of the Coast · 15 cards per pack',
+        code: "3ed",
+        name: "Revised Edition",
         maxCount: 306,
-        apiUrl: 'https://api.scryfall.com/cards/search?q=set:3ed&unique=cards',
-        baseCards: [], 
+        baseCards: [],
+        pools: { rare: [], uncommon: [], common: [], hits: [] }
+    },
+    mtgleg: {
+        code: "leg",
+        name: "Legends",
+        maxCount: 310,
+        baseCards: [],
+        pools: { rare: [], uncommon: [], common: [], hits: [] }
+    },
+    mtgdrk: {
+        code: "drk",
+        name: "The Dark",
+        maxCount: 119,
+        baseCards: [],
         pools: { rare: [], uncommon: [], common: [], hits: [] }
     }
 };
 
-const MTG_HIT_NAMES = new Set([
-    "Black Lotus", "Mox Sapphire", "Mox Jet", "Mox Ruby", "Mox Emerald", "Mox Pearl", 
-    "Ancestral Recall", "Time Walk", "Timetwister",
-    "Badlands", "Bayou", "Plateau", "Savannah", "Scrubland", 
-    "Taiga", "Tropical Island", "Tundra", "Underground Sea", "Volcanic Island",
-    "Wheel of Fortune"
-]);
+// High-value historical chase cards to showcase in the "Hits Showcase" grid
+const MTG_CHASE_LIST = [
+    "Black Lotus", "Ancestral Recall", "Time Walk", "Mox Sapphire", "Mox Jet", "Mox Ruby", "Mox Emerald", "Mox Pearl", "Timetwister",
+    "Volcanic Island", "Underground Sea", "Tundra", "Tropical Island", "Badlands", "Taiga", "Savannah", "Scrubland", "Bayou", "Plateau",
+    "Bazaar of Baghdad", "Library of Alexandria", "Juzám Djinn", "Drop of Honey", "Ali from Cairo",
+    "Mishra's Workshop", "Candelabra of Tawnos", "Mishra's Factory", "Strip Mine",
+    "Tabernacle at Pendrell Vale", "Moat", "Chains of Mephistopheles", "Nether Void", "Angus Mackenzie", "Hazezon Tamar",
+    "Ball Lightning", "Blood Moon", "Maze of Ith", "Tormod's Crypt"
+];
 
 /**
- * Hydrates the chosen MTG card pool from Scryfall API with pagination.
+ * Dynamically fetches card data from Scryfall API for a given set
+ * if it hasn't been cached in memory yet.
  */
 export async function ensureSetData(setKey) {
     const config = MTG_CONFIGS[setKey];
-    if (!config) throw new Error(`Unknown MTG set code: ${setKey}`);
-    if (config.baseCards.length > 0) return config;
+    if (!config) throw new Error(`Unknown MTG set key: ${setKey}`);
 
-    let nextUrl = config.apiUrl;
-    const allCards = [];
+    // Return immediately if Scryfall data is already populated
+    if (config.baseCards.length > 0) return;
 
-    while (nextUrl) {
-        const response = await fetch(nextUrl);
-        if (!response.ok) throw new Error(`Failed to fetch from Scryfall for: ${setKey}`);
-        const data = await response.json();
-        
-        allCards.push(...data.data);
-        nextUrl = data.has_more ? data.next_page : null;
+    const setCode = config.code;
+    let url = `https://api.scryfall.com/cards/search?q=set%3A${setCode}&unique=cards`;
+    let allCards = [];
+
+    // Paginate through Scryfall API responses
+    while (url) {
+        const res = await fetch(url);
+        if (!res.ok) throw new Error(`Scryfall API error: ${res.status}`);
+        const data = await res.json();
+        allCards = allCards.concat(data.data);
+        url = data.has_more ? data.next_page : null;
     }
 
-    config.baseCards = allCards.map((card, index) => ({
-        n: index + 1,
-        id: card.id,
-        name: card.name,
-        rarity: card.rarity,
-        frontImg: card.image_uris?.normal || card.card_faces?.[0]?.image_uris?.normal,
-        backImg: 'https://backs.scryfall.io/large/0/a/0aeebaf5-8c7d-4636-9e82-8c27447861f7.jpg'
-    }));
+    // Filter out cards that don't belong in standard packs (e.g., basic lands or tokens)
+    const validCards = allCards.filter(card => {
+        if (card.layout && ["token", "double_faced_token", "emblem"].includes(card.layout)) return false;
+        if (card.type_line && card.type_line.startsWith("Basic Land")) {
+            return false;
+        }
+        return true;
+    });
 
-    // Populate standard rarity & customized hit pools
-    config.pools.hits = config.baseCards.filter(c => MTG_HIT_NAMES.has(c.name));
-    config.pools.rare = config.baseCards.filter(c => c.rarity === 'rare' || c.rarity === 'mythic');
-    config.pools.uncommon = config.baseCards.filter(c => c.rarity === 'uncommon');
-    config.pools.common = config.baseCards.filter(c => c.rarity === 'common' || c.rarity === 'land');
+    // Format Scryfall cards to match the app's standard data structure
+    config.baseCards = validCards.map((card, index) => {
+        const frontImg = card.image_uris?.normal || card.card_faces?.[0]?.image_uris?.normal || "card_images/card_back.jpg";
+        
+        // Dynamic official vector card back URL fallback to bypass local file paths
+        const backImg = "https://svgs.scryfall.io/card-back.svg";
 
-    return config;
+        return {
+            n: card.collector_number || String(index + 1),
+            name: card.name,
+            rarity: card.rarity,
+            frontImg: frontImg,
+            backImg: backImg
+        };
+    });
+
+    // Distribute cards into standard rarity pools for pack-generation simulations
+    config.pools.common = config.baseCards.filter(c => c.rarity === "common");
+    config.pools.uncommon = config.baseCards.filter(c => c.rarity === "uncommon");
+    config.pools.rare = config.baseCards.filter(c => c.rarity === "rare" || c.rarity === "mythic");
+
+    // Fallback: Promote uncommons to the Rare Slot if an early expansion has no rare tags
+    if (config.pools.rare.length === 0) {
+        config.pools.rare = config.pools.uncommon;
+    }
+
+    // Extract designated high-value chase cards into the Hits pool
+    config.pools.hits = config.baseCards.filter(c => 
+        MTG_CHASE_LIST.some(chaseName => c.name.toLowerCase().includes(chaseName.toLowerCase()))
+    );
+
+    // Dynamic scale limit adjusting the checklist bounds to match the actual catalog length fetched
+    config.maxCount = config.baseCards.length;
 }
