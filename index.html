@@ -640,8 +640,14 @@
 
             const getImgPath = (n, side, isInsert = false, variant = '') => {
                 if (isMtg) {
-                    const cardObj = activeSetData.baseCards.find(c => c.n === n);
-                    return side === 'front' ? cardObj.frontImg : cardObj.backImg;
+                    // Normalizing key matches with loose (==) verification to safeguard string keys 
+                    const cardObj = activeSetData.baseCards.find(c => c.n == n);
+                    if (side === 'front') {
+                        return cardObj ? cardObj.frontImg : "card_images/card_back.jpg";
+                    } else {
+                        // Dynamically returns Scryfall's official vector card back artwork URL
+                        return "https://svgs.scryfall.io/card-back.svg";
+                    }
                 }
                 if (setKey === 'gpk1') {
                     return side === 'back' 

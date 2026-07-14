@@ -29,13 +29,6 @@ export const MTG_CONFIGS = {
         baseCards: [],
         pools: { rare: [], uncommon: [], common: [], hits: [] }
     },
-    mtgarn: {
-        code: "arn",
-        name: "Arabian Nights",
-        maxCount: 92,
-        baseCards: [],
-        pools: { rare: [], uncommon: [], common: [], hits: [] }
-    },
     mtgatq: {
         code: "atq",
         name: "Antiquities",
@@ -113,8 +106,8 @@ export async function ensureSetData(setKey) {
     config.baseCards = validCards.map((card, index) => {
         const frontImg = card.image_uris?.normal || card.card_faces?.[0]?.image_uris?.normal || "card_images/card_back.jpg";
         
-        // Dynamic official vector card back URL fallback to bypass local file paths
-        const backImg = "https://svgs.scryfall.io/card-back.svg";
+        // Local source of truth card back asset path
+        const backImg = "card_images/mtg_sets/Magic_the_Gathering_Card_Back.jpg";
 
         return {
             n: card.collector_number || String(index + 1),
