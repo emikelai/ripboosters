@@ -234,6 +234,23 @@ header h1 em, #header-main-title {
 .flip-hint { font-size: .58rem; color: var(--muted); text-transform: uppercase; letter-spacing: .05em; margin-top: .5rem; }
 
 /* Dashboard & Collection Grids */
+.set-cover { 
+    height: 160px; /* Increased height to better accommodate vertical pack wrapper aspect ratios */
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    position: relative; 
+    overflow: hidden; 
+    background: #111; /* Sleek, dark canvas background */
+}
+
+.set-cover img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain; /* Prevents raw pack wrapper cropping completely */
+    padding: 4px 0;
+}
+
 .collection-header { display: flex; justify-content: space-between; align-items: flex-end; padding-bottom: .6rem; border-bottom: 1px solid var(--border); margin-bottom: 1.25rem; }
 .collection-title { font-family: var(--font-serif); font-size: 1.1rem; font-weight: normal; }
 .collection-sub { font-size: .68rem; color: var(--muted); margin-top: .15rem; }
