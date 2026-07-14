@@ -222,8 +222,49 @@
             <!-- MAGIC THE GATHERING SECTION -->
             <div class="category-block">
                 <div class="category-label">Magic: The Gathering</div>
-                <div class="category-sub">1 set available</div>
+                <div class="category-sub">4 sets available</div>
                 <div class="sets-grid">
+                    
+                    <!-- ALPHA -->
+                    <div class="set-card" data-set-key="mtglea">
+                        <div class="set-cover">
+                            <div style="width:100%;height:100%;background:linear-gradient(165deg,#1f140e,#422b1d,#1f140e);display:flex;align-items:center;justify-content:center;font-family:Georgia,serif;font-size:1.8rem;font-weight:700;color:#df9845;">LEA</div>
+                        </div>
+                        <div class="set-body">
+                            <div class="set-name">Limited Edition Alpha</div>
+                            <div class="set-meta">1993 &middot; WotC &middot; <span class="set-meta-about-trigger" data-set-key="mtglea">About</span> &middot; 295 cards</div>
+                            <div class="set-progress-track"><div class="set-progress-bar" id="prog-mtglea" style="width:0%;background:#df9845"></div></div>
+                            <div class="set-progress-label" id="label-mtglea">0 / 295 collected</div>
+                        </div>
+                    </div>
+
+                    <!-- BETA -->
+                    <div class="set-card" data-set-key="mtgleb">
+                        <div class="set-cover">
+                            <div style="width:100%;height:100%;background:linear-gradient(165deg,#0d1d2c,#1b3248,#0d1d2c);display:flex;align-items:center;justify-content:center;font-family:Georgia,serif;font-size:1.8rem;font-weight:700;color:#a5c0d6;">LEB</div>
+                        </div>
+                        <div class="set-body">
+                            <div class="set-name">Limited Edition Beta</div>
+                            <div class="set-meta">1993 &middot; WotC &middot; <span class="set-meta-about-trigger" data-set-key="mtgleb">About</span> &middot; 302 cards</div>
+                            <div class="set-progress-track"><div class="set-progress-bar" id="prog-mtgleb" style="width:0%;background:#a5c0d6"></div></div>
+                            <div class="set-progress-label" id="label-mtgleb">0 / 302 collected</div>
+                        </div>
+                    </div>
+
+                    <!-- UNLIMITED -->
+                    <div class="set-card" data-set-key="mtg2ed">
+                        <div class="set-cover">
+                            <div style="width:100%;height:100%;background:linear-gradient(165deg,#1b2d15,#354e2f,#1b2d15);display:flex;align-items:center;justify-content:center;font-family:Georgia,serif;font-size:1.8rem;font-weight:700;color:#8bc47e;">2ED</div>
+                        </div>
+                        <div class="set-body">
+                            <div class="set-name">Unlimited Edition</div>
+                            <div class="set-meta">1993 &middot; WotC &middot; <span class="set-meta-about-trigger" data-set-key="mtg2ed">About</span> &middot; 302 cards</div>
+                            <div class="set-progress-track"><div class="set-progress-bar" id="prog-mtg2ed" style="width:0%;background:#8bc47e"></div></div>
+                            <div class="set-progress-label" id="label-mtg2ed">0 / 302 collected</div>
+                        </div>
+                    </div>
+
+                    <!-- REVISED -->
                     <div class="set-card" data-set-key="mtg3ed">
                         <div class="set-cover">
                             <div style="width:100%;height:100%;background:linear-gradient(165deg,#1f140e,#422b1d,#1f140e);display:flex;align-items:center;justify-content:center;font-family:Georgia,serif;font-size:1.8rem;font-weight:700;color:#df9845;">3ED</div>
@@ -235,6 +276,7 @@
                             <div class="set-progress-label" id="label-mtg3ed">0 / 306 collected</div>
                         </div>
                     </div>
+
                 </div>
             </div>
 
@@ -347,7 +389,7 @@
         import { MU1990_DATA } from './data-mu1990.js';
         import { XMEN1992_DATA } from './data-xmen1992.js';
         import { GPK1_DATA } from './data-gpk1.js';
-        import { MTG3ED_CONFIG, ensureSetData } from './data-mtg3ed.js';
+        import { MTG_CONFIGS, ensureSetData } from './data-mtg.js';
 
         const DATA_MAP = { 
             mm1992: MM1992_DATA, 
@@ -355,7 +397,10 @@
             mu1990: MU1990_DATA, 
             xmen1992: XMEN1992_DATA, 
             gpk1: GPK1_DATA,
-            mtg3ed: MTG3ED_CONFIG 
+            mtglea: MTG_CONFIGS.mtglea,
+            mtgleb: MTG_CONFIGS.mtgleb,
+            mtg2ed: MTG_CONFIGS.mtg2ed,
+            mtg3ed: MTG_CONFIGS.mtg3ed
         };
         const APP_ROUTES = {
             'mm1992': { mainTitle: 'Marvel Masterpieces', subTitle: '1992 Series I &middot; SkyBox' },
@@ -363,11 +408,26 @@
             'mu1990': { mainTitle: 'Marvel Universe', subTitle: '1990 Series I &middot; Impel' },
             'xmen1992': { mainTitle: 'The Uncanny X-Men', subTitle: '1992 Series I &middot; Impel' },
             'gpk1': { mainTitle: 'Garbage Pail Kids', subTitle: '1985 Series 1 &middot; Topps' },
+            'mtglea': { mainTitle: 'Magic: The Gathering', subTitle: '1993 Limited Edition Alpha &middot; WotC' },
+            'mtgleb': { mainTitle: 'Magic: The Gathering', subTitle: '1993 Limited Edition Beta &middot; WotC' },
+            'mtg2ed': { mainTitle: 'Magic: The Gathering', subTitle: '1993 Unlimited Edition &middot; WotC' },
             'mtg3ed': { mainTitle: 'Magic: The Gathering', subTitle: '1994 Revised Edition &middot; WotC' }
         };
 
         // Static Database for Custom Set Detail Modals
         const SET_ABOUT_BLURBS = {
+            mtglea: {
+                title: "Magic: The Gathering – Limited Edition Alpha (1993)",
+                text: "Released in August 1993, Limited Edition Alpha (LEA) is the historic set that started it all. With a black-bordered print run of just 295 cards, it introduced players to Richard Garfield's revolutionary trading card game. Collectors and enthusiasts rip into these packs chasing the legendary 'Power Nine'—including the mythical Black Lotus—and early, powerful artifacts, alongside lands and original creature printings."
+            },
+            mtgleb: {
+                title: "Magic: The Gathering – Limited Edition Beta (1993)",
+                text: "Released in October 1993, Limited Edition Beta (LEB) followed immediately after Alpha to correct print errors, slightly adjusting card corners and adding missing cards like Volcanic Island and Cop: Black. This black-bordered 302-card set represents the most polished form of the original release, containing the full 'Power Nine' and the complete cycle of ten Dual Lands."
+            },
+            mtg2ed: {
+                title: "Magic: The Gathering – Unlimited Edition (1993)",
+                text: "Released in December 1993, Unlimited Edition (2ED) was the first white-bordered reprint set of Magic: The Gathering. To meet massive consumer demand, Wizards of the Coast printed this 302-card set as a direct replica of Beta. It contains the identical card pool—including the coveted Power Nine and Dual Lands—presented with a clean, white-bordered look."
+            },
             mtg3ed: {
                 title: "Magic: The Gathering – Revised Edition (1994)",
                 text: "Released in April 1994, Revised Edition (3ED) marked a massive growing point for Magic: The Gathering. With the infamous \"Power Nine\" removed to balance gameplay, this 306-card white-bordered core set became the definitive MTG experience for many earlyplayers. Players opened Booster packs hunting for one of the Dual Lands, and get waves of nostalgia when they see (the now very power crept) cards like Force of Nature and Shivan Dragon."
@@ -449,12 +509,13 @@
             } else {
                 const metadata = APP_ROUTES[setKey]; if (!metadata) return navigateToView(null, true);
                 
-                // Block navigation for MTG until Scryfall finishes downloading
-                if (setKey === 'mtg3ed') {
+                // Dynamic verification block covering all MTG releases
+                const isMtg = ['mtglea', 'mtgleb', 'mtg2ed', 'mtg3ed'].includes(setKey);
+                if (isMtg) {
                     headerMainTitle.textContent = "Loading Scryfall...";
                     headerSubtitle.innerHTML = "Gathering card sheets from historical archives...";
                     try {
-                        await ensureSetData();
+                        await ensureSetData(setKey);
                     } catch (e) {
                         alert("Could not load Scryfall API details. Please check your connection.");
                         return navigateToView(null, true);
@@ -475,6 +536,8 @@
 
         function loadViewLayout(setKey) {
             let rowLabelHTML = '', collectionHeaderHTML = '', packCoverHTML = '';
+            const isMtg = ['mtglea', 'mtgleb', 'mtg2ed', 'mtg3ed'].includes(setKey);
+
             if (setKey === 'gpk1') {
                 rowLabelHTML = '<div class="row-label">Series 1 &mdash; 5 stickers per pack &middot; click to view back</div>';
                 collectionHeaderHTML = `<div class="collection-header"><div><h2 class="collection-title">Collection</h2><p class="collection-sub">82 stickers &mdash; 41 pairs</p></div><span class="collection-count" id="collectionCount">0 / 82</span></div><div class="collection-grid" id="collectionGrid"></div>`;
@@ -495,7 +558,8 @@
                 rowLabelHTML = `<div class="spectra-row" id="spectraRow" style="display:none;"><div class="spectra-label" style="color:#b8860b;"><span class="pip"></span>Gold Hologram</div><div class="cards-row" id="slots-spectra"></div></div><div><div class="row-label">Base Set cards</div></div>`;
                 collectionHeaderHTML = `<div class="collection-header"><div><h2 class="collection-title">Collection</h2><p class="collection-sub" style="color:#b8860b">Gold Holograms &mdash; 5 cards</p></div><span class="collection-count" id="collectionCount">0/105</span></div><div class="collection-grid" id="spectraGrid"></div><div class="collection-header" style="margin-top:2rem;"><div><p class="collection-sub">Base Set &mdash; 100 cards</p></div></div><div class="collection-grid" id="collectionGrid"></div>`;
                 packCoverHTML = `<div style="width:100%;height:100%;background:linear-gradient(165deg,#0a0010,#1a0040,#0a0010);display:flex;align-items:center;justify-content:center;font-family:Georgia,serif;font-size:1.5rem;color:#ffcc00;border-radius:6px;">X-MEN</div>`;
-            } else if (setKey === 'mtg3ed') {
+            } else if (isMtg) {
+                const config = DATA_MAP[setKey];
                 rowLabelHTML = `
                     <div class="mtg-row" id="mtgRareRow" style="display:none;">
                         <div class="mtg-row-label rare"><span class="pip"></span>Rare Slot</div>
@@ -513,7 +577,7 @@
                     <div class="collection-header">
                         <div>
                             <h2 class="collection-title">Hits Showcase</h2>
-                            <p class="collection-sub" style="color:#b08d24;">Dual Lands & Wheel of Fortune</p>
+                            <p class="collection-sub" style="color:#b08d24;">Dual Lands & Power Nine</p>
                         </div>
                     </div>
                     <div class="collection-grid" id="spectraGrid"></div>
@@ -521,12 +585,16 @@
                     <div class="collection-header" style="margin-top: 2rem;">
                         <div>
                             <h2 class="collection-title">Collection Checklist</h2>
-                            <p class="collection-sub">Revised Complete Set Master Log</p>
+                            <p class="collection-sub">${config.name} Complete Set Master Log</p>
                         </div>
-                        <span class="collection-count" id="collectionCount">0/306</span>
+                        <span class="collection-count" id="collectionCount">0/${config.maxCount}</span>
                     </div>
                     <div class="collection-grid" id="collectionGrid"></div>`;
-                packCoverHTML = `<div style="width:100%;height:100%;background:linear-gradient(165deg,#1f140e,#422b1d,#1f140e);display:flex;align-items:center;justify-content:center;color:#df9845;font-family:Georgia,serif;font-size:2.4rem;border-radius:6px;font-weight:bold;">3ED</div>`;
+                
+                const textCode = setKey === 'mtglea' ? 'LEA' : (setKey === 'mtgleb' ? 'LEB' : (setKey === 'mtg2ed' ? '2ED' : '3ED'));
+                const gradColor = setKey === 'mtglea' ? '#1f140e,#422b1d,#1f140e' : (setKey === 'mtgleb' ? '#0d1d2c,#1b3248,#0d1d2c' : (setKey === 'mtg2ed' ? '#1b2d15,#354e2f,#1b2d15' : '#1f140e,#422b1d,#1f140e'));
+                const labelColor = setKey === 'mtglea' ? '#df9845' : (setKey === 'mtgleb' ? '#a5c0d6' : (setKey === 'mtg2ed' ? '#8bc47e' : '#df9845'));
+                packCoverHTML = `<div style="width:100%;height:100%;background:linear-gradient(165deg,${gradColor});display:flex;align-items:center;justify-content:center;color:${labelColor};font-family:Georgia,serif;font-size:2.4rem;border-radius:6px;font-weight:bold;">${textCode}</div>`;
             }
 
             viewAppPortal.innerHTML = `
@@ -580,13 +648,15 @@
             }
 
             const activeSetData = DATA_MAP[setKey];
+            const isMtg = ['mtglea', 'mtgleb', 'mtg2ed', 'mtg3ed'].includes(setKey);
+
             let savedData = JSON.parse(localStorage.getItem(setKey)) || { base: [], spectra: [], totalPacks: 0 };
             if (!Array.isArray(savedData.base)) savedData.base = [];
             if (!Array.isArray(savedData.spectra)) savedData.spectra = [];
             let sessionPacks = 0;
 
             const getImgPath = (n, side, isInsert = false, variant = '') => {
-                if (setKey === 'mtg3ed') {
+                if (isMtg) {
                     const cardObj = activeSetData.baseCards.find(c => c.n === n);
                     return side === 'front' ? cardObj.frontImg : cardObj.backImg;
                 }
@@ -624,7 +694,7 @@
                 let maxBaseLoopCount = activeSetData.baseCards.length;
                 if (setKey === 'mu1990') maxBaseLoopCount = 162;
 
-                const loopPool = setKey === 'mtg3ed' ? activeSetData.baseCards : activeSetData.baseCards.slice(0, maxBaseLoopCount);
+                const loopPool = isMtg ? activeSetData.baseCards : activeSetData.baseCards.slice(0, maxBaseLoopCount);
 
                 loopPool.forEach(card => {
                     const slot = document.createElement('div');
@@ -645,7 +715,7 @@
             }
 
             if (gridInsert) {
-                if (setKey === 'mtg3ed') {
+                if (isMtg) {
                     activeSetData.pools.hits.forEach(card => {
                         const slot = document.createElement('div');
                         const isCollected = savedData.base.includes(card.n) || savedData.spectra.includes(card.n);
@@ -718,7 +788,7 @@
 
                     let delay = 0; const step = 80; 
 
-                    if (setKey === 'mtg3ed') {
+                    if (isMtg) {
                         if (rowRare) rowRare.style.display = 'block';
                         if (rowUncommon) rowUncommon.style.display = 'block';
                         if (rowCommon) rowCommon.style.display = 'block';
@@ -841,7 +911,7 @@
                     }
                 });
 
-                if (setKey === 'mtg3ed') {
+                if (isMtg) {
                     activeSetData.pools.hits.forEach(card => {
                         const isCollected = savedData.base.includes(card.n) || savedData.spectra.includes(card.n);
                         const slot = document.getElementById(`col-insert-${card.n}`);
@@ -882,6 +952,9 @@
                 { key: 'mu1990', total: 167, barId: 'prog-mu1990', labelId: 'label-mu1990' },
                 { key: 'gpk1', total: 82, barId: 'prog-gpk1', labelId: 'label-gpk1' },
                 { key: 'xmen1992', total: 105, barId: 'prog-xmen1992', labelId: 'label-xmen1992' },
+                { key: 'mtglea', total: 295, barId: 'prog-mtglea', labelId: 'label-mtglea' },
+                { key: 'mtgleb', total: 302, barId: 'prog-mtgleb', labelId: 'label-mtgleb' },
+                { key: 'mtg2ed', total: 302, barId: 'prog-mtg2ed', labelId: 'label-mtg2ed' },
                 { key: 'mtg3ed', total: 306, barId: 'prog-mtg3ed', labelId: 'label-mtg3ed' }
             ];
             trackingProfile.forEach(set => {
