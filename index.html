@@ -138,6 +138,18 @@
             margin-bottom: 1rem;
         }
 
+        /* Inline "About" link text rules */
+        .set-meta-about-trigger {
+            text-decoration: none;
+            color: var(--gold);
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .set-meta-about-trigger:hover {
+            text-decoration: underline;
+            color: #b09038;
+        }
+
         /* Clean, borderless labels for MTG & Marvel rarity tiers */
         .mtg-row, .spectra-row {
             margin-bottom: 1.5rem;
@@ -218,7 +230,7 @@
                         </div>
                         <div class="set-body">
                             <div class="set-name">Revised Edition</div>
-                            <div class="set-meta">1994 &middot; WotC &middot; 306 cards</div>
+                            <div class="set-meta">1994 &middot; WotC &middot; <span class="set-meta-about-trigger" data-set-key="mtg3ed">About</span> &middot; 306 cards</div>
                             <div class="set-progress-track"><div class="set-progress-bar" id="prog-mtg3ed" style="width:0%;background:#df9845"></div></div>
                             <div class="set-progress-label" id="label-mtg3ed">0 / 306 collected</div>
                         </div>
@@ -237,7 +249,7 @@
                         <div class="set-cover"><img src="card_images/pack_cover1.webp" alt="Marvel Masterpieces 1992 pack"></div>
                         <div class="set-body">
                             <div class="set-name">Marvel Masterpieces</div>
-                            <div class="set-meta">1992 &middot; SkyBox &middot; 105 cards</div>
+                            <div class="set-meta">1992 &middot; SkyBox &middot; <span class="set-meta-about-trigger" data-set-key="mm1992">About</span> &middot; 105 cards</div>
                             <div class="set-progress-track"><div class="set-progress-bar" id="prog-mm1992" style="width:0%"></div></div>
                             <div class="set-progress-label" id="label-mm1992">0 / 105 collected</div>
                         </div>
@@ -250,7 +262,7 @@
                         </div>
                         <div class="set-body">
                             <div class="set-name">Marvel Masterpieces</div>
-                            <div class="set-meta">1993 &middot; SkyBox &middot; 98 cards</div>
+                            <div class="set-meta">1993 &middot; SkyBox &middot; <span class="set-meta-about-trigger" data-set-key="mm1993">About</span> &middot; 98 cards</div>
                             <div class="set-progress-track"><div class="set-progress-bar" id="prog-mm1993" style="width:0%"></div></div>
                             <div class="set-progress-label" id="label-mm1993">0 / 98 collected</div>
                         </div>
@@ -263,7 +275,7 @@
                         </div>
                         <div class="set-body">
                             <div class="set-name">Marvel Universe</div>
-                            <div class="set-meta">1990 &middot; lmpel &middot; 167 cards</div>
+                            <div class="set-meta">1990 &middot; lmpel &middot; <span class="set-meta-about-trigger" data-set-key="mu1990">About</span> &middot; 167 cards</div>
                             <div class="set-progress-track"><div class="set-progress-bar" id="prog-mu1990" style="width:0%;background:#d4382a"></div></div>
                             <div class="set-progress-label" id="label-mu1990">0 / 167 collected</div>
                         </div>
@@ -276,7 +288,7 @@
                         </div>
                         <div class="set-body">
                             <div class="set-name">The Uncanny X-Men</div>
-                            <div class="set-meta">1992 &middot; Impel &middot; 105 cards</div>
+                            <div class="set-meta">1992 &middot; Impel &middot; <span class="set-meta-about-trigger" data-set-key="xmen1992">About</span> &middot; 105 cards</div>
                             <div class="set-progress-track"><div class="set-progress-bar" id="prog-xmen1992" style="width:0%;background:#ffcc00"></div></div>
                             <div class="set-progress-label" id="label-xmen1992">0 / 105 collected</div>
                         </div>
@@ -297,7 +309,7 @@
                         </div>
                         <div class="set-body">
                             <div class="set-name">Garbage Pail Kids</div>
-                            <div class="set-meta">1985 &middot; Topps &middot; 82 stickers</div>
+                            <div class="set-meta">1985 &middot; Topps &middot; <span class="set-meta-about-trigger" data-set-key="gpk1">About</span> &middot; 82 stickers</div>
                             <div class="set-progress-track"><div class="set-progress-bar" id="prog-gpk1" style="width:0%;background:#ff6b00"></div></div>
                             <div class="set-progress-label" id="label-gpk1">0 / 82 collected</div>
                         </div>
@@ -309,6 +321,7 @@
         <div id="view-app-portal" style="display: none;"></div>
     </main>
 
+    <!-- MAIN SITE GLOBAL ABOUT MODAL -->
     <div class="about-modal-overlay" id="aboutModal">
         <div class="about-modal-content">
             <button class="about-modal-close" id="aboutModalClose">&times;</button>
@@ -316,6 +329,15 @@
             <p>Remember the thrill of walking out of the local hobby shop, tearing open a fresh foil pack, and hunting for that elusive insert card?</p>
             <p><strong>Rip Boosters</strong> is a digital passion project built to recreate that exact pack-opening magic. Whether you are here to trip down memory lane with classic late '80s and '90s nostalgia or you want to rip into high-gloss modern sets, we’ve got you covered. Dive into full collections complete with accurate pack sizes, authentic pull rates, and high-quality card backs.</p>
             <p style="margin-bottom: 0;">Pick your favorite era, cross your fingers for a big hit, and happy collecting!</p>
+        </div>
+    </div>
+
+    <!-- SET-SPECIFIC PORTAL DETAILS MODAL -->
+    <div class="about-modal-overlay" id="setAboutModal">
+        <div class="about-modal-content">
+            <button class="about-modal-close" id="setAboutModalClose">&times;</button>
+            <h3 id="setAboutTitle">Set Details</h3>
+            <p id="setAboutText" style="margin-bottom: 0;"></p>
         </div>
     </div>
 
@@ -344,6 +366,34 @@
             'mtg3ed': { mainTitle: 'Magic: The Gathering', subTitle: '1994 Revised Edition &middot; WotC' }
         };
 
+        // Static Database for Custom Set Detail Modals
+        const SET_ABOUT_BLURBS = {
+            mtg3ed: {
+                title: "Magic: The Gathering – Revised Edition (1994)",
+                text: "Released in April 1994, Revised Edition (3ED) marked a massive growing point for Magic: The Gathering. With the infamous \"Power Nine\" removed to balance gameplay, this 306-card white-bordered core set became the definitive MTG experience for many earlyplayers. Players opened Booster packs hunting for one of the Dual Lands, and get waves of nostalgia when they see (the now very power crept) cards like Force of Nature and Shivan Dragon."
+            },
+            mm1992: {
+                title: "Marvel Masterpieces (1992)",
+                text: "Released by SkyBox in 1992, Marvel Masterpieces forever changed the non-sports trading card industry. Every single one of the 100 base cards features fully painted, museum-quality artwork by legendary illustrator Joe Jusko, elevating comic characters to fine art. The ultimate pack-pulling thrill? Finding one of the 5 stunning Battle Spectra-Etch inserts highlighting Marvel's greatest rivalries. This set is arguably the greatest Marvel set to be released."
+            },
+            mm1993: {
+                title: "Marvel Masterpieces (1993)",
+                text: "Following the massive success of the '92 edition, SkyBox returned in 1993 with a new approach: inviting a diverse roster of legendary fantasy and comic artists—including Jim Steranko, Boris Vallejo, and Julie Bell—to paint the Marvel universe. This 90-card base set maintained the premium, high-end feel of its predecessor and introduced an 8-card X-Men 2099 Dyna-Etch insert set that gave fans a foil-stamped glimpse into the future."
+            },
+            mu1990: {
+                title: "Marvel Universe (1990)",
+                text: "The set that started it all. Produced by Impel in 1990, Series I launched the modern Marvel trading card boom. Featuring iconic classic comic art, trivia-filled card backs, and power ratings, this 162-card base set was a playground staple for sharing and trading. The absolute pinnacle of recess bragging rights was pulling one of the 5 elusive holographic chase cards, including the highly coveted Cosmic Spider-Man."
+            },
+            xmen1992: {
+                title: "The Uncanny X-Men (1992)",
+                text: "Drawn entirely by legendary comic artist Jim Lee, Impel’s 1992 X-Men set defined the visual style of Marvel's mutants for an entire generation. Featuring 100 base cards—which famously included a massive 9-card Danger Room puzzle—this set perfectly captures the neon energy of the early '90s X-Men boom. Keep an eye out for the 5 ultra-rare Gold Hologram inserts."
+            },
+            gpk1: {
+                title: "Garbage Pail Kids: Series 1 (1985)",
+                text: "Released by Topps in 1985 as a gross-out parody of the Cabbage Patch Kids craze, Garbage Pail Kids became an instant pop-culture phenomenon (and a target for school bans). The 82-sticker set features 41 uniquely disgusting characters, each printed with an 'A' or 'B' name variation—like the iconic Nasty Nick and Evil Eddie. It's pure, unapologetic 80s nostalgia."
+            }
+        };
+
         const viewDashboard = document.getElementById('view-dashboard');
         const viewAppPortal = document.getElementById('view-app-portal');
         const spaBackBtn = document.getElementById('spa-back-btn');
@@ -354,6 +404,12 @@
         const aboutModal = document.getElementById('aboutModal');
         const aboutModalClose = document.getElementById('aboutModalClose');
 
+        // Dynamic Set Detail Modal Binding Controls
+        const setAboutModal = document.getElementById('setAboutModal');
+        const setAboutModalClose = document.getElementById('setAboutModalClose');
+        const setAboutTitle = document.getElementById('setAboutTitle');
+        const setAboutText = document.getElementById('setAboutText');
+
         if (aboutNavBtn && aboutModal && aboutModalClose) {
             aboutNavBtn.onclick = (e) => {
                 e.preventDefault();
@@ -363,6 +419,22 @@
             aboutModal.onclick = (e) => {
                 if (e.target === aboutModal) aboutModal.classList.remove('open');
             };
+        }
+
+        if (setAboutModalClose && setAboutModal) {
+            setAboutModalClose.onclick = () => setAboutModal.classList.remove('open');
+            setAboutModal.onclick = (e) => {
+                if (e.target === setAboutModal) setAboutModal.classList.remove('open');
+            };
+        }
+
+        function openSetAboutModal(setKey) {
+            const blurb = SET_ABOUT_BLURBS[setKey];
+            if (blurb) {
+                setAboutTitle.textContent = blurb.title;
+                setAboutText.textContent = blurb.text;
+                setAboutModal.classList.add('open');
+            }
         }
 
         async function navigateToView(setKey, updateHistory = true) {
@@ -435,7 +507,6 @@
                         <div class="mtg-row-label common"><span class="pip"></span>Common Slots</div>
                         <div class="cards-row" id="slots-common"></div>
                     </div>`;
-                // Add the dedicated MTG Hits Showcase grid above the standard binders check-list
                 collectionHeaderHTML = `
                     <div class="collection-header">
                         <div>
@@ -571,7 +642,6 @@
                 });
             }
 
-            // Populating MTG Hits Showcase Grid natively
             if (gridInsert) {
                 if (setKey === 'mtg3ed') {
                     activeSetData.pools.hits.forEach(card => {
@@ -623,7 +693,6 @@
                     const sInsert = document.getElementById('slots-spectra');
                     const rowIns = document.getElementById('spectraRow');
                     
-                    // MTG Specific slot targets
                     const sRare = document.getElementById('slots-rare');
                     const sUncommon = document.getElementById('slots-uncommon');
                     const sCommon = document.getElementById('slots-common');
@@ -632,7 +701,6 @@
                     const rowUncommon = document.getElementById('mtgUncommonRow');
                     const rowCommon = document.getElementById('mtgCommonRow');
 
-                    // Reset layouts
                     if (sBase) sBase.innerHTML = ''; 
                     if (sInsert) sInsert.innerHTML = ''; 
                     if (rowIns) rowIns.style.display = 'none';
@@ -648,16 +716,13 @@
 
                     let delay = 0; const step = 80; 
 
-                    // --- MTG REVISED BOOSTER BALANCING WITH EXPLICIT ROW SEPARATIONS ---
                     if (setKey === 'mtg3ed') {
                         if (rowRare) rowRare.style.display = 'block';
                         if (rowUncommon) rowUncommon.style.display = 'block';
                         if (rowCommon) rowCommon.style.display = 'block';
 
-                        // 1. Choose 1 Rare Card
                         const pickedRare = activeSetData.pools.rare[Math.floor(Math.random() * activeSetData.pools.rare.length)];
                         
-                        // Mutator guard: track hits specifically in 'spectra' tracker array, standard rare in 'base' array
                         const isHit = activeSetData.pools.hits.some(h => h.n === pickedRare.n);
                         if (isHit) {
                             if (!savedData.spectra.includes(pickedRare.n)) savedData.spectra.push(pickedRare.n);
@@ -668,7 +733,6 @@
                         sRare.appendChild(createPackCardElement(pickedRare, isHit, delay));
                         delay += step;
 
-                        // 2. Choose 3 Unique Uncommon Cards
                         let pickedUncommons = [];
                         while (pickedUncommons.length < 3) {
                             const rCard = activeSetData.pools.uncommon[Math.floor(Math.random() * activeSetData.pools.uncommon.length)];
@@ -682,7 +746,6 @@
                             delay += step;
                         });
 
-                        // 3. Choose 11 Unique Common Cards
                         let pickedCommons = [];
                         while (pickedCommons.length < 11) {
                             const rCard = activeSetData.pools.common[Math.floor(Math.random() * activeSetData.pools.common.length)];
@@ -697,7 +760,6 @@
                         });
 
                     } else {
-                        // --- LEGACY COLLECTOR PATHWAYS ---
                         let pullRate = setKey === 'mm1993' ? (1/9) : (setKey === 'mm1992' ? 0.25 : (1/12));
                         let hasInsert = setKey !== 'gpk1' && Math.random() < pullRate;
 
@@ -778,7 +840,6 @@
                 });
 
                 if (setKey === 'mtg3ed') {
-                    // Update dynamic showcase hits slots as they are pulled
                     activeSetData.pools.hits.forEach(card => {
                         const isCollected = savedData.base.includes(card.n) || savedData.spectra.includes(card.n);
                         const slot = document.getElementById(`col-insert-${card.n}`);
@@ -836,10 +897,20 @@
         document.addEventListener("DOMContentLoaded", () => {
             updateDashboardProgressTracks();
             
+            // Handle Navigation clicks to view app cards
             document.querySelectorAll('.set-card').forEach(card => {
                 card.onclick = () => {
                     const targetKey = card.getAttribute('data-set-key');
                     navigateToView(targetKey, true);
+                };
+            });
+
+            // Handle Dashboard about detail trigger links (stopping propagation)
+            document.querySelectorAll('.set-meta-about-trigger').forEach(trigger => {
+                trigger.onclick = (e) => {
+                    e.stopPropagation();
+                    const targetKey = trigger.getAttribute('data-set-key');
+                    openSetAboutModal(targetKey);
                 };
             });
 
