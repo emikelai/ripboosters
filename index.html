@@ -112,7 +112,7 @@
 
         .footer-links-row {
             display: flex;
-            gap: 1rem;
+            gap: 1.5rem;
             justify-content: center;
             font-size: 0.8rem;
             margin-top: 0.5rem;
@@ -399,6 +399,31 @@
             <p>Our site contains links to external platforms including Google Forms, Ko-fi, and the Scryfall API. Once you leave our domain, we do not maintain authority over third-party data processing procedures.</p>
         </div>
 
+        <!-- TERMS OF SERVICE & COOKIE POLICY CONTAINER -->
+        <div id="view-terms-of-service" style="display: none; max-width: 800px; margin: 0 auto; line-height: 1.6; font-family: -apple-system, BlinkMacSystemFont, sans-serif; color: #333; padding-bottom: 3rem;">
+            <h2 style="font-size: 2.2rem; margin-bottom: 0.5rem; color: #1a1a1a;">Terms of Service & Cookie Policy</h2>
+            <p style="color: #636366; font-size: 0.9rem; margin-bottom: 2rem;">Last Updated: July 2026</p>
+
+            <p>By accessing or using Rip Boosters, you agree to be bound by these simple Terms of Service. If you do not agree with any part of these terms, please discontinue using the simulator application.</p>
+
+            <h3 style="font-size: 1.4rem; margin-top: 2rem; color: #1a1a1a;">1. Nature of the Simulator Service</h3>
+            <p>Rip Boosters is a completely free, non-commercial trading card pack opening simulator intended purely for nostalgic, entertainment, and educational collection tracking purposes. No real currency is ever traded, transacted, or exchanged on this platform. The card packs opened here do not possess any real-world physical or secondary marketplace asset evaluation.</p>
+
+            <h3 style="font-size: 1.4rem; margin-top: 2rem; color: #1a1a1a;">2. Explicit Cookie Disclosure</h3>
+            <p>We use standard technical identifiers and tracker systems to maintain fundamental service integrity. This section outlines how cookies operate on Rip Boosters:</p>
+            <ul style="padding-left: 1.25rem; margin-bottom: 1rem;">
+                <li><strong>Essential Cookies:</strong> We utilize small text identifiers to record foundational metrics across application loads.</li>
+                <li><strong>Advertising Cookies (Google AdSense):</strong> Google utilizes core vendors to place tracking codes inside your local browser storage cache to customize banner layouts based on historic global search queries.</li>
+                <li><strong>Analytical Interaction Records (Clarity & Cloudflare):</strong> These systems evaluate cursor motion parameters and click heatmaps to prevent backend processing dead-ends.</li>
+            </ul>
+
+            <h3 style="font-size: 1.4rem; margin-top: 2rem; color: #1a1a1a;">3. Acceptable Use Policy</h3>
+            <p>Users agree not to exploit our application framework by deploying automated scrape scripts, database harvesting robots, denial of service attacks, or layout modification parameters that degrade performance metrics for other users on the network host.</p>
+
+            <h3 style="font-size: 1.4rem; margin-top: 2rem; color: #1a1a1a;">4. Disclaimer of Liability</h3>
+            <p>Rip Boosters is provided completely "as is" without hardware guarantees. We accept zero liability for browser cache clearing incidents that reset local card collection tracking progress scores, or external data feed availability disruptions from third-party lookup endpoints like Scryfall.</p>
+        </div>
+
         <div id="view-app-portal" style="display: none;"></div>
     </main>
 
@@ -420,6 +445,7 @@
             <div class="footer-divider"></div>
             <div class="footer-links-row">
                 <a href="#" id="privacy-nav-btn">Privacy Policy</a>
+                <a href="#" id="terms-nav-btn">Terms & Cookies</a>
             </div>
             <p class="footer-copyright">&copy; 2026 Rip Boosters. All rights reserved.</p>
         </div>
@@ -470,6 +496,7 @@
         };
         const APP_ROUTES = {
             'privacy': { mainTitle: 'Privacy Policy', subTitle: 'Legal & Compliance Disclosures' },
+            'terms': { mainTitle: 'Terms & Cookies', subTitle: 'Terms of Service & Cookie Use Agreement' },
             'mm1992': { mainTitle: 'Marvel Masterpieces', subTitle: '1992 Series I &middot; SkyBox' },
             'mm1993': { mainTitle: 'Marvel Masterpieces', subTitle: '1993 Series II &middot; SkyBox' },
             'mu1990': { mainTitle: 'Marvel Universe', subTitle: '1990 Series I &middot; Impel' },
@@ -587,9 +614,11 @@
         async function navigateToView(setKey, updateHistory = true) {
             window.openingPackState = false;
             const viewPrivacy = document.getElementById('view-privacy-policy');
+            const viewTerms = document.getElementById('view-terms-of-service');
 
             if (!setKey) {
                 if (viewPrivacy) viewPrivacy.style.display = 'none';
+                if (viewTerms) viewTerms.style.display = 'none';
                 viewAppPortal.style.display = 'none'; viewAppPortal.innerHTML = ''; viewDashboard.style.display = 'block'; spaBackBtn.style.visibility = 'hidden';
                 headerMainTitle.textContent = "Rip Boosters"; headerSubtitle.innerHTML = ""; updateDashboardProgressTracks();
                 
@@ -600,6 +629,7 @@
                 viewDashboard.style.display = 'none';
                 viewAppPortal.style.display = 'none';
                 viewAppPortal.innerHTML = '';
+                if (viewTerms) viewTerms.style.display = 'none';
                 if (viewPrivacy) viewPrivacy.style.display = 'block';
                 
                 spaBackBtn.style.visibility = 'visible';
@@ -609,8 +639,23 @@
                 if (updateHistory) {
                     history.pushState({ set: 'privacy' }, '', '?set=privacy');
                 }
+            } else if (setKey === 'terms') {
+                viewDashboard.style.display = 'none';
+                viewAppPortal.style.display = 'none';
+                viewAppPortal.innerHTML = '';
+                if (viewPrivacy) viewPrivacy.style.display = 'none';
+                if (viewTerms) viewTerms.style.display = 'block';
+                
+                spaBackBtn.style.visibility = 'visible';
+                headerMainTitle.textContent = APP_ROUTES.terms.mainTitle;
+                headerSubtitle.innerHTML = APP_ROUTES.terms.subTitle;
+                
+                if (updateHistory) {
+                    history.pushState({ set: 'terms' }, '', '?set=terms');
+                }
             } else {
                 if (viewPrivacy) viewPrivacy.style.display = 'none';
+                if (viewTerms) viewTerms.style.display = 'none';
                 const metadata = APP_ROUTES[setKey]; if (!metadata) return navigateToView(null, true);
                 
                 // Dynamic verification block covering all MTG releases
@@ -1117,7 +1162,7 @@
         document.addEventListener("DOMContentLoaded", () => {
             updateDashboardProgressTracks();
 
-            // Privacy Policy routing navigation action click hook
+            // Privacy Policy routing navigation click hook
             const privacyBtn = document.getElementById('privacy-nav-btn');
             if (privacyBtn) {
                 privacyBtn.addEventListener('click', (e) => {
@@ -1125,6 +1170,17 @@
                     navigateToView('privacy', true);
                     if (typeof zaraz !== 'undefined') zaraz.track("privacy_policy_viewed");
                     if (typeof window.clarity === "function") window.clarity("event", "privacy_policy_viewed");
+                });
+            }
+
+            // Terms of Service routing navigation click hook
+            const termsBtn = document.getElementById('terms-nav-btn');
+            if (termsBtn) {
+                termsBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    navigateToView('terms', true);
+                    if (typeof zaraz !== 'undefined') zaraz.track("terms_viewed");
+                    if (typeof window.clarity === "function") window.clarity("event", "terms_viewed");
                 });
             }
 
@@ -1185,6 +1241,8 @@
                 navigateToView(activeSetQuery, false);
             } else if (activeSetQuery === 'privacy') {
                 navigateToView('privacy', false);
+            } else if (activeSetQuery === 'terms') {
+                navigateToView('terms', false);
             } else {
                 navigateToView(null, false);
             }
