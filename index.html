@@ -110,6 +110,22 @@
             text-decoration: underline;
         }
 
+        .footer-links-row {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            font-size: 0.8rem;
+            margin-top: 0.5rem;
+        }
+
+        .footer-links-row a {
+            color: #8e8e93 !important;
+        }
+
+        .footer-links-row a:hover {
+            color: #df9845 !important;
+        }
+
         .footer-divider {
             height: 1px;
             background-color: #2c2c2e;
@@ -120,6 +136,7 @@
             font-size: 0.75rem;
             color: #636366;
             text-align: center;
+            margin-top: 0.25rem;
         }
 
         @media (max-width: 768px) {
@@ -361,6 +378,27 @@
             </div>
         </div>
 
+        <!-- PRIVACY POLICY CONTAINER COMPLYING WITH GOOGLE ADSENSE AND PRIVACY LAWS -->
+        <div id="view-privacy-policy" style="display: none; max-width: 800px; margin: 0 auto; line-height: 1.6; font-family: -apple-system, BlinkMacSystemFont, sans-serif; color: #333; padding-bottom: 3rem;">
+            <h2 style="font-size: 2.2rem; margin-bottom: 0.5rem; color: #1a1a1a;">Privacy Policy</h2>
+            <p style="color: #636366; font-size: 0.9rem; margin-bottom: 2rem;">Last Updated: July 2026</p>
+
+            <p>Welcome to Rip Boosters. Your privacy is critically important to us. This Privacy Policy document outlines the types of personal information that is received and collected by Rip Boosters and how it is used.</p>
+
+            <h3 style="font-size: 1.4rem; margin-top: 2rem; color: #1a1a1a;">1. Google AdSense & Third-Party Advertising</h3>
+            <p>This website uses Google AdSense, a web advertising service provided by Google, Inc. Google uses cookies to serve ads on our site. Google's use of advertising cookies enables it and its partners to serve ads to our users based on their visit to this site and/or other sites on the Internet.</p>
+            <p>Users may opt out of personalized advertising by visiting <a href="https://www.google.com/settings/ads" target="_blank" style="color: #df9845;">Google Ad Settings</a> or by utilizing standard browser tracking opt-out preferences.</p>
+
+            <h3 style="font-size: 1.4rem; margin-top: 2rem; color: #1a1a1a;">2. Web Analytics Tracking</h3>
+            <p>We leverage automated analytics tools including <strong>Cloudflare Web Analytics/Zaraz</strong> and <strong>Microsoft Clarity</strong> to analyze user movement and optimize site layout experiences. These services collect network metrics, timing indicators, mouse movements, scrolling interactions, and baseline click patterns. This data is entirely anonymized and is used solely to spot client-side application performance issues or evaluate trading card pack simulation popularity trends.</p>
+
+            <h3 style="font-size: 1.4rem; margin-top: 2rem; color: #1a1a1a;">3. Local Storage Architecture</h3>
+            <p>Rip Boosters saves your simulation collection milestone data (such as card pull records, counts, and completed binder checklists) directly within your browser's local storage database (LocalStorage). This data remains isolated entirely to your local device hardware and is never synchronized to backend system servers managed by us.</p>
+
+            <h3 style="font-size: 1.4rem; margin-top: 2rem; color: #1a1a1a;">4. External Links</h3>
+            <p>Our site contains links to external platforms including Google Forms, Ko-fi, and the Scryfall API. Once you leave our domain, we do not maintain authority over third-party data processing procedures.</p>
+        </div>
+
         <div id="view-app-portal" style="display: none;"></div>
     </main>
 
@@ -380,6 +418,9 @@
                 owners (SkyBox, Impel, Topps, and Marvel) and are used strictly for non-commercial, nostalgic/educational simulation purposes.
             </p>
             <div class="footer-divider"></div>
+            <div class="footer-links-row">
+                <a href="#" id="privacy-nav-btn">Privacy Policy</a>
+            </div>
             <p class="footer-copyright">&copy; 2026 Rip Boosters. All rights reserved.</p>
         </div>
     </footer>
@@ -428,6 +469,7 @@
             mtgdrk: MTG_CONFIGS.mtgdrk
         };
         const APP_ROUTES = {
+            'privacy': { mainTitle: 'Privacy Policy', subTitle: 'Legal & Compliance Disclosures' },
             'mm1992': { mainTitle: 'Marvel Masterpieces', subTitle: '1992 Series I &middot; SkyBox' },
             'mm1993': { mainTitle: 'Marvel Masterpieces', subTitle: '1993 Series II &middot; SkyBox' },
             'mu1990': { mainTitle: 'Marvel Universe', subTitle: '1990 Series I &middot; Impel' },
@@ -544,14 +586,31 @@
 
         async function navigateToView(setKey, updateHistory = true) {
             window.openingPackState = false;
+            const viewPrivacy = document.getElementById('view-privacy-policy');
+
             if (!setKey) {
+                if (viewPrivacy) viewPrivacy.style.display = 'none';
                 viewAppPortal.style.display = 'none'; viewAppPortal.innerHTML = ''; viewDashboard.style.display = 'block'; spaBackBtn.style.visibility = 'hidden';
                 headerMainTitle.textContent = "Rip Boosters"; headerSubtitle.innerHTML = ""; updateDashboardProgressTracks();
                 
                 if (updateHistory) {
                     history.pushState({ set: null }, '', window.location.pathname);
                 }
+            } else if (setKey === 'privacy') {
+                viewDashboard.style.display = 'none';
+                viewAppPortal.style.display = 'none';
+                viewAppPortal.innerHTML = '';
+                if (viewPrivacy) viewPrivacy.style.display = 'block';
+                
+                spaBackBtn.style.visibility = 'visible';
+                headerMainTitle.textContent = APP_ROUTES.privacy.mainTitle;
+                headerSubtitle.innerHTML = APP_ROUTES.privacy.subTitle;
+                
+                if (updateHistory) {
+                    history.pushState({ set: 'privacy' }, '', '?set=privacy');
+                }
             } else {
+                if (viewPrivacy) viewPrivacy.style.display = 'none';
                 const metadata = APP_ROUTES[setKey]; if (!metadata) return navigateToView(null, true);
                 
                 // Dynamic verification block covering all MTG releases
@@ -619,7 +678,6 @@
                         <div class="cards-row" id="slots-common"></div>
                     </div>`;
 
-                // Handle Hit subtitle strings conditionally
                 let showcaseSubText = "";
                 const isAbu = ['mtglea', 'mtgleb', 'mtg2ed'].includes(setKey);
                 
@@ -629,7 +687,6 @@
                     showcaseSubText = "Dual Lands & Wheel of Fortune";
                 }
 
-                // Conditionally render the collection-sub paragraph element only if text exists
                 const subMarkup = showcaseSubText 
                     ? `<p class="collection-sub" style="color:#b08d24;">${showcaseSubText}</p>` 
                     : ``;
@@ -835,12 +892,10 @@
                 document.getElementById('packsTotal').textContent = savedData.totalPacks;
                 document.getElementById('packsSession').textContent = sessionPacks;
 
-                // Fire Cloudflare Zaraz Custom Event Tracking
                 if (typeof zaraz !== 'undefined') {
                     zaraz.track("pack_opened", { set: setKey });
                 }
 
-                // Fire Microsoft Clarity Custom Event Tracking
                 if (typeof window.clarity === "function") {
                     window.clarity("event", "pack_opened", { set: setKey });
                 }
@@ -1062,6 +1117,17 @@
         document.addEventListener("DOMContentLoaded", () => {
             updateDashboardProgressTracks();
 
+            // Privacy Policy routing navigation action click hook
+            const privacyBtn = document.getElementById('privacy-nav-btn');
+            if (privacyBtn) {
+                privacyBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    navigateToView('privacy', true);
+                    if (typeof zaraz !== 'undefined') zaraz.track("privacy_policy_viewed");
+                    if (typeof window.clarity === "function") window.clarity("event", "privacy_policy_viewed");
+                });
+            }
+
             // Track header utility button clicks with Zaraz & Clarity
             const feedbackBtn = document.getElementById('nav-feedback-btn');
             if (feedbackBtn) {
@@ -1079,6 +1145,7 @@
                 });
             }
 
+            const aboutNavBtn = document.getElementById('about-nav-btn');
             if (aboutNavBtn) {
                 aboutNavBtn.addEventListener('click', () => {
                     if (typeof zaraz !== 'undefined') zaraz.track("about_clicked");
@@ -1103,7 +1170,6 @@
                     const targetKey = trigger.getAttribute('data-set-key');
                     openSetAboutModal(targetKey);
                     
-                    // Track set-specific modal launches (e.g., info tracking per key)
                     if (typeof zaraz !== 'undefined') {
                         zaraz.track("set_info_viewed", { set: targetKey });
                     }
@@ -1117,6 +1183,8 @@
             const activeSetQuery = urlParams.get('set');
             if (activeSetQuery && DATA_MAP[activeSetQuery]) {
                 navigateToView(activeSetQuery, false);
+            } else if (activeSetQuery === 'privacy') {
+                navigateToView('privacy', false);
             } else {
                 navigateToView(null, false);
             }
