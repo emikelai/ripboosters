@@ -116,6 +116,7 @@
             justify-content: center;
             font-size: 0.8rem;
             margin-top: 0.5rem;
+            flex-wrap: wrap;
         }
 
         .footer-links-row a {
@@ -424,6 +425,28 @@
             <p>Rip Boosters is provided completely "as is" without hardware guarantees. We accept zero liability for browser cache clearing incidents that reset local card collection tracking progress scores, or external data feed availability disruptions from third-party lookup endpoints like Scryfall.</p>
         </div>
 
+        <!-- DEDICATED HELP AND CONTACT US CONTAINER -->
+        <div id="view-contact-us" style="display: none; max-width: 800px; margin: 0 auto; line-height: 1.6; font-family: -apple-system, BlinkMacSystemFont, sans-serif; color: #333; padding-bottom: 3rem;">
+            <h2 style="font-size: 2.2rem; margin-bottom: 0.5rem; color: #1a1a1a;">Contact Us</h2>
+            <p style="color: #636366; font-size: 0.9rem; margin-bottom: 2rem;">Last Updated: July 2026</p>
+
+            <p>Welcome to the Rip Boosters support and assistance directory. We value user feedback and endeavor to maintain a completely secure, functional nostalgic card pack simulation tool. If you encounter missing card assets, collection counting performance bugs, or have inquiries regarding copyright settings, please interact with us through our primary web communication channels:</p>
+            
+            <ul style="padding-left: 1.25rem; margin-bottom: 1.5rem; list-style-type: none;">
+                <li style="margin-bottom: 1rem;">
+                    <strong>Technical Inquiries & Feature Requests:</strong> 
+                    Please log all site bug reports, tracking layout corrections, or missing card database errors through our secure <a href="https://forms.gle/LGtRVJ5uTHjnBgMV6" target="_blank" style="color: #df9845;">Google Forms Feedback Channel</a>.
+                </li>
+                <li style="margin-bottom: 1rem;">
+                    <strong>Creator Support & Community Outreach:</strong> 
+                    For project update logs, feature announcements, or general coordination inquiries, check out our digital space on our official <a href="https://ko-fi.com/ripboosters" target="_blank" style="color: #df9845;">Ko-fi Support Page</a>.
+                </li>
+            </ul>
+
+            <h3 style="font-size: 1.4rem; margin-top: 2rem; color: #1a1a1a;">Response Time Expectations</h3>
+            <p>Rip Boosters is maintained and managed entirely as a non-commercial digital hobby project. While we check form submittals and tracking dashboard logs regularly, please allow a couple of days for review and integration of data changes. We deeply appreciate your support and help in making this project better!</p>
+        </div>
+
         <div id="view-app-portal" style="display: none;"></div>
     </main>
 
@@ -446,6 +469,7 @@
             <div class="footer-links-row">
                 <a href="#" id="privacy-nav-btn">Privacy Policy</a>
                 <a href="#" id="terms-nav-btn">Terms & Cookies</a>
+                <a href="#" id="contact-nav-btn">Contact Us</a>
             </div>
             <p class="footer-copyright">&copy; 2026 Rip Boosters. All rights reserved.</p>
         </div>
@@ -497,6 +521,7 @@
         const APP_ROUTES = {
             'privacy': { mainTitle: 'Privacy Policy', subTitle: 'Legal & Compliance Disclosures' },
             'terms': { mainTitle: 'Terms & Cookies', subTitle: 'Terms of Service & Cookie Use Agreement' },
+            'contact': { mainTitle: 'Contact Us', subTitle: 'Help, Feedback & Support Channels' },
             'mm1992': { mainTitle: 'Marvel Masterpieces', subTitle: '1992 Series I &middot; SkyBox' },
             'mm1993': { mainTitle: 'Marvel Masterpieces', subTitle: '1993 Series II &middot; SkyBox' },
             'mu1990': { mainTitle: 'Marvel Universe', subTitle: '1990 Series I &middot; Impel' },
@@ -615,10 +640,12 @@
             window.openingPackState = false;
             const viewPrivacy = document.getElementById('view-privacy-policy');
             const viewTerms = document.getElementById('view-terms-of-service');
+            const viewContact = document.getElementById('view-contact-us');
 
             if (!setKey) {
                 if (viewPrivacy) viewPrivacy.style.display = 'none';
                 if (viewTerms) viewTerms.style.display = 'none';
+                if (viewContact) viewContact.style.display = 'none';
                 viewAppPortal.style.display = 'none'; viewAppPortal.innerHTML = ''; viewDashboard.style.display = 'block'; spaBackBtn.style.visibility = 'hidden';
                 headerMainTitle.textContent = "Rip Boosters"; headerSubtitle.innerHTML = ""; updateDashboardProgressTracks();
                 
@@ -630,6 +657,7 @@
                 viewAppPortal.style.display = 'none';
                 viewAppPortal.innerHTML = '';
                 if (viewTerms) viewTerms.style.display = 'none';
+                if (viewContact) viewContact.style.display = 'none';
                 if (viewPrivacy) viewPrivacy.style.display = 'block';
                 
                 spaBackBtn.style.visibility = 'visible';
@@ -644,6 +672,7 @@
                 viewAppPortal.style.display = 'none';
                 viewAppPortal.innerHTML = '';
                 if (viewPrivacy) viewPrivacy.style.display = 'none';
+                if (viewContact) viewContact.style.display = 'none';
                 if (viewTerms) viewTerms.style.display = 'block';
                 
                 spaBackBtn.style.visibility = 'visible';
@@ -653,9 +682,25 @@
                 if (updateHistory) {
                     history.pushState({ set: 'terms' }, '', '?set=terms');
                 }
+            } else if (setKey === 'contact') {
+                viewDashboard.style.display = 'none';
+                viewAppPortal.style.display = 'none';
+                viewAppPortal.innerHTML = '';
+                if (viewPrivacy) viewPrivacy.style.display = 'none';
+                if (viewTerms) viewTerms.style.display = 'none';
+                if (viewContact) viewContact.style.display = 'block';
+                
+                spaBackBtn.style.visibility = 'visible';
+                headerMainTitle.textContent = APP_ROUTES.contact.mainTitle;
+                headerSubtitle.innerHTML = APP_ROUTES.contact.subTitle;
+                
+                if (updateHistory) {
+                    history.pushState({ set: 'contact' }, '', '?set=contact');
+                }
             } else {
                 if (viewPrivacy) viewPrivacy.style.display = 'none';
                 if (viewTerms) viewTerms.style.display = 'none';
+                if (viewContact) viewContact.style.display = 'none';
                 const metadata = APP_ROUTES[setKey]; if (!metadata) return navigateToView(null, true);
                 
                 // Dynamic verification block covering all MTG releases
@@ -1184,6 +1229,17 @@
                 });
             }
 
+            // Contact Us routing navigation click hook
+            const contactBtn = document.getElementById('contact-nav-btn');
+            if (contactBtn) {
+                contactBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    navigateToView('contact', true);
+                    if (typeof zaraz !== 'undefined') zaraz.track("contact_viewed");
+                    if (typeof window.clarity === "function") window.clarity("event", "contact_viewed");
+                });
+            }
+
             // Track header utility button clicks with Zaraz & Clarity
             const feedbackBtn = document.getElementById('nav-feedback-btn');
             if (feedbackBtn) {
@@ -1243,6 +1299,8 @@
                 navigateToView('privacy', false);
             } else if (activeSetQuery === 'terms') {
                 navigateToView('terms', false);
+            } else if (activeSetQuery === 'contact') {
+                navigateToView('contact', false);
             } else {
                 navigateToView(null, false);
             }
