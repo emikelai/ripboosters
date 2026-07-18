@@ -4,7 +4,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rip Boosters</title>
+    
+    <!-- DYNAMIC SEO PAGE TITLE -->
+    <title id="seo-title">Rip Boosters - Trading Card Pack Opening Simulator</title>
+    
+    <!-- DYNAMIC SEO META TAGS -->
+    <meta id="seo-description" name="description" content="Open free nostalgic trading card booster packs instantly. Revisit retro card sets from Magic: The Gathering, Marvel Masterpieces, Marvel Universe, and Garbage Pail Kids with authentic pull rates.">
+    <meta name="keywords" content="booster pack simulator, retro trading cards, pack opener, mtg alpha simulator, marvel masterpieces 1992, garbage pail kids online, rip packs">
 
     <!-- GOOGLE ADSENSE CODE -->
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4033699653937150"
@@ -519,22 +525,22 @@
             mtgdrk: MTG_CONFIGS.mtgdrk
         };
         const APP_ROUTES = {
-            'privacy': { mainTitle: 'Privacy Policy', subTitle: 'Legal & Compliance Disclosures' },
-            'terms': { mainTitle: 'Terms & Cookies', subTitle: 'Terms of Service & Cookie Use Agreement' },
-            'contact': { mainTitle: 'Contact Us', subTitle: 'Help, Feedback & Support Channels' },
-            'mm1992': { mainTitle: 'Marvel Masterpieces', subTitle: '1992 Series I &middot; SkyBox' },
-            'mm1993': { mainTitle: 'Marvel Masterpieces', subTitle: '1993 Series II &middot; SkyBox' },
-            'mu1990': { mainTitle: 'Marvel Universe', subTitle: '1990 Series I &middot; Impel' },
-            'xmen1992': { mainTitle: 'The Uncanny X-Men', subTitle: '1992 Series I &middot; Impel' },
-            'gpk1': { mainTitle: 'Garbage Pail Kids', subTitle: '1985 Series 1 &middot; Topps' },
-            'mtglea': { mainTitle: 'Magic: The Gathering', subTitle: '1993 Limited Edition Alpha &middot; WotC' },
-            'mtgleb': { mainTitle: 'Magic: The Gathering', subTitle: '1993 Limited Edition Beta &middot; WotC' },
-            'mtg2ed': { mainTitle: 'Magic: The Gathering', subTitle: '1993 Unlimited Edition &middot; WotC' },
-            'mtgarn': { mainTitle: 'Magic: The Gathering', subTitle: '1993 Arabian Nights &middot; WotC' },
-            'mtgatq': { mainTitle: 'Magic: The Gathering', subTitle: '1994 Antiquities &middot; WotC' },
-            'mtg3ed': { mainTitle: 'Magic: The Gathering', subTitle: '1994 Revised Edition &middot; WotC' },
-            'mtgleg': { mainTitle: 'Magic: The Gathering', subTitle: '1994 Legends &middot; WotC' },
-            'mtgdrk': { mainTitle: 'Magic: The Gathering', subTitle: '1994 The Dark &middot; WotC' }
+            'privacy': { mainTitle: 'Privacy Policy', subTitle: 'Legal & Compliance Disclosures', seoTitle: 'Privacy Policy - Rip Boosters', seoDesc: 'Privacy policy and data tracking rules for the Rip Boosters non-commercial simulation application.' },
+            'terms': { mainTitle: 'Terms & Cookies', subTitle: 'Terms of Service & Cookie Use Agreement', seoTitle: 'Terms of Service & Cookie Policy - Rip Boosters', seoDesc: 'User agreement, acceptable use rules, and cookie tracking details for Rip Boosters.' },
+            'contact': { mainTitle: 'Contact Us', subTitle: 'Help, Feedback & Support Channels', seoTitle: 'Contact Us & Technical Support - Rip Boosters', seoDesc: 'Get in touch to submit bug updates, request cards, or offer creator feedback for Rip Boosters.' },
+            'mm1992': { mainTitle: 'Marvel Masterpieces', subTitle: '1992 Series I &middot; SkyBox', seoTitle: '1992 Marvel Masterpieces Pack Simulator - Rip Boosters', seoDesc: 'Open digital 1992 Marvel Masterpieces booster packs. Collect all 100 cards painted by Joe Jusko and chase Battle Spectra-Etch inserts.' },
+            'mm1993': { mainTitle: 'Marvel Masterpieces', subTitle: '1993 Series II &middot; SkyBox', seoTitle: '1993 Marvel Masterpieces Pack Simulator - Rip Boosters', seoDesc: 'Open 1993 Marvel Masterpieces packs. Hunt for rare X-Men 2099 Dyna-Etch cards and gather full artwork prints.' },
+            'mu1990': { mainTitle: 'Marvel Universe', subTitle: '1990 Series I &middot; Impel', seoTitle: '1990 Marvel Universe Series 1 Pack Simulator - Rip Boosters', seoDesc: 'Rip retro 1990 Marvel Universe booster wrappers online. Relive classic Impel cards and pull ultra-rare holograms.' },
+            'xmen1992': { mainTitle: 'The Uncanny X-Men', subTitle: '1992 Series I &middot; Impel', seoTitle: '1992 Uncanny X-Men Trading Card Simulator - Rip Boosters', seoDesc: 'Open 1992 X-Men packs drawn entirely by Jim Lee. Assemble the full base list and catch Gold Hologram chase cards.' },
+            'gpk1': { mainTitle: 'Garbage Pail Kids', subTitle: '1985 Series 1 &middot; Topps', seoTitle: '1985 Garbage Pail Kids Series 1 Simulator - Rip Boosters', seoDesc: 'Unbox original 1985 Series 1 Garbage Pail Kids stickers. Revisit classic gross parody card sets completely free.' },
+            'mtglea': { mainTitle: 'Magic: The Gathering', subTitle: '1993 Limited Edition Alpha &middot; WotC', seoTitle: 'MTG Limited Edition Alpha Booster Simulator - Rip Boosters', seoDesc: 'Simulate opening historic 1993 MTG Alpha booster packs. Chase the Power Nine, Black Lotus, and original white-bordered rares.' },
+            'mtgleb': { mainTitle: 'Magic: The Gathering', subTitle: '1993 Limited Edition Beta &middot; WotC', seoTitle: 'MTG Limited Edition Beta Booster Simulator - Rip Boosters', seoDesc: 'Rip 1993 MTG Beta packs. Trace rare Dual Lands and historical original cards using accurate pull probabilities.' },
+            'mtg2ed': { mainTitle: 'Magic: The Gathering', subTitle: '1993 Unlimited Edition &middot; WotC', seoTitle: 'MTG Unlimited Edition Booster Simulator - Rip Boosters', seoDesc: 'Open Unlimited Edition white-bordered MTG booster packs from 1993.' },
+            'mtgarn': { mainTitle: 'Magic: The Gathering', subTitle: '1993 Arabian Nights &middot; WotC', seoTitle: 'MTG Arabian Nights Pack Simulator - Rip Boosters', seoDesc: 'Explore Magic\'s very first expansion. Open Arabian Nights booster wrappers and search for Bazaar of Baghdad.' },
+            'mtgatq': { mainTitle: 'Magic: The Gathering', subTitle: '1994 Antiquities &middot; WotC', seoTitle: 'MTG Antiquities Booster Simulator - Rip Boosters', seoDesc: 'Open artifact-rich 1994 MTG Antiquities packs online and follow the brothers Urza and Mishra.' },
+            'mtg3ed': { mainTitle: 'Magic: The Gathering', subTitle: '1994 Revised Edition &middot; WotC', seoTitle: 'MTG Revised Edition Booster Simulator - Rip Boosters', seoDesc: 'Rip classic 1994 Revised Edition booster packs. Collect iconic Dual Lands and early core base cards.' },
+            'mtgleg': { mainTitle: 'Magic: The Gathering', subTitle: '1994 Legends &middot; WotC', seoTitle: 'MTG Legends Booster Pack Simulator - Rip Boosters', seoDesc: 'Cast legendary multicolor gold cards by ripping open 1994 MTG Legends expansion packs.' },
+            'mtgdrk': { mainTitle: 'Magic: The Gathering', subTitle: '1994 The Dark &middot; WotC', seoTitle: 'MTG The Dark Pack Simulator - Rip Boosters', seoDesc: 'Open gothic-horror themed 1994 MTG The Dark booster packs online.' }
         };
 
         // Static Database for Custom Set Detail Modals
@@ -636,11 +642,31 @@
             }
         }
 
+        // SPA SEO CONTROLLER TO UPDATE THE DOCUMENT HEAD DYNAMICALLY FOR GOOGLE BOT INDEXING
+        function updateSpaHeadMetadata(setKey) {
+            const titleNode = document.getElementById('seo-title');
+            const descNode = document.getElementById('seo-description');
+            
+            if (!setKey) {
+                titleNode.textContent = "Rip Boosters - Retro Trading Card Pack Opening Simulator";
+                descNode.setAttribute('content', "Open free nostalgic trading card booster packs instantly. Revisit retro card sets from Magic: The Gathering, Marvel Masterpieces, Marvel Universe, and Garbage Pail Kids with authentic pull rates.");
+            } else {
+                const metadata = APP_ROUTES[setKey];
+                if (metadata) {
+                    titleNode.textContent = metadata.seoTitle;
+                    descNode.setAttribute('content', metadata.seoDesc);
+                }
+            }
+        }
+
         async function navigateToView(setKey, updateHistory = true) {
             window.openingPackState = false;
             const viewPrivacy = document.getElementById('view-privacy-policy');
             const viewTerms = document.getElementById('view-terms-of-service');
             const viewContact = document.getElementById('view-contact-us');
+
+            // Inject SEO Tag Updates
+            updateSpaHeadMetadata(setKey);
 
             if (!setKey) {
                 if (viewPrivacy) viewPrivacy.style.display = 'none';
