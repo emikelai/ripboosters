@@ -81,6 +81,42 @@
             padding: 1rem 1.5rem;
         }
 
+        /* CONDENSED BOTTOM DASHBOARD OVERVIEW BLOCK STYLES */
+        .dashboard-bottom-overview {
+            margin-top: 3.5rem;
+            border-top: 1px solid #dee2e6;
+            padding-top: 2rem;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            color: #444;
+            line-height: 1.6;
+        }
+        .dashboard-bottom-overview h2 {
+            font-size: 1.2rem;
+            color: #1a1a1a;
+            font-weight: 600;
+            margin: 0 0 0.5rem 0;
+        }
+        .dashboard-bottom-overview p {
+            margin: 0 0 1rem 0;
+            font-size: 0.9rem;
+        }
+        .dashboard-feature-summary {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        .summary-item-card {
+            font-size: 0.85rem;
+            color: #636366;
+        }
+        .summary-item-card strong {
+            display: block;
+            color: #df9845;
+            margin-bottom: 0.15rem;
+            font-weight: 600;
+        }
+
         /* SITE FOOTER STYLES */
         .site-footer {
             background-color: #1a1a1a;
@@ -383,6 +419,28 @@
                     </div>
                 </div>
             </div>
+
+            <!-- CONDENSED BOTTOM DASHBOARD OVERVIEW BLOCK -->
+            <div class="dashboard-bottom-overview">
+                <h2>About Rip Boosters</h2>
+                <p>Hey there, welcome to Rip Boosters! This site is a completely free, non-commercial passion project built for anyone who loves trading cards and the classic rush of opening a fresh pack. Whether you're chasing the Power Nine in Magic: The Gathering sets, hunting for Spectra Hits in Marvel Masterpieces, or looking for retro Garbage Pail Kids stickers, we've built this simulator to recreate those exact card-opening experiences online.</p>
+                
+                <div class="dashboard-feature-summary">
+                    <div class="summary-item-card">
+                        <strong>Authentic Pull Simulation</strong>
+                        <span>We structure our packs around accurate set checklists, historic rarity drop distributions, and true pull ratios.</span>
+                    </div>
+                    <div class="summary-item-card">
+                        <strong>Interactive Card Art</strong>
+                        <span>Click or tap any card you pull to launch a deep lightbox view, letting you check out the high-quality front and back artwork details.</span>
+                    </div>
+                    <div class="summary-item-card">
+                        <strong>Local Progress Tracking</strong>
+                        <span>Your collection binder counts are tracked dynamically and stored right in your local browser storage cache so you don't lose your progress.</span>
+                    </div>
+                </div>
+            </div>
+
         </div>
 
         <!-- PRIVACY POLICY CONTAINER COMPLYING WITH GOOGLE ADSENSE AND PRIVACY LAWS -->
@@ -648,7 +706,7 @@
             const descNode = document.getElementById('seo-description');
             
             if (!setKey) {
-                titleNode.textContent = "Rip Boosters - Retro Trading Card Pack Opening Simulator";
+                titleNode.textContent = "Rip Boosters - Trading Card Pack Opening Simulator";
                 descNode.setAttribute('content', "Open free nostalgic trading card booster packs instantly. Revisit retro card sets from Magic: The Gathering, Marvel Masterpieces, Marvel Universe, and Garbage Pail Kids with authentic pull rates.");
             } else {
                 const metadata = APP_ROUTES[setKey];
