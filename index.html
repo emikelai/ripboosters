@@ -1049,7 +1049,6 @@
                     const insertArr = activeSetData.spectraCards || activeSetData.dynaCards || activeSetData.holoCards || [];
                     insertArr.forEach(card => {
                         const slot = document.createElement('div');
-                        // LOOK FOR card.n TO MATCH THE openPack ARRAYS PERFECTLY
                         const isCollected = savedData.spectra.includes(card.n);
                         slot.className = `col-slot ${isCollected ? 'filled' : 'no-image'}`;
                         slot.id = `col-insert-${card.n}`;
@@ -1178,21 +1177,23 @@
                             targetAmt = hasInsert ? 5 : 6;
                         }
 
-                        let pulled = [];
-                        while (pulled.length < targetAmt) {
-                            let maxBaseIndex = activeSetData.baseCards.length;
-                            if (setKey === 'mu1990') maxBaseIndex = 162;
-
-                            const rc = activeSetData.baseCards[Math.floor(Math.random() * maxBaseIndex)];
-                            const uniqKey = setKey === 'gpk1' ? `${rc.n}${rc.v}` : rc.n;
-                            if (!pulled.some(c => (setKey === 'gpk1' ? `${c.n}${c.v}` : c.n) === uniqKey)) {
-                                pulled.push(rc);
-                                if (!savedData.base.includes(uniqKey)) savedData.base.push(uniqKey);
-                            }
+                        // FREEZE-PROOF: SHUFFLE POOL INSTEAD OF RANDOM PICKING LOOP
+                        let maxBaseIndex = activeSetData.baseCards.length;
+                        if (setKey === 'mu1990') maxBaseIndex = 162;
+                        let availablePool = activeSetData.baseCards.slice(0, maxBaseIndex);
+                        
+                        // Fisher-Yates shuffle
+                        for (let i = availablePool.length - 1; i > 0; i--) {
+                            const j = Math.floor(Math.random() * (i + 1));
+                            [availablePool[i], availablePool[j]] = [availablePool[j], availablePool[i]];
                         }
 
-                        pulled.forEach((c) => {
-                            sBase.appendChild(createPackCardElement(c, false, delay));
+                        let pulled = availablePool.slice(0, targetAmt);
+                        
+                        pulled.forEach((rc) => {
+                            const uniqKey = setKey === 'gpk1' ? `${rc.n}${rc.v}` : rc.n;
+                            if (!savedData.base.includes(uniqKey)) savedData.base.push(uniqKey);
+                            sBase.appendChild(createPackCardElement(rc, false, delay));
                             delay += step;
                         });
                     }
