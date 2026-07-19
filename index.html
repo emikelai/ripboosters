@@ -974,10 +974,18 @@
                 }
                 if (setKey === 'mm1992') return isInsert ? `card_images/marvel_masterpieces_1992/spectra_${side}_${n}.jpg` : `card_images/marvel_masterpieces_1992/${side}_${String(n).padStart(3, '0')}.jpg`;
                 if (setKey === 'mm1993') return isInsert ? `card_images/marvel_masterpieces_1993/dynaetch_${side}_${n}.jpg` : `card_images/marvel_masterpieces_1993/${side}_${String(n).padStart(3, '0')}.jpg`;
+                
+                // FIXED 1990 MARVEL UNIVERSE RESOLVER
                 if (setKey === 'mu1990') {
+                    let numStr = String(n);
+                    if (numStr.toUpperCase().startsWith('MH')) {
+                        numStr = numStr.substring(2); 
+                    }
+                    numStr = numStr.trim();
+
                     return isInsert 
-                        ? (side === 'front' ? `card_images/marvel_impel_1990/mh${n}_hologram_front.png` : `card_images/marvel_impel_1990/mh_hologram_back.png`)
-                        : `card_images/marvel_impel_1990/${side}_${String(n).padStart(3, '0')}.jpg`;
+                        ? (side === 'front' ? `card_images/marvel_impel_1990/mh${numStr}_hologram_front.png` : `card_images/marvel_impel_1990/mh_hologram_back.png`)
+                        : `card_images/marvel_impel_1990/${side}_${numStr.padStart(3, '0')}.jpg`;
                 }
                 if (setKey === 'xmen1992') return isInsert ? `card_images/xmen_impel_1992/holo_${side}_${n}.jpg` : `card_images/xmen_impel_1992/${side}_${String(n).padStart(3, '0')}.jpg`;
             };
@@ -1041,9 +1049,12 @@
                     const insertArr = activeSetData.spectraCards || activeSetData.dynaCards || activeSetData.holoCards || [];
                     insertArr.forEach(card => {
                         const slot = document.createElement('div');
-                        slot.className = `col-slot ${savedData.spectra.includes(card.n) ? 'filled' : 'no-image'}`;
+                        // LOOK FOR card.n TO MATCH THE openPack ARRAYS PERFECTLY
+                        const isCollected = savedData.spectra.includes(card.n);
+                        slot.className = `col-slot ${isCollected ? 'filled' : 'no-image'}`;
                         slot.id = `col-insert-${card.n}`;
-                        if (savedData.spectra.includes(card.n)) {
+                        
+                        if (isCollected) {
                             slot.innerHTML = `<img src="${getImgPath(card.n, 'front', true)}">`;
                             slot.onclick = () => showLightbox(getImgPath(card.n, 'front', true), getImgPath(card.n, 'back', true));
                         } else {
