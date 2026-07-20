@@ -399,7 +399,7 @@
                     <!-- MM1993 -->
                     <div class="set-card" data-set-key="mm1993">
                         <div class="set-cover">
-                            <div style="width:100%;height:100%;background:linear-gradient(165deg,#1a0a00,#3a1a00,#1a0a00);display:flex;align-items:center;justify-content:center;color:#c9a84c;font-family:Georgia,serif;font-size:2.8rem;font-weight:700;color:#c9a84c;">M</div>
+                            <img src="card_images/marvel_masterpieces_1993/mm1993_packimage1_silversurfer.jpg" alt="Marvel Masterpieces 1993 pack">
                         </div>
                         <div class="set-body">
                             <div class="set-name">Marvel Masterpieces</div>
@@ -846,7 +846,9 @@
             } else if (setKey === 'mm1993') {
                 rowLabelHTML = `<div id="spectraRow" style="display:none; margin-bottom: 1rem;"><div class="row-label" id="spectraLabel">Dyna-Etch Hit</div><div class="cards-row" id="slots-spectra"></div></div><div><div class="row-label">Base Set cards</div></div>`;
                 collectionHeaderHTML = `<div class="collection-header"><div><h2 class="collection-title">Collection</h2><p class="collection-sub" style="color:#1a6a1a;">Dyna-Etch &mdash; 8 cards</p></div><span class="collection-count" id="collectionCount">0/98</span></div><div class="collection-grid" id="spectraGrid"></div><div class="collection-header" style="margin-top:2rem;"><div><p class="collection-sub">Base Set &mdash; 90 cards</p></div></div><div class="collection-grid" id="collectionGrid"></div>`;
-                packCoverHTML = `<div style="width:100%;height:100%;background:linear-gradient(165deg,#1a0a00,#3a1a00,#1a0a00);display:flex;align-items:center;justify-content:center;color:#c9a84c;font-family:Georgia,serif;font-size:2.4rem;border-radius:6px;">M</div>`;
+                
+                // Silver Surfer main image initially
+                packCoverHTML = `<img id="packWrapperImg" src="card_images/marvel_masterpieces_1993/mm1993_packimage1_silversurfer.jpg" alt="Marvel Masterpieces 1993 pack" style="width:100%;height:100%;object-fit:cover;border-radius:6px;">`;
             } else if (setKey === 'mu1990') {
                 rowLabelHTML = `<div id="spectraRow" style="display:none; margin-bottom: 1rem;"><div class="row-label" id="spectraLabel">Hologram Hit</div><div class="cards-row" id="slots-spectra"></div></div><div><div class="row-label">Base Set cards</div></div>`;
                 collectionHeaderHTML = `<div class="collection-header"><div><h2 class="collection-title">Collection</h2><p class="collection-sub" style="color:#1a3a8a;">Holograms &mdash; 5 cards</p></div><span class="collection-count" id="collectionCount">0/167</span></div><div class="collection-grid" id="spectraGrid"></div><div class="collection-header" style="margin-top:2rem;"><div><p class="collection-sub">Base Set &mdash; 162 cards</p></div></div><div class="collection-grid" id="collectionGrid"></div>`;
@@ -1280,6 +1282,17 @@
                                 const nextPackImg = Math.random() < 0.5 
                                     ? 'card_images/marvel_masterpieces_1992/mm1992_packimage1_wolverine.jpg' 
                                     : 'card_images/marvel_masterpieces_1992/mm1992_packimage2_spiderman.jpg';
+                                packImgEl.src = nextPackImg;
+                            }
+                        }
+
+                        // Randomize pack wrapper image for MM1993 after every pack opening
+                        if (setKey === 'mm1993') {
+                            const packImgEl = document.getElementById('packWrapperImg');
+                            if (packImgEl) {
+                                const nextPackImg = Math.random() < 0.5 
+                                    ? 'card_images/marvel_masterpieces_1993/mm1993_packimage1_silversurfer.jpg' 
+                                    : 'card_images/marvel_masterpieces_1993/mm1993_packimage2_ironman.jpg';
                                 packImgEl.src = nextPackImg;
                             }
                         }
