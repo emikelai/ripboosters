@@ -727,6 +727,10 @@
 
         async function navigateToView(setKey, updateHistory = true) {
             window.openingPackState = false;
+
+            // Reset scroll position to top of page on every view navigation
+            window.scrollTo({ top: 0, behavior: 'instant' });
+
             const viewPrivacy = document.getElementById('view-privacy-policy');
             const viewTerms = document.getElementById('view-terms-of-service');
             const viewContact = document.getElementById('view-contact-us');
