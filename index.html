@@ -653,7 +653,7 @@
             },
             gpk1: {
                 title: "Garbage Pail Kids: Series 1 (1985)",
-                text: "Released by Topps in 1985 as a gross-out parody of the Cabbage Patch Kids craze, Garbage Pail Kids became an instant pop-culture phenomenon (and a target for school bans). The 82-sticker set features 41 uniquely disgusting characters, each printed with an 'A' or 'B' name variation—like the iconic Nasty Nick and Evil Eddie. It's pure, unapologsetic 80s nostalgia."
+                text: "Released by Topps in 1985 as a gross-out parody of the Cabbage Patch Kids craze, Garbage Pail Kids became an instant pop-culture phenomenon (and a target for school bans). The 82-sticker set features 41 uniquely disgusting characters, each printed with an 'A' or 'B' name variation—like the iconic Nasty Nick and Evil Eddie. It's pure, unapologetic 80s nostalgia."
             }
         };
 
@@ -821,19 +821,19 @@
                 collectionHeaderHTML = `<div class="collection-header"><div><h2 class="collection-title">Collection</h2><p class="collection-sub">82 stickers &mdash; 41 pairs</p></div><span class="collection-count" id="collectionCount">0 / 82</span></div><div class="collection-grid" id="collectionGrid"></div>`;
                 packCoverHTML = `<div style="width:100%;height:100%;background:linear-gradient(165deg,#1a0020,#4a0060,#1a0020);display:flex;flex-direction:column;align-items:center;justify-content:center;border-radius:6px;"><div style="font-family:Georgia,serif;font-size:2rem;font-weight:900;color:#ff6b00;">GPK</div></div>`;
             } else if (setKey === 'mm1992') {
-                rowLabelHTML = `<div class="spectra-row" id="spectraRow" style="display:none;"><div class="spectra-label" style="color:var(--spectra)"><span class="pip"></span>Battle Spectra&#8209;Etch Insert</div><div class="cards-row" id="slots-spectra"></div></div><div><div class="row-label">Base Set cards</div></div>`;
+                rowLabelHTML = `<div id="spectraRow" style="display:none; margin-bottom: 1rem;"><div class="row-label" id="spectraLabel">Battle Spectra Hit</div><div class="cards-row" id="slots-spectra"></div></div><div><div class="row-label">Base Set cards</div></div>`;
                 collectionHeaderHTML = `<div class="collection-header"><div><h2 class="collection-title">Collection</h2><p class="collection-sub" style="color:var(--spectra)">Battle Spectra &mdash; 5 cards</p></div><span class="collection-count" id="collectionCount">0/105</span></div><div class="collection-grid" id="spectraGrid"></div><div class="collection-header" style="margin-top:2rem;"><div><p class="collection-sub">Base Set &mdash; 100 cards</p></div></div><div class="collection-grid" id="collectionGrid"></div>`;
                 packCoverHTML = `<img src="card_images/pack_cover1.webp" alt="Pack" style="width:100%;height:100%;object-fit:cover;border-radius:6px;">`;
             } else if (setKey === 'mm1993') {
-                rowLabelHTML = `<div class="spectra-row" id="spectraRow" style="display:none;"><div class="spectra-label" style="color:#1a6a1a;"><span class="pip"></span>X-Men 2099 Dyna&#8209;Etch Insert</div><div class="cards-row" id="slots-spectra"></div></div><div><div class="row-label">Base Set cards</div></div>`;
+                rowLabelHTML = `<div id="spectraRow" style="display:none; margin-bottom: 1rem;"><div class="row-label" id="spectraLabel">Dyna-Etch Hit</div><div class="cards-row" id="slots-spectra"></div></div><div><div class="row-label">Base Set cards</div></div>`;
                 collectionHeaderHTML = `<div class="collection-header"><div><h2 class="collection-title">Collection</h2><p class="collection-sub" style="color:#1a6a1a;">Dyna-Etch &mdash; 8 cards</p></div><span class="collection-count" id="collectionCount">0/98</span></div><div class="collection-grid" id="spectraGrid"></div><div class="collection-header" style="margin-top:2rem;"><div><p class="collection-sub">Base Set &mdash; 90 cards</p></div></div><div class="collection-grid" id="collectionGrid"></div>`;
                 packCoverHTML = `<div style="width:100%;height:100%;background:linear-gradient(165deg,#1a0a00,#3a1a00,#1a0a00);display:flex;align-items:center;justify-content:center;color:#c9a84c;font-family:Georgia,serif;font-size:2.4rem;border-radius:6px;">M</div>`;
             } else if (setKey === 'mu1990') {
-                rowLabelHTML = `<div class="spectra-row" id="spectraRow" style="display:none;"><div class="spectra-label" style="color:#1a3a8a;"><span class="pip"></span>H Hologram Insert</div><div class="cards-row" id="slots-spectra"></div></div><div><div class="row-label">Base Set cards</div></div>`;
+                rowLabelHTML = `<div id="spectraRow" style="display:none; margin-bottom: 1rem;"><div class="row-label" id="spectraLabel">Hologram Hit</div><div class="cards-row" id="slots-spectra"></div></div><div><div class="row-label">Base Set cards</div></div>`;
                 collectionHeaderHTML = `<div class="collection-header"><div><h2 class="collection-title">Collection</h2><p class="collection-sub" style="color:#1a3a8a;">Holograms &mdash; 5 cards</p></div><span class="collection-count" id="collectionCount">0/167</span></div><div class="collection-grid" id="spectraGrid"></div><div class="collection-header" style="margin-top:2rem;"><div><p class="collection-sub">Base Set &mdash; 162 cards</p></div></div><div class="collection-grid" id="collectionGrid"></div>`;
                 packCoverHTML = `<div style="width:100%;height:100%;background:linear-gradient(165deg,#0a0a20,#1a1a4a,#0a0a20);display:flex;align-items:center;justify-content:center;color:#d4382a;font-family:Georgia,serif;font-size:2.4rem;border-radius:6px;">MU</div>`;
             } else if (setKey === 'xmen1992') {
-                rowLabelHTML = `<div class="spectra-row" id="spectraRow" style="display:none;"><div class="spectra-label" style="color:#b8860b;"><span class="pip"></span>Gold Hologram</div><div class="cards-row" id="slots-spectra"></div></div><div><div class="row-label">Base Set cards</div></div>`;
+                rowLabelHTML = `<div id="spectraRow" style="display:none; margin-bottom: 1rem;"><div class="row-label" id="spectraLabel">Gold Hologram Hit</div><div class="cards-row" id="slots-spectra"></div></div><div><div class="row-label">Base Set cards</div></div>`;
                 collectionHeaderHTML = `<div class="collection-header"><div><h2 class="collection-title">Collection</h2><p class="collection-sub" style="color:#b8860b">Gold Holograms &mdash; 5 cards</p></div><span class="collection-count" id="collectionCount">0/105</span></div><div class="collection-grid" id="spectraGrid"></div><div class="collection-header" style="margin-top:2rem;"><div><p class="collection-sub">Base Set &mdash; 100 cards</p></div></div><div class="collection-grid" id="collectionGrid"></div>`;
                 packCoverHTML = `<div style="width:100%;height:100%;background:linear-gradient(165deg,#0a0010,#1a0040,#0a0010);display:flex;align-items:center;justify-content:center;font-family:Georgia,serif;font-size:1.5rem;color:#ffcc00;border-radius:6px;">X-MEN</div>`;
             } else if (isMtg) {
@@ -983,7 +983,6 @@
                     }
                     let parsedNum = parseInt(numStr, 10);
 
-                    // If database entry index hits cards #163 to #167, map them to MH1-MH5!
                     if (isInsert || parsedNum > 162) {
                         let holoIdx = isInsert ? parsedNum : (parsedNum - 162);
                         return side === 'front'
@@ -1164,6 +1163,7 @@
                         let pullRate = setKey === 'mm1993' ? (1/9) : (setKey === 'mm1992' ? 0.25 : (1/12));
                         let hasInsert = setKey !== 'gpk1' && Math.random() < pullRate;
 
+                        // Cleanly render Holo Hits at top with matching section heading text
                         if (hasInsert && sInsert && rowIns) {
                             const rInsert = insertArr[Math.floor(Math.random() * insertArr.length)];
                             if (!savedData.spectra.includes(rInsert.n)) savedData.spectra.push(rInsert.n);
@@ -1181,21 +1181,20 @@
                             targetAmt = hasInsert ? 5 : 6;
                         }
 
-                        // SAFE TRUNCATED SHUFFLE LAYER FOR MU1990 BASE SLICE
+                        // Fetch Base pool cards up to card #162 cleanly
                         let availablePool = [...activeSetData.baseCards];
                         if (setKey === 'mu1990') {
                             availablePool = availablePool.filter(c => parseInt(String(c.n).trim().replace(/^\D+/g, ''), 10) <= 162);
                         }
                         
-                        // Fisher-Yates shuffle engine execution
+                        // Fisher-Yates shuffle engine
                         for (let i = availablePool.length - 1; i > 0; i--) {
                             const j = Math.floor(Math.random() * (i + 1));
                             [availablePool[i], availablePool[j]] = [availablePool[j], availablePool[i]];
                         }
 
-                        let pulled = availablePool.slice(0, targetAmt);
-                        
-                        pulled.forEach((rc) => {
+                        let pulledBase = availablePool.slice(0, targetAmt);
+                        pulledBase.forEach(rc => {
                             const uniqKey = setKey === 'gpk1' ? `${rc.n}${rc.v}` : rc.n;
                             if (!savedData.base.includes(uniqKey)) savedData.base.push(uniqKey);
                             sBase.appendChild(createPackCardElement(rc, false, delay));
