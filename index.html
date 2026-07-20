@@ -653,7 +653,7 @@
             },
             gpk1: {
                 title: "Garbage Pail Kids: Series 1 (1985)",
-                text: "Released by Topps in 1985 as a gross-out parody of the Cabbage Patch Kids craze, Garbage Pail Kids became an instant pop-culture phenomenon (and a target for school bans). The 82-sticker set features 41 uniquely disgusting characters, each printed with an 'A' or 'B' name variation—like the iconic Nasty Nick and Evil Eddie. It's pure, unapologetic 80s nostalgia."
+                text: "Released by Topps in 1985 as a gross-out parody of the Cabbage Patch Kids craze, Garbage Pail Kids became an instant pop-culture phenomenon (and a target for school bans). The 82-sticker set features 41 uniquely disgusting characters, each printed with an 'A' or 'B' name variation—like the iconic Nasty Nick and Evil Eddie. It's pure, unapologsetic 80s nostalgia."
             }
         };
 
@@ -975,17 +975,23 @@
                 if (setKey === 'mm1992') return isInsert ? `card_images/marvel_masterpieces_1992/spectra_${side}_${n}.jpg` : `card_images/marvel_masterpieces_1992/${side}_${String(n).padStart(3, '0')}.jpg`;
                 if (setKey === 'mm1993') return isInsert ? `card_images/marvel_masterpieces_1993/dynaetch_${side}_${n}.jpg` : `card_images/marvel_masterpieces_1993/${side}_${String(n).padStart(3, '0')}.jpg`;
                 
-                // FIXED 1990 MARVEL UNIVERSE RESOLVER
+                // 1990 MARVEL UNIVERSE DYNAMIC INTEL ASSET ROUTER
                 if (setKey === 'mu1990') {
-                    let numStr = String(n);
-                    if (numStr.toUpperCase().startsWith('MH')) {
-                        numStr = numStr.substring(2); 
+                    let numStr = String(n).trim().toUpperCase();
+                    if (numStr.startsWith('MH')) {
+                        numStr = numStr.substring(2);
                     }
-                    numStr = numStr.trim();
+                    let parsedNum = parseInt(numStr, 10);
 
-                    return isInsert 
-                        ? (side === 'front' ? `card_images/marvel_impel_1990/mh${numStr}_hologram_front.png` : `card_images/marvel_impel_1990/mh_hologram_back.png`)
-                        : `card_images/marvel_impel_1990/${side}_${numStr.padStart(3, '0')}.jpg`;
+                    // If database entry index hits cards #163 to #167, map them to MH1-MH5!
+                    if (isInsert || parsedNum > 162) {
+                        let holoIdx = isInsert ? parsedNum : (parsedNum - 162);
+                        return side === 'front'
+                            ? `card_images/marvel_impel_1990/mh${holoIdx}_hologram_front.png`
+                            : `card_images/marvel_impel_1990/mh_hologram_back.png`;
+                    }
+                    
+                    return `card_images/marvel_impel_1990/${side}_${numStr.padStart(3, '0')}.jpg`;
                 }
                 if (setKey === 'xmen1992') return isInsert ? `card_images/xmen_impel_1992/holo_${side}_${n}.jpg` : `card_images/xmen_impel_1992/${side}_${String(n).padStart(3, '0')}.jpg`;
             };
@@ -1006,10 +1012,7 @@
             const gridInsert = document.getElementById('spectraGrid');
 
             if (gridBase) {
-                let maxBaseLoopCount = activeSetData.baseCards.length;
-                if (setKey === 'mu1990') maxBaseLoopCount = 162;
-
-                const loopPool = isMtg ? activeSetData.baseCards : activeSetData.baseCards.slice(0, maxBaseLoopCount);
+                const loopPool = activeSetData.baseCards;
 
                 loopPool.forEach(card => {
                     const slot = document.createElement('div');
@@ -1157,6 +1160,7 @@
                         });
 
                     } else {
+                        const insertArr = activeSetData.spectraCards || activeSetData.dynaCards || activeSetData.holoCards || [];
                         let pullRate = setKey === 'mm1993' ? (1/9) : (setKey === 'mm1992' ? 0.25 : (1/12));
                         let hasInsert = setKey !== 'gpk1' && Math.random() < pullRate;
 
@@ -1177,12 +1181,13 @@
                             targetAmt = hasInsert ? 5 : 6;
                         }
 
-                        // FREEZE-PROOF: SHUFFLE POOL INSTEAD OF RANDOM PICKING LOOP
-                        let maxBaseIndex = activeSetData.baseCards.length;
-                        if (setKey === 'mu1990') maxBaseIndex = 162;
-                        let availablePool = activeSetData.baseCards.slice(0, maxBaseIndex);
+                        // SAFE TRUNCATED SHUFFLE LAYER FOR MU1990 BASE SLICE
+                        let availablePool = [...activeSetData.baseCards];
+                        if (setKey === 'mu1990') {
+                            availablePool = availablePool.filter(c => parseInt(String(c.n).trim().replace(/^\D+/g, ''), 10) <= 162);
+                        }
                         
-                        // Fisher-Yates shuffle
+                        // Fisher-Yates shuffle engine execution
                         for (let i = availablePool.length - 1; i > 0; i--) {
                             const j = Math.floor(Math.random() * (i + 1));
                             [availablePool[i], availablePool[j]] = [availablePool[j], availablePool[i]];
