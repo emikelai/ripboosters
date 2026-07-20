@@ -81,6 +81,15 @@
             padding: 1rem 1.5rem;
         }
 
+        /* 3x3 PUZZLE GRID LAYOUT ARCHITECTURE - 1.5x SCALED MURAL CARDS */
+        .puzzle-3x3-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.15rem;
+            max-width: 540px;
+            margin: 1rem auto 0 auto;
+        }
+
         /* CONDENSED BOTTOM DASHBOARD OVERVIEW BLOCK STYLES */
         .dashboard-bottom-overview {
             margin-top: 3.5rem;
@@ -202,6 +211,7 @@
             .page-title-container { padding: 1.25rem 1rem 0.25rem 1rem; }
             #global-header-title { font-size: 1.6rem; }
             #header-subtitle { font-size: 0.95rem; }
+            .puzzle-3x3-grid { max-width: 95vw; }
         }
     </style>
 </head>
@@ -834,7 +844,30 @@
                 packCoverHTML = `<div style="width:100%;height:100%;background:linear-gradient(165deg,#0a0a20,#1a1a4a,#0a0a20);display:flex;align-items:center;justify-content:center;color:#d4382a;font-family:Georgia,serif;font-size:2.4rem;border-radius:6px;">MU</div>`;
             } else if (setKey === 'xmen1992') {
                 rowLabelHTML = `<div id="spectraRow" style="display:none; margin-bottom: 1rem;"><div class="row-label" id="spectraLabel">Gold Hologram Hit</div><div class="cards-row" id="slots-spectra"></div></div><div><div class="row-label">Base Set cards</div></div>`;
-                collectionHeaderHTML = `<div class="collection-header"><div><h2 class="collection-title">Collection</h2><p class="collection-sub" style="color:#b8860b">Gold Holograms &mdash; 5 cards</p></div><span class="collection-count" id="collectionCount">0/105</span></div><div class="collection-grid" id="spectraGrid"></div><div class="collection-header" style="margin-top:2rem;"><div><p class="collection-sub">Base Set &mdash; 100 cards</p></div></div><div class="collection-grid" id="collectionGrid"></div>`;
+                collectionHeaderHTML = `
+                    <div class="collection-header">
+                        <div>
+                            <h2 class="collection-title">Collection</h2>
+                            <p class="collection-sub" style="color:#b8860b">Gold Holograms &mdash; 5 cards</p>
+                        </div>
+                        <span class="collection-count" id="collectionCount">0/105</span>
+                    </div>
+                    <div class="collection-grid" id="spectraGrid"></div>
+                    
+                    <div class="collection-header" style="margin-top:2.5rem;">
+                        <div>
+                            <h2 class="collection-title">Danger Room Test Sequence 9-card interlocking puzzle (base cards 91 through 99)</h2>
+                            <p class="collection-sub" style="color:#df9845">3x3 Interlocking Jim Lee Mural</p>
+                        </div>
+                    </div>
+                    <div class="puzzle-3x3-grid" id="puzzleGrid"></div>
+
+                    <div class="collection-header" style="margin-top:2.5rem;">
+                        <div>
+                            <p class="collection-sub">Base Set &mdash; 100 cards</p>
+                        </div>
+                    </div>
+                    <div class="collection-grid" id="collectionGrid"></div>`;
                 packCoverHTML = `<div style="width:100%;height:100%;background:linear-gradient(165deg,#0a0010,#1a0040,#0a0010);display:flex;align-items:center;justify-content:center;font-family:Georgia,serif;font-size:1.5rem;color:#ffcc00;border-radius:6px;">X-MEN</div>`;
             } else if (isMtg) {
                 const config = DATA_MAP[setKey];
@@ -1009,6 +1042,7 @@
 
             const gridBase = document.getElementById('collectionGrid');
             const gridInsert = document.getElementById('spectraGrid');
+            const gridPuzzle = document.getElementById('puzzleGrid');
 
             if (gridBase) {
                 let loopPool = activeSetData.baseCards;
@@ -1031,6 +1065,24 @@
                         slot.innerHTML = `<span class="col-num">#${String(card.n).padStart(3, '0')}${card.v || ''}</span><span class="col-name">${card.name}</span>`;
                     }
                     gridBase.appendChild(slot);
+                });
+            }
+
+            if (gridPuzzle && setKey === 'xmen1992') {
+                const puzzleCards = activeSetData.baseCards.filter(c => c.n >= 91 && c.n <= 99);
+                puzzleCards.forEach(card => {
+                    const slot = document.createElement('div');
+                    const isCollected = savedData.base.includes(card.n) || savedData.base.includes(String(card.n));
+                    slot.className = `col-slot ${isCollected ? 'filled' : 'no-image'}`;
+                    slot.id = `col-puzzle-${card.n}`;
+                    
+                    if (isCollected) {
+                        slot.innerHTML = `<img src="${getImgPath(card.n, 'front', false)}">`;
+                        slot.onclick = () => showLightbox(getImgPath(card.n, 'front', false), getImgPath(card.n, 'back', false));
+                    } else {
+                        slot.innerHTML = `<span class="col-num">#${String(card.n).padStart(3, '0')}</span><span class="col-name">${card.name}</span>`;
+                    }
+                    gridPuzzle.appendChild(slot);
                 });
             }
 
@@ -1241,6 +1293,17 @@
                         if (card) {
                             slot.className = 'col-slot filled'; slot.innerHTML = `<img src="${getImgPath(card.n, 'front', false, card.v || '')}">`;
                             slot.onclick = () => showLightbox(getImgPath(card.n, 'front', false, card.v || ''), getImgPath(card.n, 'back', false, card.v || ''));
+                        }
+                    }
+
+                    if (setKey === 'xmen1992') {
+                        const pSlot = document.getElementById(`col-puzzle-${k}`);
+                        if (pSlot && pSlot.classList.contains('no-image')) {
+                            const pCard = activeSetData.baseCards.find(c => c.n == k);
+                            if (pCard) {
+                                pSlot.className = 'col-slot filled'; pSlot.innerHTML = `<img src="${getImgPath(pCard.n, 'front', false)}">`;
+                                pSlot.onclick = () => showLightbox(getImgPath(pCard.n, 'front', false), getImgPath(pCard.n, 'back', false));
+                            }
                         }
                     }
                 });
