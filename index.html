@@ -386,7 +386,7 @@
                     <!-- XMEN1992 -->
                     <div class="set-card" data-set-key="xmen1992">
                         <div class="set-cover">
-                            <div style="width:100%;height:100%;background:linear-gradient(165deg,#0a0010,#1a0040,#0a0010);display:flex;align-items:center;justify-content:center;font-family:Georgia,serif;font-size:1.5rem;font-weight:900;color:#ffcc00;">X-MEN</div>
+                            <img src="card_images/xmen_impel_1992/uncanny_xmen_1992_packimage2_teal.jpg" alt="The Uncanny X-Men 1992 pack">
                         </div>
                         <div class="set-body">
                             <div class="set-name">The Uncanny X-Men</div>
@@ -881,7 +881,9 @@
                         </div>
                     </div>
                     <div class="collection-grid" id="collectionGrid"></div>`;
-                packCoverHTML = `<div style="width:100%;height:100%;background:linear-gradient(165deg,#0a0010,#1a0040,#0a0010);display:flex;align-items:center;justify-content:center;font-family:Georgia,serif;font-size:1.5rem;color:#ffcc00;border-radius:6px;">X-MEN</div>`;
+                
+                // Teal main image initially
+                packCoverHTML = `<img id="packWrapperImg" src="card_images/xmen_impel_1992/uncanny_xmen_1992_packimage2_teal.jpg" alt="The Uncanny X-Men 1992 pack" style="width:100%;height:100%;object-fit:cover;border-radius:6px;">`;
             } else if (isMtg) {
                 const config = DATA_MAP[setKey];
                 rowLabelHTML = `
@@ -1309,6 +1311,17 @@
                                     'card_images/marvel_impel_1990/marvel_impel_1990_packimage3_wolverine.jpg'
                                 ];
                                 packImgEl.src = mu90Packs[Math.floor(Math.random() * mu90Packs.length)];
+                            }
+                        }
+
+                        // Randomize pack wrapper image for X-Men 1992 after every pack opening
+                        if (setKey === 'xmen1992') {
+                            const packImgEl = document.getElementById('packWrapperImg');
+                            if (packImgEl) {
+                                const nextPackImg = Math.random() < 0.5 
+                                    ? 'card_images/xmen_impel_1992/uncanny_xmen_1992_packimage1_darkblue.jpg' 
+                                    : 'card_images/xmen_impel_1992/uncanny_xmen_1992_packimage2_teal.jpg';
+                                packImgEl.src = nextPackImg;
                             }
                         }
 
