@@ -372,7 +372,9 @@
 
                     <!-- MM1992 -->
                     <div class="set-card" data-set-key="mm1992">
-                        <div class="set-cover"><img src="card_images/pack_cover1.webp" alt="Marvel Masterpieces 1992 pack"></div>
+                        <div class="set-cover">
+                            <img src="card_images/marvel_masterpieces_1992/mm1992_packimage1_wolverine.jpg" alt="Marvel Masterpieces 1992 pack">
+                        </div>
                         <div class="set-body">
                             <div class="set-name">Marvel Masterpieces</div>
                             <div class="set-meta">1992 &middot; SkyBox &middot; <span class="set-meta-about-trigger" data-set-key="mm1992">About</span> &middot; 105 cards</div>
@@ -835,7 +837,12 @@
             } else if (setKey === 'mm1992') {
                 rowLabelHTML = `<div id="spectraRow" style="display:none; margin-bottom: 1rem;"><div class="row-label" id="spectraLabel">Battle Spectra Hit</div><div class="cards-row" id="slots-spectra"></div></div><div><div class="row-label">Base Set cards</div></div>`;
                 collectionHeaderHTML = `<div class="collection-header"><div><h2 class="collection-title">Collection</h2><p class="collection-sub" style="color:var(--spectra)">Battle Spectra &mdash; 5 cards</p></div><span class="collection-count" id="collectionCount">0/105</span></div><div class="collection-grid" id="spectraGrid"></div><div class="collection-header" style="margin-top:2rem;"><div><p class="collection-sub">Base Set &mdash; 100 cards</p></div></div><div class="collection-grid" id="collectionGrid"></div>`;
-                packCoverHTML = `<img src="card_images/pack_cover1.webp" alt="Pack" style="width:100%;height:100%;object-fit:cover;border-radius:6px;">`;
+                
+                // 50/50 Randomizer between Wolverine and Spider-Man pack wrappers
+                const mm92PackImg = Math.random() < 0.5 
+                    ? 'card_images/marvel_masterpieces_1992/mm1992_packimage1_wolverine.jpg' 
+                    : 'card_images/marvel_masterpieces_1992/mm1992_packimage2_spiderman.jpg';
+                packCoverHTML = `<img id="packWrapperImg" src="${mm92PackImg}" alt="Marvel Masterpieces 1992 pack" style="width:100%;height:100%;object-fit:cover;border-radius:6px;">`;
             } else if (setKey === 'mm1993') {
                 rowLabelHTML = `<div id="spectraRow" style="display:none; margin-bottom: 1rem;"><div class="row-label" id="spectraLabel">Dyna-Etch Hit</div><div class="cards-row" id="slots-spectra"></div></div><div><div class="row-label">Base Set cards</div></div>`;
                 collectionHeaderHTML = `<div class="collection-header"><div><h2 class="collection-title">Collection</h2><p class="collection-sub" style="color:#1a6a1a;">Dyna-Etch &mdash; 8 cards</p></div><span class="collection-count" id="collectionCount">0/98</span></div><div class="collection-grid" id="spectraGrid"></div><div class="collection-header" style="margin-top:2rem;"><div><p class="collection-sub">Base Set &mdash; 90 cards</p></div></div><div class="collection-grid" id="collectionGrid"></div>`;
@@ -1265,6 +1272,18 @@
                     setTimeout(() => {
                         if (pack) pack.classList.remove('pack-tearing');
                         if (wrapperEl) { wrapperEl.classList.remove('opened'); wrapperEl.style.opacity = '1'; }
+                        
+                        // Randomize pack wrapper image for MM1992 after every pack opening
+                        if (setKey === 'mm1992') {
+                            const packImgEl = document.getElementById('packWrapperImg');
+                            if (packImgEl) {
+                                const nextPackImg = Math.random() < 0.5 
+                                    ? 'card_images/marvel_masterpieces_1992/mm1992_packimage1_wolverine.jpg' 
+                                    : 'card_images/marvel_masterpieces_1992/mm1992_packimage2_spiderman.jpg';
+                                packImgEl.src = nextPackImg;
+                            }
+                        }
+
                         window.openingPackState = false; if (btn) { btn.disabled = false; btn.textContent = 'Open Another Pack'; }
                     }, delay + 400);
 
