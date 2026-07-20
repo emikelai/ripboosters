@@ -360,11 +360,11 @@
                     <!-- MU1990 -->
                     <div class="set-card" data-set-key="mu1990">
                         <div class="set-cover">
-                            <div style="width:100%;height:100%;background:linear-gradient(165deg,#0a0a20,#1a1a4a,#0a0a20);display:flex;align-items:center;justify-content:center;color:#d4382a;font-family:Georgia,serif;font-size:2.4rem;font-weight:700;">MU</div>
+                            <img src="card_images/marvel_impel_1990/marvel_impel_1990_packimage2_spiderman.jpg" alt="Marvel Universe 1990 pack">
                         </div>
                         <div class="set-body">
                             <div class="set-name">Marvel Universe</div>
-                            <div class="set-meta">1990 &middot; lmpel &middot; <span class="set-meta-about-trigger" data-set-key="mu1990">About</span> &middot; 167 cards</div>
+                            <div class="set-meta">1990 &middot; Impel &middot; <span class="set-meta-about-trigger" data-set-key="mu1990">About</span> &middot; 167 cards</div>
                             <div class="set-progress-track"><div class="set-progress-bar" id="prog-mu1990" style="width:0%;background:#d4382a"></div></div>
                             <div class="set-progress-label" id="label-mu1990">0 / 167 collected</div>
                         </div>
@@ -852,7 +852,9 @@
             } else if (setKey === 'mu1990') {
                 rowLabelHTML = `<div id="spectraRow" style="display:none; margin-bottom: 1rem;"><div class="row-label" id="spectraLabel">Hologram Hit</div><div class="cards-row" id="slots-spectra"></div></div><div><div class="row-label">Base Set cards</div></div>`;
                 collectionHeaderHTML = `<div class="collection-header"><div><h2 class="collection-title">Collection</h2><p class="collection-sub" style="color:#1a3a8a;">Holograms &mdash; 5 cards</p></div><span class="collection-count" id="collectionCount">0/167</span></div><div class="collection-grid" id="spectraGrid"></div><div class="collection-header" style="margin-top:2rem;"><div><p class="collection-sub">Base Set &mdash; 162 cards</p></div></div><div class="collection-grid" id="collectionGrid"></div>`;
-                packCoverHTML = `<div style="width:100%;height:100%;background:linear-gradient(165deg,#0a0a20,#1a1a4a,#0a0a20);display:flex;align-items:center;justify-content:center;color:#d4382a;font-family:Georgia,serif;font-size:2.4rem;border-radius:6px;">MU</div>`;
+                
+                // Spider-Man main image initially
+                packCoverHTML = `<img id="packWrapperImg" src="card_images/marvel_impel_1990/marvel_impel_1990_packimage2_spiderman.jpg" alt="Marvel Universe 1990 pack" style="width:100%;height:100%;object-fit:cover;border-radius:6px;">`;
             } else if (setKey === 'xmen1992') {
                 rowLabelHTML = `<div id="spectraRow" style="display:none; margin-bottom: 1rem;"><div class="row-label" id="spectraLabel">Gold Hologram Hit</div><div class="cards-row" id="slots-spectra"></div></div><div><div class="row-label">Base Set cards</div></div>`;
                 collectionHeaderHTML = `
@@ -1294,6 +1296,19 @@
                                     ? 'card_images/marvel_masterpieces_1993/mm1993_packimage1_silversurfer.jpg' 
                                     : 'card_images/marvel_masterpieces_1993/mm1993_packimage2_ironman.jpg';
                                 packImgEl.src = nextPackImg;
+                            }
+                        }
+
+                        // Randomize pack wrapper image for MU1990 across 3 wrappers after every pack opening
+                        if (setKey === 'mu1990') {
+                            const packImgEl = document.getElementById('packWrapperImg');
+                            if (packImgEl) {
+                                const mu90Packs = [
+                                    'card_images/marvel_impel_1990/marvel_impel_1990_packimage1_capam.jpg',
+                                    'card_images/marvel_impel_1990/marvel_impel_1990_packimage2_spiderman.jpg',
+                                    'card_images/marvel_impel_1990/marvel_impel_1990_packimage3_wolverine.jpg'
+                                ];
+                                packImgEl.src = mu90Packs[Math.floor(Math.random() * mu90Packs.length)];
                             }
                         }
 
