@@ -1011,7 +1011,10 @@
             const gridInsert = document.getElementById('spectraGrid');
 
             if (gridBase) {
-                const loopPool = activeSetData.baseCards;
+                let loopPool = activeSetData.baseCards;
+                if (setKey === 'mu1990') {
+                    loopPool = loopPool.filter(card => parseInt(String(card.n).trim().replace(/^\D+/g, ''), 10) <= 162);
+                }
 
                 loopPool.forEach(card => {
                     const slot = document.createElement('div');
