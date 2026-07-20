@@ -416,12 +416,10 @@
                 <div class="sets-grid">
                     <div class="set-card" data-set-key="gpk1">
                         <div class="set-cover">
-                            <div style="width:100%;height:100%;background:linear-gradient(165deg,#1a0020,#4a0060,#1a0020);display:flex;flex-direction:column;align-items:center;justify-content:center;">
-                                <div style="font-family:Georgia,serif;font-size:1.6rem;font-weight:700;color:#ff6b00;">GPK</div>
-                            </div>
+                            <img src="card_images/gpk_series1/gpk_series1_pack_wrapper.jpg" alt="Garbage Pail Kids Series 1 pack">
                         </div>
                         <div class="set-body">
-                            <div class="set-name">Garbage Pail Kids</div>
+                            <div class="set-name">Garbage Pail Kids OS1</div>
                             <div class="set-meta">1985 &middot; Topps &middot; <span class="set-meta-about-trigger" data-set-key="gpk1">About</span> &middot; 82 stickers</div>
                             <div class="set-progress-track"><div class="set-progress-bar" id="prog-gpk1" style="width:0%;background:#ff6b00"></div></div>
                             <div class="set-progress-label" id="label-gpk1">0 / 82 collected</div>
@@ -600,7 +598,7 @@
             'mm1993': { mainTitle: 'Marvel Masterpieces', subTitle: '1993 Series II &middot; SkyBox', seoTitle: '1993 Marvel Masterpieces Pack Simulator - Rip Boosters', seoDesc: 'Open 1993 Marvel Masterpieces packs. Hunt for rare X-Men 2099 Dyna-Etch cards and gather full artwork prints.' },
             'mu1990': { mainTitle: 'Marvel Universe', subTitle: '1990 Series I &middot; Impel', seoTitle: '1990 Marvel Universe Series 1 Pack Simulator - Rip Boosters', seoDesc: 'Rip retro 1990 Marvel Universe booster wrappers online. Relive classic Impel cards and pull ultra-rare holograms.' },
             'xmen1992': { mainTitle: 'The Uncanny X-Men', subTitle: '1992 Series I &middot; Impel', seoTitle: '1992 Uncanny X-Men Trading Card Simulator - Rip Boosters', seoDesc: 'Open 1992 X-Men packs drawn entirely by Jim Lee. Assemble the full base list and catch Gold Hologram chase cards.' },
-            'gpk1': { mainTitle: 'Garbage Pail Kids', subTitle: '1985 Series 1 &middot; Topps', seoTitle: '1985 Garbage Pail Kids Series 1 Simulator - Rip Boosters', seoDesc: 'Unbox original 1985 Series 1 Garbage Pail Kids stickers. Revisit classic gross parody card sets completely free.' },
+            'gpk1': { mainTitle: 'Garbage Pail Kids OS1', subTitle: '1985 Series 1 &middot; Topps', seoTitle: '1985 Garbage Pail Kids Series 1 Simulator - Rip Boosters', seoDesc: 'Unbox original 1985 Series 1 Garbage Pail Kids stickers. Revisit classic gross parody card sets completely free.' },
             'mtglea': { mainTitle: 'Magic: The Gathering', subTitle: '1993 Limited Edition Alpha &middot; WotC', seoTitle: 'MTG Limited Edition Alpha Booster Simulator - Rip Boosters', seoDesc: 'Simulate opening historic 1993 MTG Alpha booster packs. Chase the Power Nine, Black Lotus, and original white-bordered rares.' },
             'mtgleb': { mainTitle: 'Magic: The Gathering', subTitle: '1993 Limited Edition Beta &middot; WotC', seoTitle: 'MTG Limited Edition Beta Booster Simulator - Rip Boosters', seoDesc: 'Rip 1993 MTG Beta packs. Trace rare Dual Lands and historical original cards using accurate pull probabilities.' },
             'mtg2ed': { mainTitle: 'Magic: The Gathering', subTitle: '1993 Unlimited Edition &middot; WotC', seoTitle: 'MTG Unlimited Edition Booster Simulator - Rip Boosters', seoDesc: 'Open Unlimited Edition white-bordered MTG booster packs from 1993.' },
@@ -662,7 +660,7 @@
                 text: "Drawn entirely by legendary comic artist Jim Lee, Impel’s 1992 X-Men set defined the visual style of Marvel's mutants for an entire generation. Featuring 100 base cards—which famously included a massive 9-card Danger Room puzzle—this set perfectly captures the neon energy of the early '90s X-Men boom. Keep an eye out for the 5 ultra-rare Gold Hologram inserts."
             },
             gpk1: {
-                title: "Garbage Pail Kids: Series 1 (1985)",
+                title: "Garbage Pail Kids: OS1 (1985)",
                 text: "Released by Topps in 1985 as a gross-out parody of the Cabbage Patch Kids craze, Garbage Pail Kids became an instant pop-culture phenomenon (and a target for school bans). The 82-sticker set features 41 uniquely disgusting characters, each printed with an 'A' or 'B' name variation—like the iconic Nasty Nick and Evil Eddie. It's pure, unapologetic 80s nostalgia."
             }
         };
@@ -829,7 +827,7 @@
             if (setKey === 'gpk1') {
                 rowLabelHTML = '<div class="row-label">Series 1 &mdash; 5 stickers per pack &middot; click to view back</div>';
                 collectionHeaderHTML = `<div class="collection-header"><div><h2 class="collection-title">Collection</h2><p class="collection-sub">82 stickers &mdash; 41 pairs</p></div><span class="collection-count" id="collectionCount">0 / 82</span></div><div class="collection-grid" id="collectionGrid"></div>`;
-                packCoverHTML = `<div style="width:100%;height:100%;background:linear-gradient(165deg,#1a0020,#4a0060,#1a0020);display:flex;flex-direction:column;align-items:center;justify-content:center;border-radius:6px;"><div style="font-family:Georgia,serif;font-size:2rem;font-weight:900;color:#ff6b00;">GPK</div></div>`;
+                packCoverHTML = `<img src="card_images/gpk_series1/gpk_series1_pack_wrapper.jpg" alt="Garbage Pail Kids Series 1 pack" style="width:100%;height:100%;object-fit:cover;border-radius:6px;">`;
             } else if (setKey === 'mm1992') {
                 rowLabelHTML = `<div id="spectraRow" style="display:none; margin-bottom: 1rem;"><div class="row-label" id="spectraLabel">Battle Spectra Hit</div><div class="cards-row" id="slots-spectra"></div></div><div><div class="row-label">Base Set cards</div></div>`;
                 collectionHeaderHTML = `<div class="collection-header"><div><h2 class="collection-title">Collection</h2><p class="collection-sub" style="color:var(--spectra)">Battle Spectra &mdash; 5 cards</p></div><span class="collection-count" id="collectionCount">0/105</span></div><div class="collection-grid" id="spectraGrid"></div><div class="collection-header" style="margin-top:2rem;"><div><p class="collection-sub">Base Set &mdash; 100 cards</p></div></div><div class="collection-grid" id="collectionGrid"></div>`;
