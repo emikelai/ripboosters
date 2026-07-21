@@ -352,7 +352,7 @@
                     <!-- RAVNICA: CITY OF GUILDS -->
                     <div class="set-card" data-set-key="rav">
                         <div class="set-cover">
-                            <img src="card_images/mtg_sets/mtg_rav_pack_wrapper.jpg" alt="Ravnica: City of Guilds pack">
+                            <img src="card_images/mtg_sets/mtg_rav_packwrapper4.jpg" alt="Ravnica: City of Guilds pack">
                         </div>
                         <div class="set-body">
                             <div class="set-name">Ravnica: City of Guilds</div>
@@ -777,7 +777,7 @@
 
             const packImageMap = {
                 'isd': 'card_images/mtg_sets/mtg_isd_packwrapper1.jpg',
-                'rav': 'card_images/mtg_sets/mtg_rav_pack_wrapper.jpg',
+                'rav': 'card_images/mtg_sets/mtg_rav_packwrapper4.jpg',
                 'gpk1': 'card_images/gpk_series1/gpk_series1_pack_wrapper.jpg',
                 'mm1992': 'card_images/marvel_masterpieces_1992/mm1992_packimage1_wolverine.jpg',
                 'mm1993': 'card_images/marvel_masterpieces_1993/mm1993_packimage1_silversurfer.jpg',
@@ -1010,7 +1010,7 @@
                     <div class="collection-grid" id="collectionGrid"></div>`;
                 
                 if (setKey === 'rav') {
-                    packCoverHTML = `<img src="card_images/mtg_sets/mtg_rav_pack_wrapper.jpg" alt="Pack" style="width:100%;height:100%;object-fit:cover;border-radius:6px;">`;
+                    packCoverHTML = `<img id="packWrapperImg" src="card_images/mtg_sets/mtg_rav_packwrapper4.jpg" alt="Ravnica: City of Guilds pack" style="width:100%;height:100%;object-fit:cover;border-radius:6px;">`;
                 } else if (setKey === 'isd') {
                     packCoverHTML = `<img id="packWrapperImg" src="card_images/mtg_sets/mtg_isd_packwrapper1.jpg" alt="Pack" style="width:100%;height:100%;object-fit:cover;border-radius:6px;">`;
                 } else if (setKey === 'mtg3ed') {
@@ -1357,6 +1357,14 @@
                         if (pack) pack.classList.remove('pack-tearing');
                         if (wrapperEl) { wrapperEl.classList.remove('opened'); wrapperEl.style.opacity = '1'; }
                         
+                        if (setKey === 'rav') {
+                            const packImgEl = document.getElementById('packWrapperImg');
+                            if (packImgEl) {
+                                const randomNum = Math.floor(Math.random() * 5) + 1;
+                                packImgEl.src = `card_images/mtg_sets/mtg_rav_packwrapper${randomNum}.jpg`;
+                            }
+                        }
+
                         if (setKey === 'isd') {
                             const packImgEl = document.getElementById('packWrapperImg');
                             if (packImgEl) {
