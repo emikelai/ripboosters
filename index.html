@@ -241,7 +241,7 @@
             <!-- MAGIC THE GATHERING SECTION -->
             <div class="category-block">
                 <div class="category-label">Magic: The Gathering</div>
-                <div class="category-sub">8 sets available</div>
+                <div class="category-sub">10 sets available</div>
                 <div class="sets-grid">
                     
                     <!-- ALPHA -->
@@ -345,6 +345,32 @@
                             <div class="set-meta">1994 &middot; WotC &middot; <span class="set-meta-about-trigger" data-set-key="mtgdrk">About</span> &middot; 119 cards</div>
                             <div class="set-progress-track"><div class="set-progress-bar" id="prog-mtgdrk" style="width:0%;background:#9b1c1c"></div></div>
                             <div class="set-progress-label" id="label-mtgdrk">0 / 119 collected</div>
+                        </div>
+                    </div>
+
+                    <!-- RAVNICA: CITY OF GUILDS -->
+                    <div class="set-card" data-set-key="rav">
+                        <div class="set-cover">
+                            <img src="card_images/mtg_sets/mtg_rav_pack_wrapper.jpg" alt="Ravnica: City of Guilds pack">
+                        </div>
+                        <div class="set-body">
+                            <div class="set-name">Ravnica: City of Guilds</div>
+                            <div class="set-meta">2005 &middot; WotC &middot; <span class="set-meta-about-trigger" data-set-key="rav">About</span> &middot; 306 cards</div>
+                            <div class="set-progress-track"><div class="set-progress-bar" id="prog-rav" style="width:0%;background:#4a7c59"></div></div>
+                            <div class="set-progress-label" id="label-rav">0 / 306 collected</div>
+                        </div>
+                    </div>
+
+                    <!-- INNISTRAD -->
+                    <div class="set-card" data-set-key="isd">
+                        <div class="set-cover">
+                            <img src="card_images/mtg_sets/mtg_isd_packwrapper1.jpg" alt="Innistrad pack">
+                        </div>
+                        <div class="set-body">
+                            <div class="set-name">Innistrad</div>
+                            <div class="set-meta">2011 &middot; WotC &middot; <span class="set-meta-about-trigger" data-set-key="isd">About</span> &middot; 264 cards</div>
+                            <div class="set-progress-track"><div class="set-progress-bar" id="prog-isd" style="width:0%;background:#4c5b6b"></div></div>
+                            <div class="set-progress-label" id="label-isd">0 / 264 collected</div>
                         </div>
                     </div>
 
@@ -590,8 +616,11 @@
             mtgatq: MTG_CONFIGS.mtgatq,
             mtg3ed: MTG_CONFIGS.mtg3ed,
             mtgleg: MTG_CONFIGS.mtgleg,
-            mtgdrk: MTG_CONFIGS.mtgdrk
+            mtgdrk: MTG_CONFIGS.mtgdrk,
+            rav: MTG_CONFIGS.rav,
+            isd: MTG_CONFIGS.isd
         };
+
         const APP_ROUTES = {
             'privacy': { mainTitle: 'Privacy Policy', subTitle: 'Legal & Compliance Disclosures', seoTitle: 'Privacy Policy - Rip Boosters', seoDesc: 'Privacy policy and data tracking rules for the Rip Boosters non-commercial simulation application.' },
             'terms': { mainTitle: 'Terms & Cookies', subTitle: 'Terms of Service & Cookie Use Agreement', seoTitle: 'Terms of Service & Cookie Policy - Rip Boosters', seoDesc: 'User agreement, acceptable use rules, and cookie tracking details for Rip Boosters.' },
@@ -608,7 +637,9 @@
             'mtgatq': { mainTitle: 'Magic: The Gathering', subTitle: '1994 Antiquities &middot; WotC', seoTitle: 'MTG Antiquities Booster Simulator - Rip Boosters', seoDesc: 'Open artifact-rich 1994 MTG Antiquities packs online and follow the brothers Urza and Mishra.' },
             'mtg3ed': { mainTitle: 'Magic: The Gathering', subTitle: '1994 Revised Edition &middot; WotC', seoTitle: 'MTG Revised Edition Booster Simulator - Rip Boosters', seoDesc: 'Rip classic 1994 Revised Edition booster packs. Collect iconic Dual Lands and early core base cards.' },
             'mtgleg': { mainTitle: 'Magic: The Gathering', subTitle: '1994 Legends &middot; WotC', seoTitle: 'MTG Legends Booster Pack Simulator - Rip Boosters', seoDesc: 'Cast legendary multicolor gold cards by ripping open 1994 MTG Legends expansion packs.' },
-            'mtgdrk': { mainTitle: 'Magic: The Gathering', subTitle: '1994 The Dark &middot; WotC', seoTitle: 'MTG The Dark Pack Simulator - Rip Boosters', seoDesc: 'Open gothic-horror themed 1994 MTG The Dark booster packs online.' }
+            'mtgdrk': { mainTitle: 'Magic: The Gathering', subTitle: '1994 The Dark &middot; WotC', seoTitle: 'MTG The Dark Pack Simulator - Rip Boosters', seoDesc: 'Open gothic-horror themed 1994 MTG The Dark booster packs online.' },
+            'rav': { mainTitle: 'Magic: The Gathering', subTitle: '2005 Ravnica: City of Guilds &middot; WotC', seoTitle: 'MTG Ravnica Booster Simulator - Rip Boosters', seoDesc: 'Open 2005 Ravnica: City of Guilds booster packs. Chase original Shock Lands, Dark Confidant, and guild staples.' },
+            'isd': { mainTitle: 'Magic: The Gathering', subTitle: '2011 Innistrad &middot; WotC', seoTitle: 'MTG Innistrad Booster Simulator - Rip Boosters', seoDesc: 'Simulate opening iconic 2011 MTG Innistrad booster packs. Hunt for Liliana of the Veil and Snapcaster Mage.' }
         };
 
         // Static Database for Custom Set Detail Modals
@@ -644,6 +675,14 @@
             mtgdrk: {
                 title: "Magic: The Gathering – The Dark (1994)",
                 text: "Released in August 1994, The Dark explores a bleak, superstitious fantasy setting falling into ruin. Known for its gothic horror themes and eerie art, it introduced enduring staples like Blood Moon, Maze of Ith, and Tormod's Crypt."
+            },
+            rav: {
+                title: "Magic: The Gathering – Ravnica: City of Guilds (2005)",
+                text: "Released in October 2005, Ravnica: City of Guilds introduced players to a world-spanning metropolis ruled by ten distinct two-color guilds. It debuted the iconic cycle of 'Shock Lands'—including Overgrown Tomb and Temple Garden—and format-defining staples like Dark Confidant, making it one of the most beloved draft and set environments in Magic history."
+            },
+            isd: {
+                title: "Magic: The Gathering – Innistrad (2011)",
+                text: "Released in September 2011, Innistrad is widely celebrated as one of the greatest Magic expansion sets ever created. Inspired by gothic horror, it introduced double-faced cards, Werewolves, Vampires, and Zombies alongside legendary staples like Liliana of the Veil, Snapcaster Mage, and Geist of Saint Traft."
             },
             mm1992: {
                 title: "Marvel Masterpieces (1992)",
@@ -802,7 +841,7 @@
                 const metadata = APP_ROUTES[setKey]; if (!metadata) return navigateToView(null, true);
                 
                 // Dynamic verification block covering all MTG releases
-                const isMtg = ['mtglea', 'mtgleb', 'mtg2ed', 'mtgarn', 'mtgatq', 'mtg3ed', 'mtgleg', 'mtgdrk'].includes(setKey);
+                const isMtg = ['mtglea', 'mtgleb', 'mtg2ed', 'mtgarn', 'mtgatq', 'mtg3ed', 'mtgleg', 'mtgdrk', 'rav', 'isd'].includes(setKey);
                 if (isMtg) {
                     headerMainTitle.textContent = "Loading Scryfall...";
                     headerSubtitle.innerHTML = "Gathering card sheets from historical archives...";
@@ -828,7 +867,7 @@
 
         function loadViewLayout(setKey) {
             let rowLabelHTML = '', collectionHeaderHTML = '', packCoverHTML = '';
-            const isMtg = ['mtglea', 'mtgleb', 'mtg2ed', 'mtgarn', 'mtgatq', 'mtg3ed', 'mtgleg', 'mtgdrk'].includes(setKey);
+            const isMtg = ['mtglea', 'mtgleb', 'mtg2ed', 'mtgarn', 'mtgatq', 'mtg3ed', 'mtgleg', 'mtgdrk', 'rav', 'isd'].includes(setKey);
 
             if (setKey === 'gpk1') {
                 rowLabelHTML = '<div class="row-label">Series 1 &mdash; 5 stickers per pack &middot; click to view back</div>';
@@ -838,7 +877,6 @@
                 rowLabelHTML = `<div id="spectraRow" style="display:none; margin-bottom: 1rem;"><div class="row-label" id="spectraLabel">Battle Spectra Hit</div><div class="cards-row" id="slots-spectra"></div></div><div><div class="row-label">Base Set cards</div></div>`;
                 collectionHeaderHTML = `<div class="collection-header"><div><h2 class="collection-title">Collection</h2><p class="collection-sub" style="color:var(--spectra)">Battle Spectra &mdash; 5 cards</p></div><span class="collection-count" id="collectionCount">0/105</span></div><div class="collection-grid" id="spectraGrid"></div><div class="collection-header" style="margin-top:2rem;"><div><p class="collection-sub">Base Set &mdash; 100 cards</p></div></div><div class="collection-grid" id="collectionGrid"></div>`;
                 
-                // 50/50 Randomizer between Wolverine and Spider-Man pack wrappers
                 const mm92PackImg = Math.random() < 0.5 
                     ? 'card_images/marvel_masterpieces_1992/mm1992_packimage1_wolverine.jpg' 
                     : 'card_images/marvel_masterpieces_1992/mm1992_packimage2_spiderman.jpg';
@@ -847,13 +885,11 @@
                 rowLabelHTML = `<div id="spectraRow" style="display:none; margin-bottom: 1rem;"><div class="row-label" id="spectraLabel">Dyna-Etch Hit</div><div class="cards-row" id="slots-spectra"></div></div><div><div class="row-label">Base Set cards</div></div>`;
                 collectionHeaderHTML = `<div class="collection-header"><div><h2 class="collection-title">Collection</h2><p class="collection-sub" style="color:#1a6a1a;">Dyna-Etch &mdash; 8 cards</p></div><span class="collection-count" id="collectionCount">0/98</span></div><div class="collection-grid" id="spectraGrid"></div><div class="collection-header" style="margin-top:2rem;"><div><p class="collection-sub">Base Set &mdash; 90 cards</p></div></div><div class="collection-grid" id="collectionGrid"></div>`;
                 
-                // Silver Surfer main image initially
                 packCoverHTML = `<img id="packWrapperImg" src="card_images/marvel_masterpieces_1993/mm1993_packimage1_silversurfer.jpg" alt="Marvel Masterpieces 1993 pack" style="width:100%;height:100%;object-fit:cover;border-radius:6px;">`;
             } else if (setKey === 'mu1990') {
                 rowLabelHTML = `<div id="spectraRow" style="display:none; margin-bottom: 1rem;"><div class="row-label" id="spectraLabel">Hologram Hit</div><div class="cards-row" id="slots-spectra"></div></div><div><div class="row-label">Base Set cards</div></div>`;
                 collectionHeaderHTML = `<div class="collection-header"><div><h2 class="collection-title">Collection</h2><p class="collection-sub" style="color:#1a3a8a;">Holograms &mdash; 5 cards</p></div><span class="collection-count" id="collectionCount">0/167</span></div><div class="collection-grid" id="spectraGrid"></div><div class="collection-header" style="margin-top:2rem;"><div><p class="collection-sub">Base Set &mdash; 162 cards</p></div></div><div class="collection-grid" id="collectionGrid"></div>`;
                 
-                // Spider-Man main image initially
                 packCoverHTML = `<img id="packWrapperImg" src="card_images/marvel_impel_1990/marvel_impel_1990_packimage2_spiderman.jpg" alt="Marvel Universe 1990 pack" style="width:100%;height:100%;object-fit:cover;border-radius:6px;">`;
             } else if (setKey === 'xmen1992') {
                 rowLabelHTML = `<div id="spectraRow" style="display:none; margin-bottom: 1rem;"><div class="row-label" id="spectraLabel">Gold Hologram Hit</div><div class="cards-row" id="slots-spectra"></div></div><div><div class="row-label">Base Set cards</div></div>`;
@@ -882,7 +918,6 @@
                     </div>
                     <div class="collection-grid" id="collectionGrid"></div>`;
                 
-                // Teal main image initially
                 packCoverHTML = `<img id="packWrapperImg" src="card_images/xmen_impel_1992/uncanny_xmen_1992_packimage2_teal.jpg" alt="The Uncanny X-Men 1992 pack" style="width:100%;height:100%;object-fit:cover;border-radius:6px;">`;
             } else if (isMtg) {
                 const config = DATA_MAP[setKey];
@@ -907,6 +942,10 @@
                     showcaseSubText = "Dual Lands & Power Nine";
                 } else if (setKey === "mtg3ed") {
                     showcaseSubText = "Dual Lands & Wheel of Fortune";
+                } else if (setKey === "rav") {
+                    showcaseSubText = "Shock Lands & Guild Staples";
+                } else if (setKey === "isd") {
+                    showcaseSubText = "Gothic Mythics & Planeswalkers";
                 }
 
                 const subMarkup = showcaseSubText 
@@ -931,7 +970,11 @@
                     </div>
                     <div class="collection-grid" id="collectionGrid"></div>`;
                 
-                if (setKey === 'mtg3ed') {
+                if (setKey === 'rav') {
+                    packCoverHTML = `<img src="card_images/mtg_sets/mtg_rav_pack_wrapper.jpg" alt="Pack" style="width:100%;height:100%;object-fit:cover;border-radius:6px;">`;
+                } else if (setKey === 'isd') {
+                    packCoverHTML = `<img id="packWrapperImg" src="card_images/mtg_sets/mtg_isd_packwrapper1.jpg" alt="Pack" style="width:100%;height:100%;object-fit:cover;border-radius:6px;">`;
+                } else if (setKey === 'mtg3ed') {
                     packCoverHTML = `<img src="card_images/mtg_sets/mtg_3ed_revised_pack_wrapper.jpg" alt="Pack" style="width:100%;height:100%;object-fit:cover;border-radius:6px;">`;
                 } else if (setKey === 'mtglea' || setKey === 'mtgleb') {
                     packCoverHTML = `<img src="card_images/mtg_sets/mtg_alpha_beta_pack_wrapper.jpg" alt="Pack" style="width:100%;height:100%;object-fit:cover;border-radius:6px;">`;
@@ -999,7 +1042,7 @@
             }
 
             const activeSetData = DATA_MAP[setKey];
-            const isMtg = ['mtglea', 'mtgleb', 'mtg2ed', 'mtgarn', 'mtgatq', 'mtg3ed', 'mtgleg', 'mtgdrk'].includes(setKey);
+            const isMtg = ['mtglea', 'mtgleb', 'mtg2ed', 'mtgarn', 'mtgatq', 'mtg3ed', 'mtgleg', 'mtgdrk', 'rav', 'isd'].includes(setKey);
 
             let savedData = JSON.parse(localStorage.getItem(setKey)) || { base: [], spectra: [], totalPacks: 0 };
             if (!Array.isArray(savedData.base)) savedData.base = [];
@@ -1023,7 +1066,6 @@
                 if (setKey === 'mm1992') return isInsert ? `card_images/marvel_masterpieces_1992/spectra_${side}_${n}.jpg` : `card_images/marvel_masterpieces_1992/${side}_${String(n).padStart(3, '0')}.jpg`;
                 if (setKey === 'mm1993') return isInsert ? `card_images/marvel_masterpieces_1993/dynaetch_${side}_${n}.jpg` : `card_images/marvel_masterpieces_1993/${side}_${String(n).padStart(3, '0')}.jpg`;
                 
-                // 1990 MARVEL UNIVERSE DYNAMIC INTEL ASSET ROUTER
                 if (setKey === 'mu1990') {
                     let numStr = String(n).trim().toUpperCase();
                     if (numStr.startsWith('MH')) {
@@ -1233,7 +1275,6 @@
                         let pullRate = setKey === 'mm1993' ? (1/9) : (setKey === 'mm1992' ? 0.25 : (1/12));
                         let hasInsert = setKey !== 'gpk1' && Math.random() < pullRate;
 
-                        // Cleanly render Holo Hits at top with matching section heading text
                         if (hasInsert && sInsert && rowIns) {
                             const rInsert = insertArr[Math.floor(Math.random() * insertArr.length)];
                             if (!savedData.spectra.includes(rInsert.n)) savedData.spectra.push(rInsert.n);
@@ -1251,13 +1292,11 @@
                             targetAmt = hasInsert ? 5 : 6;
                         }
 
-                        // Fetch Base pool cards up to card #162 cleanly
                         let availablePool = [...activeSetData.baseCards];
                         if (setKey === 'mu1990') {
                             availablePool = availablePool.filter(c => parseInt(String(c.n).trim().replace(/^\D+/g, ''), 10) <= 162);
                         }
                         
-                        // Fisher-Yates shuffle engine
                         for (let i = availablePool.length - 1; i > 0; i--) {
                             const j = Math.floor(Math.random() * (i + 1));
                             [availablePool[i], availablePool[j]] = [availablePool[j], availablePool[i]];
@@ -1279,7 +1318,14 @@
                         if (pack) pack.classList.remove('pack-tearing');
                         if (wrapperEl) { wrapperEl.classList.remove('opened'); wrapperEl.style.opacity = '1'; }
                         
-                        // Randomize pack wrapper image for MM1992 after every pack opening
+                        if (setKey === 'isd') {
+                            const packImgEl = document.getElementById('packWrapperImg');
+                            if (packImgEl) {
+                                const randomNum = Math.floor(Math.random() * 5) + 1;
+                                packImgEl.src = `card_images/mtg_sets/mtg_isd_packwrapper${randomNum}.jpg`;
+                            }
+                        }
+
                         if (setKey === 'mm1992') {
                             const packImgEl = document.getElementById('packWrapperImg');
                             if (packImgEl) {
@@ -1290,7 +1336,6 @@
                             }
                         }
 
-                        // Randomize pack wrapper image for MM1993 after every pack opening
                         if (setKey === 'mm1993') {
                             const packImgEl = document.getElementById('packWrapperImg');
                             if (packImgEl) {
@@ -1301,7 +1346,6 @@
                             }
                         }
 
-                        // Randomize pack wrapper image for MU1990 across 3 wrappers after every pack opening
                         if (setKey === 'mu1990') {
                             const packImgEl = document.getElementById('packWrapperImg');
                             if (packImgEl) {
@@ -1314,7 +1358,6 @@
                             }
                         }
 
-                        // Randomize pack wrapper image for X-Men 1992 after every pack opening
                         if (setKey === 'xmen1992') {
                             const packImgEl = document.getElementById('packWrapperImg');
                             if (packImgEl) {
@@ -1418,7 +1461,9 @@
                 { key: 'mtgatq', total: 100, barId: 'prog-mtgatq', labelId: 'label-mtgatq' },
                 { key: 'mtg3ed', total: 306, barId: 'prog-mtg3ed', labelId: 'label-mtg3ed' },
                 { key: 'mtgleg', total: 310, barId: 'prog-mtgleg', labelId: 'label-mtgleg' },
-                { key: 'mtgdrk', total: 119, barId: 'prog-mtgdrk', labelId: 'label-mtgdrk' }
+                { key: 'mtgdrk', total: 119, barId: 'prog-mtgdrk', labelId: 'label-mtgdrk' },
+                { key: 'rav', total: 306, barId: 'prog-rav', labelId: 'label-rav' },
+                { key: 'isd', total: 264, barId: 'prog-isd', labelId: 'label-isd' }
             ];
             trackingProfile.forEach(set => {
                 try {
@@ -1435,7 +1480,6 @@
         document.addEventListener("DOMContentLoaded", () => {
             updateDashboardProgressTracks();
 
-            // Privacy Policy routing navigation click hook
             const privacyBtn = document.getElementById('privacy-nav-btn');
             if (privacyBtn) {
                 privacyBtn.addEventListener('click', (e) => {
@@ -1446,7 +1490,6 @@
                 });
             }
 
-            // Terms of Service routing navigation click hook
             const termsBtn = document.getElementById('terms-nav-btn');
             if (termsBtn) {
                 termsBtn.addEventListener('click', (e) => {
@@ -1457,7 +1500,6 @@
                 });
             }
 
-            // Contact Us routing navigation click hook
             const contactBtn = document.getElementById('contact-nav-btn');
             if (contactBtn) {
                 contactBtn.addEventListener('click', (e) => {
@@ -1468,7 +1510,6 @@
                 });
             }
 
-            // Track header utility button clicks with Zaraz & Clarity
             const feedbackBtn = document.getElementById('nav-feedback-btn');
             if (feedbackBtn) {
                 feedbackBtn.addEventListener('click', () => {
@@ -1493,7 +1534,6 @@
                 });
             }
             
-            // Handle Navigation clicks to view app cards
             document.querySelectorAll('.set-card').forEach(card => {
                 card.onclick = () => {
                     const targetKey = card.getAttribute('data-set-key');
@@ -1501,7 +1541,6 @@
                 };
             });
 
-            // Global delegation event handling for about details (covers dashboard & inner views)
             document.addEventListener('click', (e) => {
                 const trigger = e.target.closest('.set-meta-about-trigger');
                 if (trigger) {
