@@ -34,7 +34,8 @@
             justify-content: space-between;
             padding: 1rem 1.5rem;
             border-bottom: 1px solid var(--border);
-            background: #fff;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(8px);
             min-height: 50px;
         }
         .header-left {
@@ -766,11 +767,49 @@
             }
         }
 
+        // FULL PAGE DYNAMIC PACK BACKGROUND CONTROLLER
+        function applySetBodyTheme(setKey) {
+            if (!setKey) {
+                document.body.classList.remove('set-active-bg');
+                document.body.style.removeProperty('--set-bg-img');
+                return;
+            }
+
+            const packImageMap = {
+                'isd': 'card_images/mtg_sets/mtg_isd_packwrapper1.jpg',
+                'rav': 'card_images/mtg_sets/mtg_rav_pack_wrapper.jpg',
+                'gpk1': 'card_images/gpk_series1/gpk_series1_pack_wrapper.jpg',
+                'mm1992': 'card_images/marvel_masterpieces_1992/mm1992_packimage1_wolverine.jpg',
+                'mm1993': 'card_images/marvel_masterpieces_1993/mm1993_packimage1_silversurfer.jpg',
+                'mu1990': 'card_images/marvel_impel_1990/marvel_impel_1990_packimage2_spiderman.jpg',
+                'xmen1992': 'card_images/xmen_impel_1992/uncanny_xmen_1992_packimage2_teal.jpg',
+                'mtglea': 'card_images/mtg_sets/mtg_alpha_beta_pack_wrapper.jpg',
+                'mtgleb': 'card_images/mtg_sets/mtg_alpha_beta_pack_wrapper.jpg',
+                'mtg2ed': 'card_images/mtg_sets/mtg_unlimited_pack_wrapper.jpg',
+                'mtgarn': 'card_images/mtg_sets/mtg_arn_pack_wrapper.jpg',
+                'mtgatq': 'card_images/mtg_sets/mtg_atq_pack_wrapper.jpg',
+                'mtg3ed': 'card_images/mtg_sets/mtg_3ed_revised_pack_wrapper.jpg',
+                'mtgleg': 'card_images/mtg_sets/mtg_leg_pack_wrapper.jpg',
+                'mtgdrk': 'card_images/mtg_sets/mtg_drk_pack_wrapper.jpg'
+            };
+
+            if (packImageMap[setKey]) {
+                document.body.style.setProperty('--set-bg-img', `url('${window.location.origin}/${packImageMap[setKey]}')`);
+                document.body.classList.add('set-active-bg');
+            } else {
+                document.body.classList.remove('set-active-bg');
+                document.body.style.removeProperty('--set-bg-img');
+            }
+        }
+
         async function navigateToView(setKey, updateHistory = true) {
             window.openingPackState = false;
 
             // Reset scroll position to top of page on every view navigation
             window.scrollTo({ top: 0, behavior: 'instant' });
+
+            // Apply dynamic background image overlay for active set view
+            applySetBodyTheme(setKey);
 
             const viewPrivacy = document.getElementById('view-privacy-policy');
             const viewTerms = document.getElementById('view-terms-of-service');
