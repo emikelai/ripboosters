@@ -1,5 +1,6 @@
 // data-xmen1992.js
 export const XMEN1992_DATA = {
+    maxCount: 105,
     baseCards: [
         { n: 1, name: "Beast" }, { n: 2, name: "Wolverine" }, { n: 3, name: "Havok" },
         { n: 4, name: "Iceman" }, { n: 5, name: "Phoenix" }, { n: 6, name: "Nightcrawler" },
@@ -37,8 +38,10 @@ export const XMEN1992_DATA = {
         { n: 100, name: "Checklist" }
     ],
     holoCards: [
-        { id: 'XH1', n: 1, name: "Wolverine" }, { id: 'XH2', n: 2, name: "Cable" },
-        { id: 'XH3', n: 3, name: "Magneto" }, { id: 'XH4', n: 4, name: "X-Men Team" },
+        { id: 'XH1', n: 1, name: "Wolverine" }, 
+        { id: 'XH2', n: 2, name: "Cable" },
+        { id: 'XH3', n: 3, name: "Magneto" }, 
+        { id: 'XH4', n: 4, name: "X-Men Team" },
         { id: 'XH5', n: 5, name: "Shatterstar" }
     ]
 };

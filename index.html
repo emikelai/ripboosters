@@ -842,8 +842,15 @@
                 if (viewPrivacy) viewPrivacy.style.display = 'none';
                 if (viewTerms) viewTerms.style.display = 'none';
                 if (viewContact) viewContact.style.display = 'none';
-                viewAppPortal.style.display = 'none'; viewAppPortal.innerHTML = ''; viewDashboard.style.display = 'block'; spaBackBtn.style.visibility = 'hidden';
-                headerMainTitle.textContent = "Rip Boosters"; headerSubtitle.innerHTML = ""; updateDashboardProgressTracks();
+                viewAppPortal.style.display = 'none'; 
+                viewAppPortal.innerHTML = ''; 
+                viewDashboard.style.display = 'block'; 
+                spaBackBtn.style.visibility = 'hidden';
+                headerMainTitle.textContent = "Rip Boosters"; 
+                headerSubtitle.innerHTML = ""; 
+                
+                // Refresh home dashboard track bars
+                updateDashboardProgressTracks();
                 
                 if (updateHistory) {
                     history.pushState({ set: null }, '', window.location.pathname);
@@ -1148,9 +1155,9 @@
                 document.getElementById('packsTotal').textContent = savedData.totalPacks || 0;
                 document.getElementById('packsSession').textContent = sessionPacks;
                 
-                const uniqueBaseCount = new Set(savedData.base).size;
-                const uniqueSpectraCount = new Set(savedData.spectra).size;
-                const totalCollected = uniqueBaseCount + uniqueSpectraCount;
+                const uniqueBaseCount = new Set(savedData.base.map(String)).size;
+                const uniqueSpectraCount = new Set(savedData.spectra.map(String)).size;
+                const totalCollected = new Set([...savedData.base.map(String), ...savedData.spectra.map(String)]).size;
                 
                 const maxCount = activeSetData.maxCount || (setKey === 'mu1990' ? 167 : (setKey === 'mm1993' ? 98 : (setKey === 'gpk1' ? 82 : 105)));
                 document.getElementById('collectionCount').textContent = `${totalCollected} / ${maxCount}`;
@@ -1165,12 +1172,15 @@
                 if (setKey === 'mu1990') {
                     loopPool = loopPool.filter(card => parseInt(String(card.n).trim().replace(/^\D+/g, ''), 10) <= 162);
                 }
+                if (setKey === 'xmen1992') {
+                    loopPool = loopPool.filter(card => card.n < 91 || card.n > 99);
+                }
 
                 loopPool.forEach(card => {
                     const slot = document.createElement('div');
-                    const matchKey = setKey === 'gpk1' ? `${card.n}${card.v}` : card.n;
+                    const matchKey = setKey === 'gpk1' ? `${card.n}${card.v}` : String(card.n);
                     
-                    const isCollected = savedData.base.includes(matchKey) || savedData.spectra.includes(matchKey);
+                    const isCollected = savedData.base.map(String).includes(matchKey) || savedData.spectra.map(String).includes(matchKey);
                     slot.className = `col-slot ${isCollected ? 'filled' : 'no-image'}`;
                     slot.id = `col-base-${matchKey}`;
                     
@@ -1188,7 +1198,7 @@
                 const puzzleCards = activeSetData.baseCards.filter(c => c.n >= 91 && c.n <= 99);
                 puzzleCards.forEach(card => {
                     const slot = document.createElement('div');
-                    const isCollected = savedData.base.includes(card.n) || savedData.base.includes(String(card.n));
+                    const isCollected = savedData.base.map(String).includes(String(card.n));
                     slot.className = `col-slot ${isCollected ? 'filled' : 'no-image'}`;
                     slot.id = `col-puzzle-${card.n}`;
                     
@@ -1206,7 +1216,7 @@
                 if (isMtg) {
                     activeSetData.pools.hits.forEach(card => {
                         const slot = document.createElement('div');
-                        const isCollected = savedData.base.includes(card.n) || savedData.spectra.includes(card.n);
+                        const isCollected = savedData.base.map(String).includes(String(card.n)) || savedData.spectra.map(String).includes(String(card.n));
                         slot.className = `col-slot ${isCollected ? 'filled' : 'no-image'}`;
                         slot.id = `col-insert-${card.n}`;
                         
@@ -1219,10 +1229,12 @@
                         gridInsert.appendChild(slot);
                     });
                 } else {
-                    const insertArr = activeSetData.spectraCards || activeSetData.dynaCards || activeSetData.holoCards || [];
-                    insertArr.forEach(card => {
+                    const explicitInserts = activeSetData.spectraCards || activeSetData.dynaCards || activeSetData.holoCards || [];
+                    explicitInserts.forEach(card => {
                         const slot = document.createElement('div');
-                        const isCollected = savedData.spectra.includes(card.n);
+                        const trackKey = setKey === 'xmen1992' ? card.id : String(card.n);
+                        
+                        const isCollected = savedData.spectra.map(String).includes(trackKey);
                         slot.className = `col-slot ${isCollected ? 'filled' : 'no-image'}`;
                         slot.id = `col-insert-${card.n}`;
                         
@@ -1295,9 +1307,9 @@
                         
                         const isHit = activeSetData.pools.hits.some(h => h.n === pickedRare.n);
                         if (isHit) {
-                            if (!savedData.spectra.includes(pickedRare.n)) savedData.spectra.push(pickedRare.n);
+                            if (!savedData.spectra.map(String).includes(String(pickedRare.n))) savedData.spectra.push(String(pickedRare.n));
                         } else {
-                            if (!savedData.base.includes(pickedRare.n)) savedData.base.push(pickedRare.n);
+                            if (!savedData.base.map(String).includes(String(pickedRare.n))) savedData.base.push(String(pickedRare.n));
                         }
                         
                         sRare.appendChild(createPackCardElement(pickedRare, isHit, delay));
@@ -1308,7 +1320,7 @@
                             const rCard = activeSetData.pools.uncommon[Math.floor(Math.random() * activeSetData.pools.uncommon.length)];
                             if (!pickedUncommons.some(c => c.n === rCard.n)) {
                                 pickedUncommons.push(rCard);
-                                if (!savedData.base.includes(rCard.n)) savedData.base.push(rCard.n);
+                                if (!savedData.base.map(String).includes(String(rCard.n))) savedData.base.push(String(rCard.n));
                             }
                         }
                         pickedUncommons.forEach(c => {
@@ -1321,7 +1333,7 @@
                             const rCard = activeSetData.pools.common[Math.floor(Math.random() * activeSetData.pools.common.length)];
                             if (!pickedCommons.some(c => c.n === rCard.n)) {
                                 pickedCommons.push(rCard);
-                                if (!savedData.base.includes(rCard.n)) savedData.base.push(rCard.n);
+                                if (!savedData.base.map(String).includes(String(rCard.n))) savedData.base.push(String(rCard.n));
                             }
                         }
                         pickedCommons.forEach(c => {
@@ -1336,7 +1348,8 @@
 
                         if (hasInsert && sInsert && rowIns) {
                             const rInsert = insertArr[Math.floor(Math.random() * insertArr.length)];
-                            if (!savedData.spectra.includes(rInsert.n)) savedData.spectra.push(rInsert.n);
+                            const trackingId = setKey === 'xmen1992' ? rInsert.id : String(rInsert.n);
+                            if (!savedData.spectra.map(String).includes(trackingId)) savedData.spectra.push(trackingId);
                             rowIns.style.display = 'block';
                             sInsert.appendChild(createPackCardElement(rInsert, true, delay));
                             delay += step;
@@ -1363,8 +1376,8 @@
 
                         let pulledBase = availablePool.slice(0, targetAmt);
                         pulledBase.forEach(rc => {
-                            const uniqKey = setKey === 'gpk1' ? `${rc.n}${rc.v}` : rc.n;
-                            if (!savedData.base.includes(uniqKey)) savedData.base.push(uniqKey);
+                            const uniqKey = setKey === 'gpk1' ? `${rc.n}${rc.v}` : String(rc.n);
+                            if (!savedData.base.map(String).includes(uniqKey)) savedData.base.push(uniqKey);
                             sBase.appendChild(createPackCardElement(rc, false, delay));
                             delay += step;
                         });
@@ -1456,12 +1469,12 @@
             }
 
             function refreshGridSlots() {
-                const unifiedCollectionSet = new Set([...savedData.base, ...savedData.spectra]);
+                const unifiedCollectionSet = new Set([...savedData.base.map(String), ...savedData.spectra.map(String)]);
                 
                 unifiedCollectionSet.forEach(k => {
                     const slot = document.getElementById(`col-base-${k}`);
                     if (slot && slot.classList.contains('no-image')) {
-                        const card = activeSetData.baseCards.find(c => (setKey === 'gpk1' ? `${c.n}${c.v}` : c.n) == k);
+                        const card = activeSetData.baseCards.find(c => (setKey === 'gpk1' ? `${c.n}${c.v}` : String(c.n)) == k);
                         if (card) {
                             slot.className = 'col-slot filled'; slot.innerHTML = `<img src="${getImgPath(card.n, 'front', false, card.v || '')}">`;
                             slot.onclick = () => showLightbox(getImgPath(card.n, 'front', false, card.v || ''), getImgPath(card.n, 'back', false, card.v || ''));
@@ -1471,7 +1484,7 @@
                     if (setKey === 'xmen1992') {
                         const pSlot = document.getElementById(`col-puzzle-${k}`);
                         if (pSlot && pSlot.classList.contains('no-image')) {
-                            const pCard = activeSetData.baseCards.find(c => c.n == k);
+                            const pCard = activeSetData.baseCards.find(c => String(c.n) == k);
                             if (pCard) {
                                 pSlot.className = 'col-slot filled'; pSlot.innerHTML = `<img src="${getImgPath(pCard.n, 'front', false)}">`;
                                 pSlot.onclick = () => showLightbox(getImgPath(pCard.n, 'front', false), getImgPath(pCard.n, 'back', false));
@@ -1482,7 +1495,7 @@
 
                 if (isMtg) {
                     activeSetData.pools.hits.forEach(card => {
-                        const isCollected = savedData.base.includes(card.n) || savedData.spectra.includes(card.n);
+                        const isCollected = savedData.base.map(String).includes(String(card.n)) || savedData.spectra.map(String).includes(String(card.n));
                         const slot = document.getElementById(`col-insert-${card.n}`);
                         if (slot && isCollected && slot.classList.contains('no-image')) {
                             slot.className = 'col-slot filled';
@@ -1492,14 +1505,13 @@
                     });
                 } else {
                     const explicitInserts = activeSetData.spectraCards || activeSetData.dynaCards || activeSetData.holoCards || [];
-                    savedData.spectra?.forEach(num => {
-                        const slot = document.getElementById(`col-insert-${num}`);
-                        if (slot && slot.classList.contains('no-image')) {
-                            const card = explicitInserts.find(c => c.n == num);
-                            if (card) {
-                                slot.className = 'col-slot filled'; slot.innerHTML = `<img src="${getImgPath(card.n, 'front', true)}">`;
-                                slot.onclick = () => showLightbox(getImgPath(card.n, 'front', true), getImgPath(card.n, 'back', true));
-                            }
+                    explicitInserts.forEach(card => {
+                        const slot = document.getElementById(`col-insert-${card.n}`);
+                        const trackKey = setKey === 'xmen1992' ? card.id : String(card.n);
+                        const isCollected = savedData.spectra.map(String).includes(trackKey);
+                        if (slot && isCollected && slot.classList.contains('no-image')) {
+                            slot.className = 'col-slot filled'; slot.innerHTML = `<img src="${getImgPath(card.n, 'front', true)}">`;
+                            slot.onclick = () => showLightbox(getImgPath(card.n, 'front', true), getImgPath(card.n, 'back', true));
                         }
                     });
                 }
@@ -1532,15 +1544,25 @@
                 { key: 'rav', total: 306, barId: 'prog-rav', labelId: 'label-rav' },
                 { key: 'isd', total: 264, barId: 'prog-isd', labelId: 'label-isd' }
             ];
+
             trackingProfile.forEach(set => {
                 try {
                     const saved = JSON.parse(localStorage.getItem(set.key)) || {};
-                    const collected = new Set([...(saved.base || []), ...(saved.spectra || [])]).size;
+                    const baseArr = Array.isArray(saved.base) ? saved.base.map(String) : [];
+                    const spectraArr = Array.isArray(saved.spectra) ? saved.spectra.map(String) : [];
                     
-                    const pct = Math.round((collected / set.total) * 100);
-                    document.getElementById(set.barId).style.width = pct + '%';
-                    document.getElementById(set.labelId).textContent = `${collected} / ${set.total} collected`;
-                } catch (e) {}
+                    const collected = new Set([...baseArr, ...spectraArr]).size;
+                    
+                    const pct = Math.min(100, Math.round((collected / set.total) * 100));
+                    
+                    const barEl = document.getElementById(set.barId);
+                    const labelEl = document.getElementById(set.labelId);
+                    
+                    if (barEl) barEl.style.width = pct + '%';
+                    if (labelEl) labelEl.textContent = `${collected} / ${set.total} collected`;
+                } catch (e) {
+                    console.error(`Error updating dashboard progress for ${set.key}:`, e);
+                }
             });
         }
 
