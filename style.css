@@ -114,24 +114,30 @@ header h1 em, #header-main-title {
     color: var(--fg);
 }
 
+/* FIXED GLOBAL HEADER WITH MOBILE HARDWARE LOCK */
 #global-header {
     position: fixed;
     top: 0;
     left: 0;
     right: 0;
+    width: 100%;
     z-index: 1000;
     background: rgba(244, 242, 238, 0.96);
     backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
     border-bottom: 1px solid var(--border);
     padding: 1.5rem 1.5rem;
     text-align: center;
+
+    /* PREVENT MOBILE ADDRESS BAR HARDWARE DRIFT */
+    will-change: transform;
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
 }
 
 .back-link {
-    position: absolute;
-    left: 1.5rem;
-    top: 50%;
-    transform: translateY(-50%);
+    position: static;
+    transform: none;
     color: var(--muted);
     font-size: 0.9rem;
     font-family: var(--font-sans);
@@ -143,10 +149,8 @@ header h1 em, #header-main-title {
 }
 
 .header-extra-links {
-    position: absolute;
-    right: 1.5rem;
-    top: 50%;
-    transform: translateY(-50%);
+    position: static;
+    transform: none;
     display: flex;
     gap: 1.25rem;
     align-items: center;
@@ -316,7 +320,7 @@ header h1 em, #header-main-title {
 .set-card { background: #fff; border: 1px solid var(--border); border-radius: 10px; overflow: hidden; color: inherit; display: block; transition: border-color .15s, box-shadow .15s, transform .15s; cursor: pointer; }
 .set-card:hover { border-color: var(--gold); box-shadow: 0 6px 24px rgba(0, 0, 0, .1); transform: translateY(-3px); }
 
-/* Option 2: Vertical Pack Alignment Rules */
+/* Vertical Pack Alignment Rules */
 .set-cover { 
     height: 160px; 
     display: flex; 
