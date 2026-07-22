@@ -36,7 +36,17 @@
             border-bottom: 1px solid var(--border);
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
             min-height: 50px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            width: 100%;
+            z-index: 1000;
+            will-change: transform;
+            transform: translateZ(0);
+            -webkit-transform: translateZ(0);
         }
         .header-left {
             display: flex;
@@ -45,13 +55,17 @@
         .header-extra-links {
             display: flex;
             align-items: center;
-            gap: 0.75rem;
+            gap: 1.25rem;
+            position: static;
+            transform: none;
         }
         .back-link {
             white-space: nowrap;
             text-decoration: none;
             color: inherit;
             font-weight: 500;
+            position: static;
+            transform: none;
         }
 
         .page-title-container {
@@ -220,12 +234,18 @@
 <body>
     <header id="global-header">
         <div class="header-left">
-            <a href="#" class="back-link" id="spa-back-btn" style="visibility: hidden;">&larr; All Sets</a>
+            <a href="#" class="back-link" id="spa-back-btn" style="visibility: hidden;">
+                <span class="desktop-text">&larr; All Sets</span>
+                <span class="mobile-text">&larr; Sets</span>
+            </a>
         </div>
         <div class="header-extra-links">
             <a href="https://forms.gle/LGtRVJ5uTHjnBgMV6" target="_blank" class="header-btn" id="nav-feedback-btn">Feedback</a>
             <a href="#" class="header-btn" id="about-nav-btn">About</a>
-            <a href="https://ko-fi.com/ripboosters" target="_blank" class="header-btn coffee" id="nav-kofi-btn">☕ Support on Ko-fi</a>
+            <a href="https://ko-fi.com/ripboosters" target="_blank" class="header-btn coffee" id="nav-kofi-btn">
+                <span class="desktop-text">☕ Support on Ko-fi</span>
+                <span class="mobile-text">☕ Support</span>
+            </a>
         </div>
     </header>
 

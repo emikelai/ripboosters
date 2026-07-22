@@ -25,6 +25,20 @@ body {
     transition: background-color 0.4s ease, color 0.4s ease;
 }
 
+/* RESPONSIVE HEADER TEXT TOGGLE */
+.mobile-text {
+    display: none;
+}
+
+@media (max-width: 600px) {
+    .desktop-text {
+        display: none;
+    }
+    .mobile-text {
+        display: inline;
+    }
+}
+
 /* SLEEK DARK BACKDROP STAGE FOR ACTIVE SET VIEWS */
 body.set-active-bg {
     background-color: #0f1115;
@@ -295,6 +309,16 @@ header h1 em, #header-main-title {
 
 @media(max-width: 480px) {
     .cards-row { grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+    
+    .header-extra-links {
+        gap: 0.5rem;
+    }
+    .header-btn {
+        font-size: 0.62rem;
+    }
+    .back-link {
+        font-size: 0.8rem;
+    }
 }
 
 .card-slot { text-align: center; }
