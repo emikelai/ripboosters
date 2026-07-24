@@ -9,8 +9,8 @@
     <title id="seo-title">Rip Boosters - Trading Card Pack Opening Simulator</title>
     
     <!-- DYNAMIC SEO META TAGS -->
-    <meta id="seo-description" name="description" content="Open free nostalgic trading card booster packs instantly. Revisit retro card sets from Magic: The Gathering, Marvel Masterpieces, Marvel Universe, and Garbage Pail Kids with authentic pull rates.">
-    <meta name="keywords" content="booster pack simulator, retro trading cards, pack opener, mtg alpha simulator, marvel masterpieces 1992, garbage pail kids online, rip packs">
+    <meta id="seo-description" name="description" content="Open free nostalgic trading card booster packs instantly. Revisit retro card sets from Magic: The Gathering, Marvel Masterpieces, Marvel Universe, He-Man, and Garbage Pail Kids with authentic pull rates.">
+    <meta name="keywords" content="booster pack simulator, retro trading cards, pack opener, mtg alpha simulator, marvel masterpieces 1992, garbage pail kids online, he-man 1984, rip packs">
 
     <!-- GOOGLE ADSENSE CODE -->
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4033699653937150"
@@ -102,6 +102,15 @@
             grid-template-columns: repeat(3, 1fr);
             gap: 0.15rem;
             max-width: 540px;
+            margin: 1rem auto 0 auto;
+        }
+
+        /* 2x5 HE-MAN STICKER PUZZLE GRID LAYOUT ARCHITECTURE */
+        .puzzle-2x5-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 0.15rem;
+            max-width: 750px;
             margin: 1rem auto 0 auto;
         }
 
@@ -212,6 +221,7 @@
                 margin-top: 3rem;
                 font-size: 0.75rem;
             }
+            .puzzle-2x5-grid { max-width: 95vw; }
         }
 
         @media (max-width: 480px) {
@@ -458,11 +468,26 @@
                 </div>
             </div>
 
-            <!-- GARBAGE PAIL KIDS SECTION -->
+            <!-- POP CULTURE & CARTOONS SECTION -->
             <div class="category-block">
-                <div class="category-label">Garbage Pail Kids</div>
-                <div class="category-sub">1 set available</div>
+                <div class="category-label">Pop Culture & Cartoons</div>
+                <div class="category-sub">2 sets available</div>
                 <div class="sets-grid">
+                    
+                    <!-- MOTU1984 -->
+                    <div class="set-card" data-set-key="motu1984">
+                        <div class="set-cover">
+                            <img src="card_images/motu_1984/motu1984_packwrapper1.jpg" alt="Masters of the Universe 1984 pack">
+                        </div>
+                        <div class="set-body">
+                            <div class="set-name">Masters of the Universe</div>
+                            <div class="set-meta">1984 &middot; Topps &middot; <span class="set-meta-about-trigger" data-set-key="motu1984">About</span> &middot; 110 cards</div>
+                            <div class="set-progress-track"><div class="set-progress-bar" id="prog-motu1984" style="width:0%;background:#d87b28"></div></div>
+                            <div class="set-progress-label" id="label-motu1984">0 / 110 collected</div>
+                        </div>
+                    </div>
+
+                    <!-- GARBAGE PAIL KIDS OS1 -->
                     <div class="set-card" data-set-key="gpk1">
                         <div class="set-cover">
                             <img src="card_images/gpk_series1/gpk_series1_pack_wrapper.jpg" alt="Garbage Pail Kids Series 1 pack">
@@ -474,13 +499,14 @@
                             <div class="set-progress-label" id="label-gpk1">0 / 82 collected</div>
                         </div>
                     </div>
+
                 </div>
             </div>
 
             <!-- CONDENSED BOTTOM DASHBOARD OVERVIEW BLOCK -->
             <div class="dashboard-bottom-overview">
                 <h2>About Rip Boosters</h2>
-                <p>Hey there, welcome to Rip Boosters! This site is a completely free, non-commercial passion project built for anyone who loves trading cards and the classic rush of opening a fresh pack. Whether you're chasing the Power Nine in Magic: The Gathering sets, hunting for Spectra Hits in Marvel Masterpieces, or looking for retro Garbage Pail Kids stickers, we've built this simulator to recreate those exact card-opening experiences online.</p>
+                <p>Hey there, welcome to Rip Boosters! This site is a completely free, non-commercial passion project built for anyone who loves trading cards and the classic rush of opening a fresh pack. Whether you're chasing the Power Nine in Magic: The Gathering sets, hunting for Spectra Hits in Marvel Masterpieces, or looking for retro Garbage Pail Kids stickers and Masters of the Universe cards, we've built this simulator to recreate those exact card-opening experiences online.</p>
                 
                 <div class="dashboard-feature-summary">
                     <div class="summary-item-card">
@@ -583,8 +609,8 @@
             <p>
                 Card data, search configurations, and high-resolution imagery for all Magic: The Gathering sets are dynamically supplied 
                 by the <a href="https://scryfall.com" target="_blank" rel="noopener noreferrer">Scryfall API</a>. 
-                Marvel and Garbage Pail Kids trading card layouts, brand names, and original illustrations are copyright their respective 
-                owners (SkyBox, Impel, Topps, and Marvel) and are used strictly for non-commercial, nostalgic/educational simulation purposes.
+                Marvel, Garbage Pail Kids, and Masters of the Universe trading card layouts, brand names, and original illustrations are copyright 
+                their respective owners (SkyBox, Impel, Topps, Mattel, and Marvel) and are used strictly for non-commercial, nostalgic/educational simulation purposes.
             </p>
             <div class="footer-divider"></div>
             <div class="footer-links-row">
@@ -622,6 +648,7 @@
         import { MU1990_DATA } from './data-mu1990.js';
         import { XMEN1992_DATA } from './data-xmen1992.js';
         import { GPK1_DATA } from './data-gpk1.js';
+        import { MOTU1984_DATA } from './data-motu1984.js';
         import { MTG_CONFIGS, ensureSetData } from './data-mtg.js';
 
         const DATA_MAP = { 
@@ -630,6 +657,7 @@
             mu1990: MU1990_DATA, 
             xmen1992: XMEN1992_DATA, 
             gpk1: GPK1_DATA,
+            motu1984: MOTU1984_DATA,
             mtglea: MTG_CONFIGS.mtglea,
             mtgleb: MTG_CONFIGS.mtgleb,
             mtg2ed: MTG_CONFIGS.mtg2ed,
@@ -651,6 +679,7 @@
             'mu1990': { mainTitle: 'Marvel Universe', subTitle: '1990 Series I &middot; Impel', seoTitle: '1990 Marvel Universe Series 1 Pack Simulator - Rip Boosters', seoDesc: 'Rip retro 1990 Marvel Universe booster wrappers online. Relive classic Impel cards and pull ultra-rare holograms.' },
             'xmen1992': { mainTitle: 'The Uncanny X-Men', subTitle: '1992 Series I &middot; Impel', seoTitle: '1992 Uncanny X-Men Trading Card Simulator - Rip Boosters', seoDesc: 'Open 1992 X-Men packs drawn entirely by Jim Lee. Assemble the full base list and catch Gold Hologram chase cards.' },
             'gpk1': { mainTitle: 'Garbage Pail Kids OS1', subTitle: '1985 Series 1 &middot; Topps', seoTitle: '1985 Garbage Pail Kids Series 1 Simulator - Rip Boosters', seoDesc: 'Unbox original 1985 Series 1 Garbage Pail Kids stickers. Revisit classic gross parody card sets completely free.' },
+            'motu1984': { mainTitle: 'Masters of the Universe', subTitle: '1984 &middot; Topps', seoTitle: '1984 Masters of the Universe Pack Simulator - Rip Boosters', seoDesc: 'Open 1984 Topps Masters of the Universe booster packs online. Collect all 88 cartoon cards and 22 sticker inserts.' },
             'mtglea': { mainTitle: 'Magic: The Gathering', subTitle: '1993 Limited Edition Alpha &middot; WotC', seoTitle: 'MTG Limited Edition Alpha Booster Simulator - Rip Boosters', seoDesc: 'Simulate opening historic 1993 MTG Alpha booster packs. Chase the Power Nine, Black Lotus, and original white-bordered rares.' },
             'mtgleb': { mainTitle: 'Magic: The Gathering', subTitle: '1993 Limited Edition Beta &middot; WotC', seoTitle: 'MTG Limited Edition Beta Booster Simulator - Rip Boosters', seoDesc: 'Rip 1993 MTG Beta packs. Trace rare Dual Lands and historical original cards using accurate pull probabilities.' },
             'mtg2ed': { mainTitle: 'Magic: The Gathering', subTitle: '1993 Unlimited Edition &middot; WotC', seoTitle: 'MTG Unlimited Edition Booster Simulator - Rip Boosters', seoDesc: 'Open Unlimited Edition white-bordered MTG booster packs from 1993.' },
@@ -724,6 +753,10 @@
             gpk1: {
                 title: "Garbage Pail Kids: OS1 (1985)",
                 text: "Released by Topps in 1985 as a gross-out parody of the Cabbage Patch Kids craze, Garbage Pail Kids became an instant pop-culture phenomenon (and a target for school bans). The 82-sticker set features 41 uniquely disgusting characters, each printed with an 'A' or 'B' name variation—like the iconic Nasty Nick and Evil Eddie. It's pure, unapologetic 80s nostalgia."
+            },
+            motu1984: {
+                title: "Masters of the Universe (1984)",
+                text: "Released by Topps in 1984 during the peak of Filmation's animated series, Masters of the Universe captured Prince Adam, Skeletor, and Castle Grayskull in trading card form. Featuring 88 cartoon stills framed with iconic speech bubbles and 22 die-cut sticker inserts, it brought the magic of Eternia directly to recess lunchtables."
             }
         };
 
@@ -777,7 +810,7 @@
             
             if (!setKey) {
                 titleNode.textContent = "Rip Boosters - Trading Card Pack Opening Simulator";
-                descNode.setAttribute('content', "Open free nostalgic trading card booster packs instantly. Revisit retro card sets from Magic: The Gathering, Marvel Masterpieces, Marvel Universe, and Garbage Pail Kids with authentic pull rates.");
+                descNode.setAttribute('content', "Open free nostalgic trading card booster packs instantly. Revisit retro card sets from Magic: The Gathering, Marvel Masterpieces, Marvel Universe, He-Man, and Garbage Pail Kids with authentic pull rates.");
             } else {
                 const metadata = APP_ROUTES[setKey];
                 if (metadata) {
@@ -799,6 +832,7 @@
                 'isd': 'card_images/mtg_sets/mtg_isd_packwrapper1.jpg',
                 'rav': 'card_images/mtg_sets/mtg_rav_packwrapper4.jpg',
                 'gpk1': 'card_images/gpk_series1/gpk_series1_pack_wrapper.jpg',
+                'motu1984': 'card_images/motu_1984/motu1984_packwrapper1.jpg',
                 'mm1992': 'card_images/marvel_masterpieces_1992/mm1992_packimage1_wolverine.jpg',
                 'mm1993': 'card_images/marvel_masterpieces_1993/mm1993_packimage1_silversurfer.jpg',
                 'mu1990': 'card_images/marvel_impel_1990/marvel_impel_1990_packimage2_spiderman.jpg',
@@ -937,11 +971,50 @@
 
             if (setKey === 'gpk1') {
                 rowLabelHTML = '<div class="row-label">Series 1 &mdash; 5 stickers per pack &middot; click to view back</div>';
-                collectionHeaderHTML = `<div class="collection-header"><div><h2 class="collection-title">Collection</h2><p class="collection-sub">82 stickers &mdash; 41 pairs</p></div><span class="collection-count" id="collectionCount">0 / 82</span></div><div class="collection-grid" id="collectionGrid"></div>`;
+                collectionHeaderHTML = `<div class="collection-header"><div><h2 class="collection-title">Collection Checklist</h2><p class="collection-sub">82 stickers &mdash; 41 pairs</p></div><span class="collection-count" id="collectionCount">0 / 82</span></div><div class="collection-grid" id="collectionGrid"></div>`;
                 packCoverHTML = `<img src="card_images/gpk_series1/gpk_series1_pack_wrapper.jpg" alt="Garbage Pail Kids Series 1 pack" style="width:100%;height:100%;object-fit:cover;border-radius:6px;">`;
+            } else if (setKey === 'motu1984') {
+                rowLabelHTML = `<div id="spectraRow" style="display:none; margin-bottom: 1rem;"><div class="row-label" id="spectraLabel">Sticker Insert</div><div class="cards-row" id="slots-spectra"></div></div><div><div class="row-label">Base Set cards</div></div>`;
+                
+                collectionHeaderHTML = `
+                    <div class="collection-header">
+                        <div>
+                            <h2 class="collection-title">Collection Checklist</h2>
+                            <p class="collection-sub" style="color:#d87b28">Sticker Inserts &mdash; 22 cards</p>
+                        </div>
+                        <span class="collection-count" id="collectionCount">0/110</span>
+                    </div>
+                    <div class="collection-grid" id="spectraGrid"></div>
+
+                    <div class="collection-header" style="margin-top:2.5rem;">
+                        <div>
+                            <h2 class="collection-title">Red Border Picture</h2>
+                            <p class="collection-sub" style="color:#e03e2d">2x5 Interlocking Sticker Back Puzzle</p>
+                        </div>
+                    </div>
+                    <div class="puzzle-2x5-grid" id="motuRedPuzzleGrid"></div>
+
+                    <div class="collection-header" style="margin-top:2.5rem;">
+                        <div>
+                            <h2 class="collection-title">Blue Border Picture</h2>
+                            <p class="collection-sub" style="color:#3a6ea5">2x5 Interlocking Sticker Back Puzzle</p>
+                        </div>
+                    </div>
+                    <div class="puzzle-2x5-grid" id="motuBluePuzzleGrid"></div>
+
+                    <div class="collection-header" style="margin-top:2.5rem;">
+                        <div>
+                            <p class="collection-sub">Base Set &mdash; 88 cards</p>
+                        </div>
+                    </div>
+                    <div class="collection-grid" id="collectionGrid"></div>`;
+                
+                // Randomize across the 4 pack wrapper variations
+                const randomMotuPackNum = Math.floor(Math.random() * 4) + 1;
+                packCoverHTML = `<img id="packWrapperImg" src="card_images/motu_1984/motu1984_packwrapper${randomMotuPackNum}.jpg" alt="Masters of the Universe 1984 pack" style="width:100%;height:100%;object-fit:cover;border-radius:6px;">`;
             } else if (setKey === 'mm1992') {
                 rowLabelHTML = `<div id="spectraRow" style="display:none; margin-bottom: 1rem;"><div class="row-label" id="spectraLabel">Battle Spectra Hit</div><div class="cards-row" id="slots-spectra"></div></div><div><div class="row-label">Base Set cards</div></div>`;
-                collectionHeaderHTML = `<div class="collection-header"><div><h2 class="collection-title">Collection</h2><p class="collection-sub" style="color:var(--spectra)">Battle Spectra &mdash; 5 cards</p></div><span class="collection-count" id="collectionCount">0/105</span></div><div class="collection-grid" id="spectraGrid"></div><div class="collection-header" style="margin-top:2rem;"><div><p class="collection-sub">Base Set &mdash; 100 cards</p></div></div><div class="collection-grid" id="collectionGrid"></div>`;
+                collectionHeaderHTML = `<div class="collection-header"><div><h2 class="collection-title">Collection Checklist</h2><p class="collection-sub" style="color:var(--spectra)">Battle Spectra &mdash; 5 cards</p></div><span class="collection-count" id="collectionCount">0/105</span></div><div class="collection-grid" id="spectraGrid"></div><div class="collection-header" style="margin-top:2rem;"><div><p class="collection-sub">Base Set &mdash; 100 cards</p></div></div><div class="collection-grid" id="collectionGrid"></div>`;
                 
                 const mm92PackImg = Math.random() < 0.5 
                     ? 'card_images/marvel_masterpieces_1992/mm1992_packimage1_wolverine.jpg' 
@@ -949,12 +1022,12 @@
                 packCoverHTML = `<img id="packWrapperImg" src="${mm92PackImg}" alt="Marvel Masterpieces 1992 pack" style="width:100%;height:100%;object-fit:cover;border-radius:6px;">`;
             } else if (setKey === 'mm1993') {
                 rowLabelHTML = `<div id="spectraRow" style="display:none; margin-bottom: 1rem;"><div class="row-label" id="spectraLabel">Dyna-Etch Hit</div><div class="cards-row" id="slots-spectra"></div></div><div><div class="row-label">Base Set cards</div></div>`;
-                collectionHeaderHTML = `<div class="collection-header"><div><h2 class="collection-title">Collection</h2><p class="collection-sub" style="color:#1a6a1a;">Dyna-Etch &mdash; 8 cards</p></div><span class="collection-count" id="collectionCount">0/98</span></div><div class="collection-grid" id="spectraGrid"></div><div class="collection-header" style="margin-top:2rem;"><div><p class="collection-sub">Base Set &mdash; 90 cards</p></div></div><div class="collection-grid" id="collectionGrid"></div>`;
+                collectionHeaderHTML = `<div class="collection-header"><div><h2 class="collection-title">Collection Checklist</h2><p class="collection-sub" style="color:#1a6a1a;">Dyna-Etch &mdash; 8 cards</p></div><span class="collection-count" id="collectionCount">0/98</span></div><div class="collection-grid" id="spectraGrid"></div><div class="collection-header" style="margin-top:2rem;"><div><p class="collection-sub">Base Set &mdash; 90 cards</p></div></div><div class="collection-grid" id="collectionGrid"></div>`;
                 
                 packCoverHTML = `<img id="packWrapperImg" src="card_images/marvel_masterpieces_1993/mm1993_packimage1_silversurfer.jpg" alt="Marvel Masterpieces 1993 pack" style="width:100%;height:100%;object-fit:cover;border-radius:6px;">`;
             } else if (setKey === 'mu1990') {
                 rowLabelHTML = `<div id="spectraRow" style="display:none; margin-bottom: 1rem;"><div class="row-label" id="spectraLabel">Hologram Hit</div><div class="cards-row" id="slots-spectra"></div></div><div><div class="row-label">Base Set cards</div></div>`;
-                collectionHeaderHTML = `<div class="collection-header"><div><h2 class="collection-title">Collection</h2><p class="collection-sub" style="color:#1a3a8a;">Holograms &mdash; 5 cards</p></div><span class="collection-count" id="collectionCount">0/167</span></div><div class="collection-grid" id="spectraGrid"></div><div class="collection-header" style="margin-top:2rem;"><div><p class="collection-sub">Base Set &mdash; 162 cards</p></div></div><div class="collection-grid" id="collectionGrid"></div>`;
+                collectionHeaderHTML = `<div class="collection-header"><div><h2 class="collection-title">Collection Checklist</h2><p class="collection-sub" style="color:#1a3a8a;">Holograms &mdash; 5 cards</p></div><span class="collection-count" id="collectionCount">0/167</span></div><div class="collection-grid" id="spectraGrid"></div><div class="collection-header" style="margin-top:2rem;"><div><p class="collection-sub">Base Set &mdash; 162 cards</p></div></div><div class="collection-grid" id="collectionGrid"></div>`;
                 
                 packCoverHTML = `<img id="packWrapperImg" src="card_images/marvel_impel_1990/marvel_impel_1990_packimage2_spiderman.jpg" alt="Marvel Universe 1990 pack" style="width:100%;height:100%;object-fit:cover;border-radius:6px;">`;
             } else if (setKey === 'xmen1992') {
@@ -962,7 +1035,7 @@
                 collectionHeaderHTML = `
                     <div class="collection-header">
                         <div>
-                            <h2 class="collection-title">Collection</h2>
+                            <h2 class="collection-title">Collection Checklist</h2>
                             <p class="collection-sub" style="color:#b8860b">Gold Holograms &mdash; 5 cards</p>
                         </div>
                         <span class="collection-count" id="collectionCount">0/105</span>
@@ -1115,22 +1188,34 @@
             if (!Array.isArray(savedData.spectra)) savedData.spectra = [];
             let sessionPacks = 0;
 
-            const getImgPath = (n, side, isInsert = false, variant = '') => {
+            const getImgPath = (n, side = 'front', isInsert = false, variant = '') => {
+                const targetSide = side === 'back' ? 'back' : 'front';
+
                 if (isMtg) {
                     const cardObj = activeSetData.baseCards.find(c => c.n == n);
-                    if (side === 'front') {
+                    if (targetSide === 'front') {
                         return cardObj ? cardObj.frontImg : "card_images/card_back.jpg";
                     } else {
                         return "card_images/mtg_sets/Magic_the_Gathering_Card_Back.jpg";
                     }
                 }
                 if (setKey === 'gpk1') {
-                    return side === 'back' 
+                    return targetSide === 'back' 
                         ? `card_images/gpk_series1/back_${String(n).padStart(3, '0')}ab.jpg`
-                        : `card_images/gpk_series1/${side}_${String(n).padStart(3, '0')}${variant}.jpg`;
+                        : `card_images/gpk_series1/${targetSide}_${String(n).padStart(3, '0')}${variant}.jpg`;
                 }
-                if (setKey === 'mm1992') return isInsert ? `card_images/marvel_masterpieces_1992/spectra_${side}_${n}.jpg` : `card_images/marvel_masterpieces_1992/${side}_${String(n).padStart(3, '0')}.jpg`;
-                if (setKey === 'mm1993') return isInsert ? `card_images/marvel_masterpieces_1993/dynaetch_${side}_${n}.jpg` : `card_images/marvel_masterpieces_1993/${side}_${String(n).padStart(3, '0')}.jpg`;
+                if (setKey === 'motu1984') {
+                    let numVal = typeof n === 'string' ? n.replace(/^\D+/g, '') : n;
+                    let numStr = String(numVal).padStart(isInsert ? 2 : 3, '0');
+                    if (variant && variant === 'b' && targetSide === 'back') {
+                        return `card_images/motu_1984/sticker_${targetSide}_${numStr}b.jpg`;
+                    }
+                    return isInsert 
+                        ? `card_images/motu_1984/sticker_${targetSide}_${numStr}.jpg`
+                        : `card_images/motu_1984/${targetSide}_${numStr}.jpg`;
+                }
+                if (setKey === 'mm1992') return isInsert ? `card_images/marvel_masterpieces_1992/spectra_${targetSide}_${n}.jpg` : `card_images/marvel_masterpieces_1992/${targetSide}_${String(n).padStart(3, '0')}.jpg`;
+                if (setKey === 'mm1993') return isInsert ? `card_images/marvel_masterpieces_1993/dynaetch_${targetSide}_${n}.jpg` : `card_images/marvel_masterpieces_1993/${targetSide}_${String(n).padStart(3, '0')}.jpg`;
                 
                 if (setKey === 'mu1990') {
                     let numStr = String(n).trim().toUpperCase();
@@ -1141,31 +1226,34 @@
 
                     if (isInsert || parsedNum > 162) {
                         let holoIdx = isInsert ? parsedNum : (parsedNum - 162);
-                        return side === 'front'
+                        return targetSide === 'front'
                             ? `card_images/marvel_impel_1990/mh${holoIdx}_hologram_front.png`
                             : `card_images/marvel_impel_1990/mh_hologram_back.png`;
                     }
                     
-                    return `card_images/marvel_impel_1990/${side}_${numStr.padStart(3, '0')}.jpg`;
+                    return `card_images/marvel_impel_1990/${targetSide}_${numStr.padStart(3, '0')}.jpg`;
                 }
-                if (setKey === 'xmen1992') return isInsert ? `card_images/xmen_impel_1992/holo_${side}_${n}.jpg` : `card_images/xmen_impel_1992/${side}_${String(n).padStart(3, '0')}.jpg`;
+                if (setKey === 'xmen1992') return isInsert ? `card_images/xmen_impel_1992/holo_${targetSide}_${n}.jpg` : `card_images/xmen_impel_1992/${targetSide}_${String(n).padStart(3, '0')}.jpg`;
             };
 
             const updateCounters = () => {
                 document.getElementById('packsTotal').textContent = savedData.totalPacks || 0;
                 document.getElementById('packsSession').textContent = sessionPacks;
                 
-                const uniqueBaseCount = new Set(savedData.base.map(String)).size;
-                const uniqueSpectraCount = new Set(savedData.spectra.map(String)).size;
-                const totalCollected = new Set([...savedData.base.map(String), ...savedData.spectra.map(String)]).size;
+                const uniqueCollected = new Set([
+                    ...(Array.isArray(savedData.base) ? savedData.base.map(String) : []),
+                    ...(Array.isArray(savedData.spectra) ? savedData.spectra.map(String) : [])
+                ]).size;
                 
-                const maxCount = activeSetData.maxCount || (setKey === 'mu1990' ? 167 : (setKey === 'mm1993' ? 98 : (setKey === 'gpk1' ? 82 : 105)));
-                document.getElementById('collectionCount').textContent = `${totalCollected} / ${maxCount}`;
+                const maxCount = activeSetData.maxCount || (setKey === 'motu1984' ? 110 : (setKey === 'mu1990' ? 167 : (setKey === 'mm1993' ? 98 : (setKey === 'gpk1' ? 82 : 105))));
+                document.getElementById('collectionCount').textContent = `${Math.min(uniqueCollected, maxCount)} / ${maxCount}`;
             };
 
             const gridBase = document.getElementById('collectionGrid');
             const gridInsert = document.getElementById('spectraGrid');
             const gridPuzzle = document.getElementById('puzzleGrid');
+            const gridMotuRedPuzzle = document.getElementById('motuRedPuzzleGrid');
+            const gridMotuBluePuzzle = document.getElementById('motuBluePuzzleGrid');
 
             if (gridBase) {
                 let loopPool = activeSetData.baseCards;
@@ -1212,6 +1300,70 @@
                 });
             }
 
+            // RED BORDER PUZZLE GRID FOR MOTU STICKERS (Top: 18, 11, 13, 15, 12 | Bottom: 19R, 21, 17, 20, 16)
+            if (gridMotuRedPuzzle && setKey === 'motu1984') {
+                const redPuzzleSequence = [
+                    { id: "S18", n: 18, variant: "" },
+                    { id: "S11", n: 11, variant: "" },
+                    { id: "S13", n: 13, variant: "" },
+                    { id: "S15", n: 15, variant: "" },
+                    { id: "S12", n: 12, variant: "" },
+                    { id: "S19R", n: 19, variant: "" },
+                    { id: "S21", n: 21, variant: "" },
+                    { id: "S17", n: 17, variant: "" },
+                    { id: "S20", n: 20, variant: "" },
+                    { id: "S16", n: 16, variant: "" }
+                ];
+                
+                redPuzzleSequence.forEach(item => {
+                    const slot = document.createElement('div');
+                    const isCollected = savedData.spectra.map(String).includes(item.id);
+                    
+                    slot.className = `col-slot ${isCollected ? 'filled' : 'no-image'}`;
+                    slot.id = `col-motu-red-puzzle-${item.id}`;
+                    
+                    if (isCollected) {
+                        slot.innerHTML = `<img src="${getImgPath(item.n, 'back', true, item.variant)}">`;
+                        slot.onclick = () => showLightbox(getImgPath(item.n, 'front', true, item.variant), getImgPath(item.n, 'back', true, item.variant));
+                    } else {
+                        slot.innerHTML = `<span class="col-num">#${item.n}</span><span class="col-name">Sticker #${item.n}</span>`;
+                    }
+                    gridMotuRedPuzzle.appendChild(slot);
+                });
+            }
+
+            // BLUE BORDER PUZZLE GRID FOR MOTU STICKERS (Top: 19B, 10, 8, 5, 4 | Bottom: 14, 9, 7, 6, 3)
+            if (gridMotuBluePuzzle && setKey === 'motu1984') {
+                const bluePuzzleSequence = [
+                    { id: "S19B", n: 19, variant: "b" },
+                    { id: "S10", n: 10, variant: "" },
+                    { id: "S08", n: 8, variant: "" },
+                    { id: "S05", n: 5, variant: "" },
+                    { id: "S04", n: 4, variant: "" },
+                    { id: "S14", n: 14, variant: "" },
+                    { id: "S09", n: 9, variant: "" },
+                    { id: "S07", n: 7, variant: "" },
+                    { id: "S06", n: 6, variant: "" },
+                    { id: "S03", n: 3, variant: "" }
+                ];
+
+                bluePuzzleSequence.forEach(item => {
+                    const slot = document.createElement('div');
+                    const isCollected = savedData.spectra.map(String).includes(item.id);
+
+                    slot.className = `col-slot ${isCollected ? 'filled' : 'no-image'}`;
+                    slot.id = `col-motu-blue-puzzle-${item.id}`;
+
+                    if (isCollected) {
+                        slot.innerHTML = `<img src="${getImgPath(item.n, 'back', true, item.variant)}">`;
+                        slot.onclick = () => showLightbox(getImgPath(item.n, 'front', true, item.variant), getImgPath(item.n, 'back', true, item.variant));
+                    } else {
+                        slot.innerHTML = `<span class="col-num">#${item.n}</span><span class="col-name">Sticker #${item.n}</span>`;
+                    }
+                    gridMotuBluePuzzle.appendChild(slot);
+                });
+            }
+
             if (gridInsert) {
                 if (isMtg) {
                     activeSetData.pools.hits.forEach(card => {
@@ -1229,18 +1381,18 @@
                         gridInsert.appendChild(slot);
                     });
                 } else {
-                    const explicitInserts = activeSetData.spectraCards || activeSetData.dynaCards || activeSetData.holoCards || [];
+                    let explicitInserts = activeSetData.spectraCards || activeSetData.dynaCards || activeSetData.holoCards || activeSetData.stickerCards || [];
                     explicitInserts.forEach(card => {
                         const slot = document.createElement('div');
-                        const trackKey = setKey === 'xmen1992' ? card.id : String(card.n);
+                        const trackKey = (setKey === 'xmen1992' || setKey === 'motu1984') ? card.id : String(card.n);
                         
                         const isCollected = savedData.spectra.map(String).includes(trackKey);
                         slot.className = `col-slot ${isCollected ? 'filled' : 'no-image'}`;
-                        slot.id = `col-insert-${card.n}`;
+                        slot.id = `col-insert-${card.id || card.n}`;
                         
                         if (isCollected) {
-                            slot.innerHTML = `<img src="${getImgPath(card.n, 'front', true)}">`;
-                            slot.onclick = () => showLightbox(getImgPath(card.n, 'front', true), getImgPath(card.n, 'back', true));
+                            slot.innerHTML = `<img src="${getImgPath(card.n, 'front', true, card.variant || '')}">`;
+                            slot.onclick = () => showLightbox(getImgPath(card.n, 'front', true, card.variant || ''), getImgPath(card.n, 'back', true, card.variant || ''));
                         } else {
                             slot.innerHTML = `<span class="col-num">${card.id || 'S'+card.n}</span><span class="col-name">${card.name}</span>`;
                         }
@@ -1342,13 +1494,13 @@
                         });
 
                     } else {
-                        const insertArr = activeSetData.spectraCards || activeSetData.dynaCards || activeSetData.holoCards || [];
-                        let pullRate = setKey === 'mm1993' ? (1/9) : (setKey === 'mm1992' ? 0.25 : (1/12));
-                        let hasInsert = setKey !== 'gpk1' && Math.random() < pullRate;
+                        let insertArr = activeSetData.spectraCards || activeSetData.dynaCards || activeSetData.holoCards || activeSetData.stickerCards || [];
+                        let pullRate = setKey === 'motu1984' ? 1.0 : (setKey === 'mm1993' ? (1/9) : (setKey === 'mm1992' ? 0.25 : (1/12)));
+                        let hasInsert = setKey !== 'gpk1' && Math.random() <= pullRate;
 
                         if (hasInsert && sInsert && rowIns) {
                             const rInsert = insertArr[Math.floor(Math.random() * insertArr.length)];
-                            const trackingId = setKey === 'xmen1992' ? rInsert.id : String(rInsert.n);
+                            const trackingId = (setKey === 'xmen1992' || setKey === 'motu1984') ? rInsert.id : String(rInsert.n);
                             if (!savedData.spectra.map(String).includes(trackingId)) savedData.spectra.push(trackingId);
                             rowIns.style.display = 'block';
                             sInsert.appendChild(createPackCardElement(rInsert, true, delay));
@@ -1358,6 +1510,8 @@
                         let targetAmt = 5; 
                         if (setKey === 'gpk1') {
                             targetAmt = 5;
+                        } else if (setKey === 'motu1984') {
+                            targetAmt = 10;
                         } else if (setKey === 'mu1990') {
                             targetAmt = hasInsert ? 11 : 12;
                         } else {
@@ -1388,65 +1542,17 @@
 
                     setTimeout(() => {
                         if (pack) pack.classList.remove('pack-tearing');
-                        if (wrapperEl) { wrapperEl.classList.remove('opened'); wrapperEl.style.opacity = '1'; }
                         
-                        if (setKey === 'rav') {
+                        // Swap to a random MOTU wrapper image for the next pack display
+                        if (setKey === 'motu1984') {
                             const packImgEl = document.getElementById('packWrapperImg');
                             if (packImgEl) {
-                                const randomNum = Math.floor(Math.random() * 5) + 1;
-                                packImgEl.src = `card_images/mtg_sets/mtg_rav_packwrapper${randomNum}.jpg`;
+                                const nextMotuWrapperNum = Math.floor(Math.random() * 4) + 1;
+                                packImgEl.src = `card_images/motu_1984/motu1984_packwrapper${nextMotuWrapperNum}.jpg`;
                             }
                         }
 
-                        if (setKey === 'isd') {
-                            const packImgEl = document.getElementById('packWrapperImg');
-                            if (packImgEl) {
-                                const randomNum = Math.floor(Math.random() * 5) + 1;
-                                packImgEl.src = `card_images/mtg_sets/mtg_isd_packwrapper${randomNum}.jpg`;
-                            }
-                        }
-
-                        if (setKey === 'mm1992') {
-                            const packImgEl = document.getElementById('packWrapperImg');
-                            if (packImgEl) {
-                                const nextPackImg = Math.random() < 0.5 
-                                    ? 'card_images/marvel_masterpieces_1992/mm1992_packimage1_wolverine.jpg' 
-                                    : 'card_images/marvel_masterpieces_1992/mm1992_packimage2_spiderman.jpg';
-                                packImgEl.src = nextPackImg;
-                            }
-                        }
-
-                        if (setKey === 'mm1993') {
-                            const packImgEl = document.getElementById('packWrapperImg');
-                            if (packImgEl) {
-                                const nextPackImg = Math.random() < 0.5 
-                                    ? 'card_images/marvel_masterpieces_1993/mm1993_packimage1_silversurfer.jpg' 
-                                    : 'card_images/marvel_masterpieces_1993/mm1993_packimage2_ironman.jpg';
-                                packImgEl.src = nextPackImg;
-                            }
-                        }
-
-                        if (setKey === 'mu1990') {
-                            const packImgEl = document.getElementById('packWrapperImg');
-                            if (packImgEl) {
-                                const mu90Packs = [
-                                    'card_images/marvel_impel_1990/marvel_impel_1990_packimage1_capam.jpg',
-                                    'card_images/marvel_impel_1990/marvel_impel_1990_packimage2_spiderman.jpg',
-                                    'card_images/marvel_impel_1990/marvel_impel_1990_packimage3_wolverine.jpg'
-                                ];
-                                packImgEl.src = mu90Packs[Math.floor(Math.random() * mu90Packs.length)];
-                            }
-                        }
-
-                        if (setKey === 'xmen1992') {
-                            const packImgEl = document.getElementById('packWrapperImg');
-                            if (packImgEl) {
-                                const nextPackImg = Math.random() < 0.5 
-                                    ? 'card_images/xmen_impel_1992/uncanny_xmen_1992_packimage1_darkblue.jpg' 
-                                    : 'card_images/xmen_impel_1992/uncanny_xmen_1992_packimage2_teal.jpg';
-                                packImgEl.src = nextPackImg;
-                            }
-                        }
+                        if (wrapperEl) { wrapperEl.classList.remove('opened'); wrapperEl.style.opacity = '1'; }
 
                         window.openingPackState = false; if (btn) { btn.disabled = false; btn.textContent = 'Open Another Pack'; }
                     }, delay + 400);
@@ -1461,8 +1567,8 @@
                 const slot = document.createElement('div'); slot.className = 'card-slot';
                 const cardDiv = document.createElement('div'); cardDiv.className = 'card';
                 cardDiv.style.animationDelay = currentDelay + 'ms';
-                cardDiv.innerHTML = `<img src="${getImgPath(card.n, 'front', isInsert, card.v || '')}">`;
-                cardDiv.onclick = () => showLightbox(getImgPath(card.n, 'front', isInsert, card.v || ''), getImgPath(card.n, 'back', isInsert, card.v || ''));
+                cardDiv.innerHTML = `<img src="${getImgPath(card.n, 'front', isInsert, card.variant || card.v || '')}">`;
+                cardDiv.onclick = () => showLightbox(getImgPath(card.n, 'front', isInsert, card.variant || card.v || ''), getImgPath(card.n, 'back', isInsert, card.variant || card.v || ''));
                 setTimeout(() => { cardDiv.classList.add('revealed'); }, currentDelay + 20);
                 const hint = document.createElement('div'); hint.className = 'flip-hint'; hint.textContent = 'click to view';
                 slot.appendChild(cardDiv); slot.appendChild(hint); return slot;
@@ -1504,14 +1610,31 @@
                         }
                     });
                 } else {
-                    const explicitInserts = activeSetData.spectraCards || activeSetData.dynaCards || activeSetData.holoCards || [];
+                    let explicitInserts = activeSetData.spectraCards || activeSetData.dynaCards || activeSetData.holoCards || activeSetData.stickerCards || [];
                     explicitInserts.forEach(card => {
-                        const slot = document.getElementById(`col-insert-${card.n}`);
-                        const trackKey = setKey === 'xmen1992' ? card.id : String(card.n);
+                        const slot = document.getElementById(`col-insert-${card.id || card.n}`);
+                        const trackKey = (setKey === 'xmen1992' || setKey === 'motu1984') ? card.id : String(card.n);
                         const isCollected = savedData.spectra.map(String).includes(trackKey);
                         if (slot && isCollected && slot.classList.contains('no-image')) {
-                            slot.className = 'col-slot filled'; slot.innerHTML = `<img src="${getImgPath(card.n, 'front', true)}">`;
-                            slot.onclick = () => showLightbox(getImgPath(card.n, 'front', true), getImgPath(card.n, 'back', true));
+                            slot.className = 'col-slot filled'; slot.innerHTML = `<img src="${getImgPath(card.n, 'front', true, card.variant || '')}">`;
+                            slot.onclick = () => showLightbox(getImgPath(card.n, 'front', true, card.variant || ''), getImgPath(card.n, 'back', true, card.variant || ''));
+                        }
+
+                        // Also update Red & Blue puzzle slots for MOTU stickers
+                        if (setKey === 'motu1984') {
+                            const redPuzzleSlot = document.getElementById(`col-motu-red-puzzle-${card.id}`);
+                            if (redPuzzleSlot && isCollected && redPuzzleSlot.classList.contains('no-image')) {
+                                redPuzzleSlot.className = 'col-slot filled';
+                                redPuzzleSlot.innerHTML = `<img src="${getImgPath(card.n, 'back', true, card.variant || '')}">`;
+                                redPuzzleSlot.onclick = () => showLightbox(getImgPath(card.n, 'front', true, card.variant || ''), getImgPath(card.n, 'back', true, card.variant || ''));
+                            }
+
+                            const bluePuzzleSlot = document.getElementById(`col-motu-blue-puzzle-${card.id}`);
+                            if (bluePuzzleSlot && isCollected && bluePuzzleSlot.classList.contains('no-image')) {
+                                bluePuzzleSlot.className = 'col-slot filled';
+                                bluePuzzleSlot.innerHTML = `<img src="${getImgPath(card.n, 'back', true, card.variant || '')}">`;
+                                bluePuzzleSlot.onclick = () => showLightbox(getImgPath(card.n, 'front', true, card.variant || ''), getImgPath(card.n, 'back', true, card.variant || ''));
+                            }
                         }
                     });
                 }
@@ -1532,6 +1655,7 @@
                 { key: 'mm1993', total: 98, barId: 'prog-mm1993', labelId: 'label-mm1993' },
                 { key: 'mu1990', total: 167, barId: 'prog-mu1990', labelId: 'label-mu1990' },
                 { key: 'gpk1', total: 82, barId: 'prog-gpk1', labelId: 'label-gpk1' },
+                { key: 'motu1984', total: 110, barId: 'prog-motu1984', labelId: 'label-motu1984' },
                 { key: 'xmen1992', total: 105, barId: 'prog-xmen1992', labelId: 'label-xmen1992' },
                 { key: 'mtglea', total: 295, barId: 'prog-mtglea', labelId: 'label-mtglea' },
                 { key: 'mtgleb', total: 302, barId: 'prog-mtgleb', labelId: 'label-mtgleb' },
