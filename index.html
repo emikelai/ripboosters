@@ -946,7 +946,8 @@
                     headerMainTitle.textContent = "Loading Scryfall...";
                     headerSubtitle.innerHTML = "Gathering card sheets from historical archives...";
                     try {
-                        await ensureSetData(setKey);
+                        const fetchedConfig = await ensureSetData(setKey);
+                        DATA_MAP[setKey] = fetchedConfig; // Ensure DATA_MAP has refreshed dataset reference
                     } catch (e) {
                         alert("Could not load Scryfall API details. Please check your connection.");
                         return navigateToView(null, true);
@@ -1384,7 +1385,7 @@
                     let explicitInserts = activeSetData.spectraCards || activeSetData.dynaCards || activeSetData.holoCards || activeSetData.stickerCards || [];
                     explicitInserts.forEach(card => {
                         const slot = document.createElement('div');
-                        const trackKey = (setKey === 'xmen1992' || setKey === 'motu1984') ? card.id : String(card.n);
+                        const trackKey = (setKey === 'xmen1992' || setKey === 'motu1984' || setKey === 'mu1990') ? card.id : String(card.n);
                         
                         const isCollected = savedData.spectra.map(String).includes(trackKey);
                         slot.className = `col-slot ${isCollected ? 'filled' : 'no-image'}`;
@@ -1468,7 +1469,8 @@
                         delay += step;
 
                         let pickedUncommons = [];
-                        while (pickedUncommons.length < 3) {
+                        const targetUncommons = Math.min(3, activeSetData.pools.uncommon.length);
+                        while (pickedUncommons.length < targetUncommons) {
                             const rCard = activeSetData.pools.uncommon[Math.floor(Math.random() * activeSetData.pools.uncommon.length)];
                             if (!pickedUncommons.some(c => c.n === rCard.n)) {
                                 pickedUncommons.push(rCard);
@@ -1481,7 +1483,8 @@
                         });
 
                         let pickedCommons = [];
-                        while (pickedCommons.length < 11) {
+                        const targetCommons = Math.min(11, activeSetData.pools.common.length);
+                        while (pickedCommons.length < targetCommons) {
                             const rCard = activeSetData.pools.common[Math.floor(Math.random() * activeSetData.pools.common.length)];
                             if (!pickedCommons.some(c => c.n === rCard.n)) {
                                 pickedCommons.push(rCard);
@@ -1500,7 +1503,7 @@
 
                         if (hasInsert && sInsert && rowIns) {
                             const rInsert = insertArr[Math.floor(Math.random() * insertArr.length)];
-                            const trackingId = (setKey === 'xmen1992' || setKey === 'motu1984') ? rInsert.id : String(rInsert.n);
+                            const trackingId = (setKey === 'xmen1992' || setKey === 'motu1984' || setKey === 'mu1990') ? rInsert.id : String(rInsert.n);
                             if (!savedData.spectra.map(String).includes(trackingId)) savedData.spectra.push(trackingId);
                             rowIns.style.display = 'block';
                             sInsert.appendChild(createPackCardElement(rInsert, true, delay));
@@ -1528,7 +1531,7 @@
                             [availablePool[i], availablePool[j]] = [availablePool[j], availablePool[i]];
                         }
 
-                        let pulledBase = availablePool.slice(0, targetAmt);
+                        let pulledBase = availablePool.slice(0, Math.min(targetAmt, availablePool.length));
                         pulledBase.forEach(rc => {
                             const uniqKey = setKey === 'gpk1' ? `${rc.n}${rc.v}` : String(rc.n);
                             if (!savedData.base.map(String).includes(uniqKey)) savedData.base.push(uniqKey);
@@ -1613,7 +1616,7 @@
                     let explicitInserts = activeSetData.spectraCards || activeSetData.dynaCards || activeSetData.holoCards || activeSetData.stickerCards || [];
                     explicitInserts.forEach(card => {
                         const slot = document.getElementById(`col-insert-${card.id || card.n}`);
-                        const trackKey = (setKey === 'xmen1992' || setKey === 'motu1984') ? card.id : String(card.n);
+                        const trackKey = (setKey === 'xmen1992' || setKey === 'motu1984' || setKey === 'mu1990') ? card.id : String(card.n);
                         const isCollected = savedData.spectra.map(String).includes(trackKey);
                         if (slot && isCollected && slot.classList.contains('no-image')) {
                             slot.className = 'col-slot filled'; slot.innerHTML = `<img src="${getImgPath(card.n, 'front', true, card.variant || '')}">`;

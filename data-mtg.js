@@ -124,14 +124,26 @@ export async function ensureSetData(setKey) {
     let url = `https://api.scryfall.com/cards/search?q=e%3A${config.code}&unique=prints`;
     let allCards = [];
 
-    // Paginate through Scryfall API results (caps at 175 cards per page)
+    // Paginate through Scryfall API results with safety rate-limiting (100ms throttle)
     while (url) {
-        const response = await fetch(url);
-        const json = await response.json();
-        if (json.data) {
-            allCards = allCards.concat(json.data);
+        try {
+            const response = await fetch(url);
+            if (!response.ok) {
+                console.error(`Scryfall API error: ${response.status} ${response.statusText}`);
+                break;
+            }
+            const json = await response.json();
+            if (json && Array.isArray(json.data)) {
+                allCards = allCards.concat(json.data);
+            }
+            url = (json && json.has_more) ? json.next_page : null;
+            if (url) {
+                await new Promise(r => setTimeout(r, 100)); // Respect Scryfall 50-100ms rate limits
+            }
+        } catch (err) {
+            console.error("Failed to fetch page from Scryfall:", err);
+            break;
         }
-        url = json.has_more ? json.next_page : null;
     }
 
     const baseCards = [];
@@ -145,7 +157,7 @@ export async function ensureSetData(setKey) {
         let frontImage = "card_images/card_back.jpg";
         if (card.image_uris && card.image_uris.normal) {
             frontImage = card.image_uris.normal;
-        } else if (card.card_faces && card.card_faces[0].image_uris) {
+        } else if (card.card_faces && card.card_faces[0] && card.card_faces[0].image_uris) {
             frontImage = card.card_faces[0].image_uris.normal;
         }
 
