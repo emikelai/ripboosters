@@ -1385,7 +1385,7 @@
                     let explicitInserts = activeSetData.spectraCards || activeSetData.dynaCards || activeSetData.holoCards || activeSetData.stickerCards || [];
                     explicitInserts.forEach(card => {
                         const slot = document.createElement('div');
-                        const trackKey = (setKey === 'xmen1992' || setKey === 'motu1984' || setKey === 'mu1990' || setKey === 'mm1992') ? card.id : String(card.n);
+                        const trackKey = (setKey === 'xmen1992' || setKey === 'motu1984' || setKey === 'mu1990' || setKey === 'mm1992' || setKey === 'mm1993') ? card.id : String(card.n);
                         
                         const isCollected = savedData.spectra.map(String).includes(trackKey);
                         slot.className = `col-slot ${isCollected ? 'filled' : 'no-image'}`;
@@ -1503,7 +1503,7 @@
 
                         if (hasInsert && sInsert && rowIns) {
                             const rInsert = insertArr[Math.floor(Math.random() * insertArr.length)];
-                            const trackingId = (setKey === 'xmen1992' || setKey === 'motu1984' || setKey === 'mu1990' || setKey === 'mm1992') ? rInsert.id : String(rInsert.n);
+                            const trackingId = (setKey === 'xmen1992' || setKey === 'motu1984' || setKey === 'mu1990' || setKey === 'mm1992' || setKey === 'mm1993') ? rInsert.id : String(rInsert.n);
                             if (!savedData.spectra.map(String).includes(trackingId)) savedData.spectra.push(trackingId);
                             rowIns.style.display = 'block';
                             sInsert.appendChild(createPackCardElement(rInsert, true, delay));
@@ -1616,7 +1616,7 @@
                     let explicitInserts = activeSetData.spectraCards || activeSetData.dynaCards || activeSetData.holoCards || activeSetData.stickerCards || [];
                     explicitInserts.forEach(card => {
                         const slot = document.getElementById(`col-insert-${card.id || card.n}`);
-                        const trackKey = (setKey === 'xmen1992' || setKey === 'motu1984' || setKey === 'mu1990' || setKey === 'mm1992') ? card.id : String(card.n);
+                        const trackKey = (setKey === 'xmen1992' || setKey === 'motu1984' || setKey === 'mu1990' || setKey === 'mm1992' || setKey === 'mm1993') ? card.id : String(card.n);
                         const isCollected = savedData.spectra.map(String).includes(trackKey);
                         if (slot && isCollected && slot.classList.contains('no-image')) {
                             slot.className = 'col-slot filled'; slot.innerHTML = `<img src="${getImgPath(card.n, 'front', true, card.variant || '')}">`;
@@ -1779,11 +1779,11 @@
             if (activeSetQuery && DATA_MAP[activeSetQuery]) {
                 navigateToView(activeSetQuery, false);
             } else if (activeSetQuery === 'privacy') {
-                navigateToView('privacy', false);
+                navigateToView(privacy, false);
             } else if (activeSetQuery === 'terms') {
-                navigateToView('terms', false);
+                navigateToView(terms, false);
             } else if (activeSetQuery === 'contact') {
-                navigateToView('contact', false);
+                navigateToView(contact, false);
             } else {
                 navigateToView(null, false);
             }
