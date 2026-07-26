@@ -1775,8 +1775,12 @@
                 });
             }
             
+            // PREVENT SET CARD NAVIGATION WHEN CLICKING "ABOUT"
             document.querySelectorAll('.set-card').forEach(card => {
-                card.onclick = () => {
+                card.onclick = (e) => {
+                    if (e.target.closest('.set-meta-about-trigger')) {
+                        return; // Prevent navigating to the set page
+                    }
                     const targetKey = card.getAttribute('data-set-key');
                     navigateToView(targetKey, true);
                 };
