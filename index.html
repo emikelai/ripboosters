@@ -27,16 +27,66 @@
 
     <link rel="stylesheet" href="style.css">
     <style>
+        /* ==========================================================================
+           GLOBAL THEME VARIABLES (DEFAULT TO DARK MODE)
+           ========================================================================== */
+        :root {
+            --bg-color: #0d0e12;
+            --text-main: #f0f0f5;
+            --text-sub: #8e92a4;
+            --header-bg: rgba(13, 14, 18, 0.85);
+            --border-color: rgba(255, 255, 255, 0.1);
+            --card-base-bg: #161820;
+            --card-base-border: rgba(255, 255, 255, 0.08);
+            --overview-border: rgba(255, 255, 255, 0.08);
+            --summary-card-bg: rgba(255, 255, 255, 0.03);
+            --footer-bg: #08090b;
+            --footer-text: #636778;
+            --modal-bg: #1a1c23;
+            --modal-text: #d1d5db;
+            --modal-heading: #ffffff;
+            --modal-subtext: #a0a5b5;
+        }
+
+        /* LIGHT MODE OVERRIDES */
+        body.light-mode {
+            --bg-color: #f8f9fa;
+            --text-main: #1a1a1a;
+            --text-sub: #636366;
+            --header-bg: rgba(255, 255, 255, 0.95);
+            --border-color: rgba(0, 0, 0, 0.1);
+            --card-base-bg: #ffffff;
+            --card-base-border: rgba(0, 0, 0, 0.08);
+            --overview-border: #dee2e6;
+            --summary-card-bg: rgba(0, 0, 0, 0.02);
+            --footer-bg: #1a1a1a;
+            --footer-text: #8e8e93;
+            --modal-bg: #ffffff;
+            --modal-text: #2c2c2e;
+            --modal-heading: #1a1a1a;
+            --modal-subtext: #48484a;
+        }
+
+        /* GLOBAL SPA ATMOSPHERIC THEMING */
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
         /* UNIQUE SPA HEADER LAYOUT ARCHITECTURE */
         #global-header {
             display: flex;
             align-items: center;
             justify-content: space-between;
             padding: 1rem 1.5rem;
-            border-bottom: 1px solid var(--border);
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
+            border-bottom: 1px solid var(--border-color);
+            background: var(--header-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
             min-height: 50px;
             position: fixed;
             top: 0;
@@ -47,6 +97,7 @@
             will-change: transform;
             transform: translateZ(0);
             -webkit-transform: translateZ(0);
+            transition: background 0.3s ease, border-color 0.3s ease;
         }
         .header-left {
             display: flex;
@@ -62,41 +113,312 @@
         .back-link {
             white-space: nowrap;
             text-decoration: none;
-            color: inherit;
+            color: var(--text-main);
             font-weight: 500;
             position: static;
             transform: none;
+            transition: color 0.2s ease;
+        }
+        .back-link:hover {
+            color: #df9845;
+        }
+
+        .header-btn {
+            color: var(--text-sub);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+            font-family: inherit;
+        }
+        .header-btn:hover {
+            color: var(--text-main);
+        }
+        .header-btn.coffee {
+            background: rgba(223, 152, 69, 0.15);
+            color: #df9845;
+            padding: 0.4rem 0.8rem;
+            border-radius: 6px;
+            border: 1px solid rgba(223, 152, 69, 0.3);
+        }
+        .header-btn.coffee:hover {
+            background: rgba(223, 152, 69, 0.3);
+            color: var(--text-main);
+        }
+
+        /* THEME TOGGLE BUTTON STYLES */
+        .theme-toggle-btn {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 0.4rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.82rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+        body.light-mode .theme-toggle-btn {
+            background: rgba(0, 0, 0, 0.05);
+        }
+        .theme-toggle-btn:hover {
+            border-color: #df9845;
+            color: #df9845;
         }
 
         .page-title-container {
-            padding: 1.5rem 1.5rem 0.5rem 1.5rem;
+            padding: 6.5rem 1.5rem 1rem 1.5rem;
             max-width: 1200px;
             margin: 0 auto;
         }
         #global-header-title {
-            font-size: 2rem;
+            font-size: 2.4rem;
             margin: 0;
             line-height: 1.2;
             display: flex;
             flex-direction: column;
-            gap: 0.25rem;
+            gap: 0.35rem;
+            letter-spacing: -0.02em;
         }
         #header-main-title {
             font-style: normal;
+            font-weight: 800;
+            color: var(--text-main);
+        }
+        body:not(.light-mode) #header-main-title {
+            background: linear-gradient(135deg, #ffffff 0%, #b0b3c0 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
         #header-subtitle {
-            font-size: 1.1rem;
-            font-weight: normal;
-            color: var(--muted);
+            font-size: 1.15rem;
+            font-weight: 400;
+            color: var(--text-sub);
         }
 
         #spa-app-container {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 1rem 1.5rem;
+            padding: 1rem 1.5rem 3rem 1.5rem;
         }
 
-        /* 3x3 PUZZLE GRID LAYOUT ARCHITECTURE - 1.5x SCALED MURAL CARDS */
+        /* CATEGORY SECTION STYLING */
+        .category-block {
+            margin-bottom: 3rem;
+        }
+        .category-label {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 0.25rem;
+            letter-spacing: -0.01em;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .category-sub {
+            font-size: 0.9rem;
+            color: var(--text-sub);
+            margin-bottom: 1.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            font-weight: 600;
+        }
+
+        /* SET CARDS GRID & CUSTOM THEMED CARDS */
+        .sets-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .set-card {
+            background-color: var(--card-bg, var(--card-base-bg));
+            background-image: var(--card-gradient, radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.05) 0%, transparent 75%));
+            border: 1px solid var(--card-border, var(--card-base-border));
+            border-radius: 14px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.25s ease, box-shadow 0.25s ease, background-color 0.3s ease;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .set-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--card-accent, #df9845);
+            box-shadow: 0 12px 30px var(--card-glow, rgba(223, 152, 69, 0.25));
+        }
+
+        .set-cover {
+            width: 100%;
+            height: 200px;
+            overflow: hidden;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 0, 0, 0.08);
+            padding: 1rem 0;
+        }
+
+        .set-cover img {
+            max-height: 180px;
+            max-width: 80%;
+            object-fit: contain;
+            filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.3));
+            transition: transform 0.3s ease;
+        }
+
+        .set-card:hover .set-cover img {
+            transform: scale(1.06) rotate(1deg);
+        }
+
+        .set-body {
+            padding: 1.25rem;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+            z-index: 2;
+        }
+
+        .set-name {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 0.35rem;
+            line-height: 1.3;
+        }
+
+        .set-meta {
+            font-size: 0.82rem;
+            color: var(--text-sub);
+            margin-bottom: 1rem;
+        }
+
+        .set-meta-about-trigger {
+            color: var(--card-accent, #df9845);
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: underline;
+            text-underline-offset: 2px;
+            transition: color 0.15s ease;
+        }
+
+        .set-meta-about-trigger:hover {
+            color: var(--text-main);
+        }
+
+        .set-progress-track {
+            height: 6px;
+            background: rgba(150, 150, 150, 0.2);
+            border-radius: 3px;
+            overflow: hidden;
+            margin-bottom: 0.5rem;
+            margin-top: auto;
+        }
+
+        .set-progress-bar {
+            height: 100%;
+            border-radius: 3px;
+            transition: width 0.4s ease;
+        }
+
+        .set-progress-label {
+            font-size: 0.78rem;
+            color: var(--text-sub);
+            font-weight: 600;
+        }
+
+        /* PER-SET CUSTOM COLOR SCHEMES */
+        body:not(.light-mode) .set-card[data-set-key="mtglea"],
+        body:not(.light-mode) .set-card[data-set-key="mtgleb"],
+        body:not(.light-mode) .set-card[data-set-key="mtg2ed"],
+        body:not(.light-mode) .set-card[data-set-key="mtg3ed"] {
+            --card-bg: #15131a;
+            --card-accent: #e5b35c;
+            --card-glow: rgba(229, 179, 92, 0.22);
+            --card-gradient: radial-gradient(circle at 50% 0%, rgba(229, 179, 92, 0.12) 0%, transparent 75%);
+            --card-border: rgba(229, 179, 92, 0.2);
+        }
+
+        body:not(.light-mode) .set-card[data-set-key="mtgarn"],
+        body:not(.light-mode) .set-card[data-set-key="mtgatq"],
+        body:not(.light-mode) .set-card[data-set-key="mtgleg"],
+        body:not(.light-mode) .set-card[data-set-key="mtgdrk"] {
+            --card-bg: #131718;
+            --card-accent: #4cb8a5;
+            --card-glow: rgba(76, 184, 165, 0.22);
+            --card-gradient: radial-gradient(circle at 50% 0%, rgba(76, 184, 165, 0.12) 0%, transparent 75%);
+            --card-border: rgba(76, 184, 165, 0.2);
+        }
+
+        body:not(.light-mode) .set-card[data-set-key="rav"] {
+            --card-bg: #141a15;
+            --card-accent: #58b972;
+            --card-glow: rgba(88, 185, 114, 0.22);
+            --card-gradient: radial-gradient(circle at 50% 0%, rgba(88, 185, 114, 0.15) 0%, transparent 75%);
+            --card-border: rgba(88, 185, 114, 0.2);
+        }
+        body:not(.light-mode) .set-card[data-set-key="isd"] {
+            --card-bg: #17181e;
+            --card-accent: #8199b5;
+            --card-glow: rgba(129, 153, 181, 0.22);
+            --card-gradient: radial-gradient(circle at 50% 0%, rgba(129, 153, 181, 0.15) 0%, transparent 75%);
+            --card-border: rgba(129, 153, 181, 0.2);
+        }
+
+        body:not(.light-mode) .set-card[data-set-key="mu1990"] {
+            --card-bg: #1c1113;
+            --card-accent: #e63946;
+            --card-glow: rgba(230, 57, 70, 0.25);
+            --card-gradient: radial-gradient(circle at 50% 0%, rgba(230, 57, 70, 0.18) 0%, transparent 75%);
+            --card-border: rgba(230, 57, 70, 0.25);
+        }
+
+        body:not(.light-mode) .set-card[data-set-key="mm1992"],
+        body:not(.light-mode) .set-card[data-set-key="mm1993"] {
+            --card-bg: #1a1610;
+            --card-accent: #f4a261;
+            --card-glow: rgba(244, 162, 97, 0.25);
+            --card-gradient: radial-gradient(circle at 50% 0%, rgba(244, 162, 97, 0.18) 0%, transparent 75%);
+            --card-border: rgba(244, 162, 97, 0.25);
+        }
+
+        body:not(.light-mode) .set-card[data-set-key="xmen1992"] {
+            --card-bg: #0f1821;
+            --card-accent: #00b4d8;
+            --card-glow: rgba(0, 180, 216, 0.25);
+            --card-gradient: radial-gradient(circle at 50% 0%, rgba(0, 180, 216, 0.18) 0%, transparent 75%);
+            --card-border: rgba(0, 180, 216, 0.25);
+        }
+
+        body:not(.light-mode) .set-card[data-set-key="motu1984"] {
+            --card-bg: #1c1510;
+            --card-accent: #e76f51;
+            --card-glow: rgba(231, 111, 81, 0.25);
+            --card-gradient: radial-gradient(circle at 50% 0%, rgba(231, 111, 81, 0.18) 0%, transparent 75%);
+            --card-border: rgba(231, 111, 81, 0.25);
+        }
+
+        body:not(.light-mode) .set-card[data-set-key="gpk1"] {
+            --card-bg: #1c180e;
+            --card-accent: #ffb703;
+            --card-glow: rgba(255, 183, 3, 0.25);
+            --card-gradient: radial-gradient(circle at 50% 0%, rgba(255, 183, 3, 0.18) 0%, transparent 75%);
+            --card-border: rgba(255, 183, 3, 0.25);
+        }
+
+        /* 3x3 PUZZLE GRID LAYOUT ARCHITECTURE */
         .puzzle-3x3-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -116,12 +438,15 @@
 
         /* ABOUT MODAL CONTRAST & READABILITY FIXES */
         .about-modal-content {
-            background-color: #ffffff !important;
-            color: #2c2c2e !important;
+            background-color: var(--modal-bg) !important;
+            color: var(--modal-text) !important;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
 
         .about-modal-content h3 {
-            color: #1a1a1a !important;
+            color: var(--modal-heading) !important;
             font-size: 1.4rem;
             font-weight: 700;
             margin-top: 0;
@@ -129,64 +454,70 @@
         }
 
         .about-modal-content p {
-            color: #48484a !important;
+            color: var(--modal-subtext) !important;
             line-height: 1.5;
         }
 
         .about-modal-close {
-            color: #636366 !important;
+            color: var(--text-sub) !important;
         }
 
         .about-modal-close:hover {
-            color: #1a1a1a !important;
+            color: var(--text-main) !important;
         }
 
         /* CONDENSED BOTTOM DASHBOARD OVERVIEW BLOCK STYLES */
         .dashboard-bottom-overview {
-            margin-top: 3.5rem;
-            border-top: 1px solid #dee2e6;
-            padding-top: 2rem;
+            margin-top: 4rem;
+            border-top: 1px solid var(--overview-border);
+            padding-top: 2.5rem;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            color: #444;
+            color: var(--text-sub);
             line-height: 1.6;
         }
         .dashboard-bottom-overview h2 {
-            font-size: 1.2rem;
-            color: #1a1a1a;
-            font-weight: 600;
+            font-size: 1.3rem;
+            color: var(--text-main);
+            font-weight: 700;
             margin: 0 0 0.5rem 0;
         }
         .dashboard-bottom-overview p {
-            margin: 0 0 1rem 0;
-            font-size: 0.9rem;
+            margin: 0 0 1.5rem 0;
+            font-size: 0.92rem;
         }
         .dashboard-feature-summary {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1rem;
-            margin-top: 1rem;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.25rem;
+            margin-top: 1.5rem;
         }
         .summary-item-card {
             font-size: 0.85rem;
-            color: #636366;
+            color: var(--text-sub);
+            background: var(--summary-card-bg);
+            border: 1px solid var(--border-color);
+            padding: 1rem;
+            border-radius: 10px;
         }
         .summary-item-card strong {
             display: block;
             color: #df9845;
-            margin-bottom: 0.15rem;
+            margin-bottom: 0.25rem;
             font-weight: 600;
+            font-size: 0.95rem;
         }
 
         /* SITE FOOTER STYLES */
         .site-footer {
-            background-color: #1a1a1a;
-            color: #8e8e93;
+            background-color: var(--footer-bg);
+            color: var(--footer-text);
             font-size: 0.8rem;
             line-height: 1.5;
-            padding: 2.5rem 1.5rem;
-            margin-top: 4rem;
-            border-top: 1px solid #2c2c2e;
+            padding: 3rem 1.5rem;
+            margin-top: 5rem;
+            border-top: 1px solid var(--border-color);
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            transition: background-color 0.3s ease;
         }
 
         .footer-content {
@@ -222,7 +553,7 @@
         }
 
         .footer-links-row a {
-            color: #8e8e93 !important;
+            color: var(--text-sub) !important;
         }
 
         .footer-links-row a:hover {
@@ -231,13 +562,13 @@
 
         .footer-divider {
             height: 1px;
-            background-color: #2c2c2e;
+            background-color: var(--border-color);
             margin: 0.75rem 0;
         }
 
         .footer-copyright {
             font-size: 0.75rem;
-            color: #636366;
+            color: var(--footer-text);
             text-align: center;
             margin-top: 0.25rem;
         }
@@ -260,8 +591,8 @@
                 justify-content: flex-end; 
                 flex: 1;
             }
-            .page-title-container { padding: 1.25rem 1rem 0.25rem 1rem; }
-            #global-header-title { font-size: 1.6rem; }
+            .page-title-container { padding: 5.5rem 1rem 0.25rem 1rem; }
+            #global-header-title { font-size: 1.8rem; }
             #header-subtitle { font-size: 0.95rem; }
             .puzzle-3x3-grid { max-width: 95vw; }
         }
@@ -277,6 +608,10 @@
             </a>
         </div>
         <div class="header-extra-links">
+            <button class="theme-toggle-btn" id="theme-toggle-btn">
+                <span id="theme-btn-icon">🌙</span>
+                <span id="theme-btn-text" class="desktop-text">Dark Mode</span>
+            </button>
             <a href="https://forms.gle/LGtRVJ5uTHjnBgMV6" target="_blank" class="header-btn" id="nav-feedback-btn">Feedback</a>
             <a href="#" class="header-btn" id="about-nav-btn">About</a>
             <a href="https://ko-fi.com/ripboosters" target="_blank" class="header-btn coffee" id="nav-kofi-btn">
@@ -310,7 +645,7 @@
                         <div class="set-body">
                             <div class="set-name">Limited Edition Alpha</div>
                             <div class="set-meta">1993 &middot; WotC &middot; <span class="set-meta-about-trigger" data-set-key="mtglea">About</span> &middot; 295 cards</div>
-                            <div class="set-progress-track"><div class="set-progress-bar" id="prog-mtglea" style="width:0%;background:#df9845"></div></div>
+                            <div class="set-progress-track"><div class="set-progress-bar" id="prog-mtglea" style="width:0%;background:#e5b35c"></div></div>
                             <div class="set-progress-label" id="label-mtglea">0 / 295 collected</div>
                         </div>
                     </div>
@@ -375,7 +710,7 @@
                         <div class="set-body">
                             <div class="set-name">Revised Edition</div>
                             <div class="set-meta">1994 &middot; WotC &middot; <span class="set-meta-about-trigger" data-set-key="mtg3ed">About</span> &middot; 306 cards</div>
-                            <div class="set-progress-track"><div class="set-progress-bar" id="prog-mtg3ed" style="width:0%;background:#df9845"></div></div>
+                            <div class="set-progress-track"><div class="set-progress-bar" id="prog-mtg3ed" style="width:0%;background:#e5b35c"></div></div>
                             <div class="set-progress-label" id="label-mtg3ed">0 / 306 collected</div>
                         </div>
                     </div>
@@ -414,7 +749,7 @@
                         <div class="set-body">
                             <div class="set-name">Ravnica: City of Guilds</div>
                             <div class="set-meta">2005 &middot; WotC &middot; <span class="set-meta-about-trigger" data-set-key="rav">About</span> &middot; 306 cards</div>
-                            <div class="set-progress-track"><div class="set-progress-bar" id="prog-rav" style="width:0%;background:#4a7c59"></div></div>
+                            <div class="set-progress-track"><div class="set-progress-bar" id="prog-rav" style="width:0%;background:#58b972"></div></div>
                             <div class="set-progress-label" id="label-rav">0 / 306 collected</div>
                         </div>
                     </div>
@@ -427,7 +762,7 @@
                         <div class="set-body">
                             <div class="set-name">Innistrad</div>
                             <div class="set-meta">2011 &middot; WotC &middot; <span class="set-meta-about-trigger" data-set-key="isd">About</span> &middot; 264 cards</div>
-                            <div class="set-progress-track"><div class="set-progress-bar" id="prog-isd" style="width:0%;background:#4c5b6b"></div></div>
+                            <div class="set-progress-track"><div class="set-progress-bar" id="prog-isd" style="width:0%;background:#8199b5"></div></div>
                             <div class="set-progress-label" id="label-isd">0 / 264 collected</div>
                         </div>
                     </div>
@@ -449,7 +784,7 @@
                         <div class="set-body">
                             <div class="set-name">Marvel Universe</div>
                             <div class="set-meta">1990 &middot; Impel &middot; <span class="set-meta-about-trigger" data-set-key="mu1990">About</span> &middot; 167 cards</div>
-                            <div class="set-progress-track"><div class="set-progress-bar" id="prog-mu1990" style="width:0%;background:#d4382a"></div></div>
+                            <div class="set-progress-track"><div class="set-progress-bar" id="prog-mu1990" style="width:0%;background:#e63946"></div></div>
                             <div class="set-progress-label" id="label-mu1990">0 / 167 collected</div>
                         </div>
                     </div>
@@ -462,7 +797,7 @@
                         <div class="set-body">
                             <div class="set-name">Marvel Masterpieces</div>
                             <div class="set-meta">1992 &middot; SkyBox &middot; <span class="set-meta-about-trigger" data-set-key="mm1992">About</span> &middot; 105 cards</div>
-                            <div class="set-progress-track"><div class="set-progress-bar" id="prog-mm1992" style="width:0%"></div></div>
+                            <div class="set-progress-track"><div class="set-progress-bar" id="prog-mm1992" style="width:0%;background:#f4a261"></div></div>
                             <div class="set-progress-label" id="label-mm1992">0 / 105 collected</div>
                         </div>
                     </div>
@@ -475,7 +810,7 @@
                         <div class="set-body">
                             <div class="set-name">The Uncanny X-Men</div>
                             <div class="set-meta">1992 &middot; Impel &middot; <span class="set-meta-about-trigger" data-set-key="xmen1992">About</span> &middot; 105 cards</div>
-                            <div class="set-progress-track"><div class="set-progress-bar" id="prog-xmen1992" style="width:0%;background:#ffcc00"></div></div>
+                            <div class="set-progress-track"><div class="set-progress-bar" id="prog-xmen1992" style="width:0%;background:#00b4d8"></div></div>
                             <div class="set-progress-label" id="label-xmen1992">0 / 105 collected</div>
                         </div>
                     </div>
@@ -488,7 +823,7 @@
                         <div class="set-body">
                             <div class="set-name">Marvel Masterpieces</div>
                             <div class="set-meta">1993 &middot; SkyBox &middot; <span class="set-meta-about-trigger" data-set-key="mm1993">About</span> &middot; 98 cards</div>
-                            <div class="set-progress-track"><div class="set-progress-bar" id="prog-mm1993" style="width:0%"></div></div>
+                            <div class="set-progress-track"><div class="set-progress-bar" id="prog-mm1993" style="width:0%;background:#f4a261"></div></div>
                             <div class="set-progress-label" id="label-mm1993">0 / 98 collected</div>
                         </div>
                     </div>
@@ -509,7 +844,7 @@
                         <div class="set-body">
                             <div class="set-name">Masters of the Universe</div>
                             <div class="set-meta">1984 &middot; Topps &middot; <span class="set-meta-about-trigger" data-set-key="motu1984">About</span> &middot; 110 cards</div>
-                            <div class="set-progress-track"><div class="set-progress-bar" id="prog-motu1984" style="width:0%;background:#d87b28"></div></div>
+                            <div class="set-progress-track"><div class="set-progress-bar" id="prog-motu1984" style="width:0%;background:#e76f51"></div></div>
                             <div class="set-progress-label" id="label-motu1984">0 / 110 collected</div>
                         </div>
                     </div>
@@ -522,7 +857,7 @@
                         <div class="set-body">
                             <div class="set-name">Garbage Pail Kids OS1</div>
                             <div class="set-meta">1985 &middot; Topps &middot; <span class="set-meta-about-trigger" data-set-key="gpk1">About</span> &middot; 82 stickers</div>
-                            <div class="set-progress-track"><div class="set-progress-bar" id="prog-gpk1" style="width:0%;background:#ff6b00"></div></div>
+                            <div class="set-progress-track"><div class="set-progress-bar" id="prog-gpk1" style="width:0%;background:#ffb703"></div></div>
                             <div class="set-progress-label" id="label-gpk1">0 / 82 collected</div>
                         </div>
                     </div>
@@ -554,37 +889,37 @@
         </div>
 
         <!-- PRIVACY POLICY CONTAINER COMPLYING WITH GOOGLE ADSENSE AND PRIVACY LAWS -->
-        <div id="view-privacy-policy" style="display: none; max-width: 800px; margin: 0 auto; line-height: 1.6; font-family: -apple-system, BlinkMacSystemFont, sans-serif; color: #333; padding-bottom: 3rem;">
-            <h2 style="font-size: 2.2rem; margin-bottom: 0.5rem; color: #1a1a1a;">Privacy Policy</h2>
-            <p style="color: #636366; font-size: 0.9rem; margin-bottom: 2rem;">Last Updated: July 2026</p>
+        <div id="view-privacy-policy" style="display: none; max-width: 800px; margin: 0 auto; line-height: 1.6; font-family: -apple-system, BlinkMacSystemFont, sans-serif; color: var(--text-main); padding-bottom: 3rem;">
+            <h2 style="font-size: 2.2rem; margin-bottom: 0.5rem; color: var(--text-main);">Privacy Policy</h2>
+            <p style="color: var(--text-sub); font-size: 0.9rem; margin-bottom: 2rem;">Last Updated: July 2026</p>
 
             <p>Welcome to Rip Boosters. Your privacy is critically important to us. This Privacy Policy document outlines the types of personal information that is received and collected by Rip Boosters and how it is used.</p>
 
-            <h3 style="font-size: 1.4rem; margin-top: 2rem; color: #1a1a1a;">1. Google AdSense & Third-Party Advertising</h3>
+            <h3 style="font-size: 1.4rem; margin-top: 2rem; color: var(--text-main);">1. Google AdSense & Third-Party Advertising</h3>
             <p>This website uses Google AdSense, a web advertising service provided by Google, Inc. Google uses cookies to serve ads on our site. Google's use of advertising cookies enables it and its partners to serve ads to our users based on their visit to this site and/or other sites on the Internet.</p>
             <p>Users may opt out of personalized advertising by visiting <a href="https://www.google.com/settings/ads" target="_blank" style="color: #df9845;">Google Ad Settings</a> or by utilizing standard browser tracking opt-out preferences.</p>
 
-            <h3 style="font-size: 1.4rem; margin-top: 2rem; color: #1a1a1a;">2. Web Analytics Tracking</h3>
+            <h3 style="font-size: 1.4rem; margin-top: 2rem; color: var(--text-main);">2. Web Analytics Tracking</h3>
             <p>We leverage automated analytics tools including <strong>Cloudflare Web Analytics/Zaraz</strong> and <strong>Microsoft Clarity</strong> to analyze user movement and optimize site layout experiences. These services collect network metrics, timing indicators, mouse movements, scrolling interactions, and baseline click patterns. This data is entirely anonymized and is used solely to spot client-side application performance issues or evaluate trading card pack simulation popularity trends.</p>
 
-            <h3 style="font-size: 1.4rem; margin-top: 2rem; color: #1a1a1a;">3. Local Storage Architecture</h3>
+            <h3 style="font-size: 1.4rem; margin-top: 2rem; color: var(--text-main);">3. Local Storage Architecture</h3>
             <p>Rip Boosters saves your simulation collection milestone data (such as card pull records, counts, and completed binder checklists) directly within your browser's local storage database (LocalStorage). This data remains isolated entirely to your local device hardware and is never synchronized to backend system servers managed by us.</p>
 
-            <h3 style="font-size: 1.4rem; margin-top: 2rem; color: #1a1a1a;">4. External Links</h3>
+            <h3 style="font-size: 1.4rem; margin-top: 2rem; color: var(--text-main);">4. External Links</h3>
             <p>Our site contains links to external platforms including Google Forms, Ko-fi, and the Scryfall API. Once you leave our domain, we do not maintain authority over third-party data processing procedures.</p>
         </div>
 
         <!-- TERMS OF SERVICE & COOKIE POLICY CONTAINER -->
-        <div id="view-terms-of-service" style="display: none; max-width: 800px; margin: 0 auto; line-height: 1.6; font-family: -apple-system, BlinkMacSystemFont, sans-serif; color: #333; padding-bottom: 3rem;">
-            <h2 style="font-size: 2.2rem; margin-bottom: 0.5rem; color: #1a1a1a;">Terms of Service & Cookie Policy</h2>
-            <p style="color: #636366; font-size: 0.9rem; margin-bottom: 2rem;">Last Updated: July 2026</p>
+        <div id="view-terms-of-service" style="display: none; max-width: 800px; margin: 0 auto; line-height: 1.6; font-family: -apple-system, BlinkMacSystemFont, sans-serif; color: var(--text-main); padding-bottom: 3rem;">
+            <h2 style="font-size: 2.2rem; margin-bottom: 0.5rem; color: var(--text-main);">Terms of Service & Cookie Policy</h2>
+            <p style="color: var(--text-sub); font-size: 0.9rem; margin-bottom: 2rem;">Last Updated: July 2026</p>
 
             <p>By accessing or using Rip Boosters, you agree to be bound by these simple Terms of Service. If you do not agree with any part of these terms, please discontinue using the simulator application.</p>
 
-            <h3 style="font-size: 1.4rem; margin-top: 2rem; color: #1a1a1a;">1. Nature of the Simulator Service</h3>
+            <h3 style="font-size: 1.4rem; margin-top: 2rem; color: var(--text-main);">1. Nature of the Simulator Service</h3>
             <p>Rip Boosters is a completely free, non-commercial trading card pack opening simulator intended purely for nostalgic, entertainment, and educational collection tracking purposes. No real currency is ever traded, transacted, or exchanged on this platform. The card packs opened here do not possess any real-world physical or secondary marketplace asset evaluation.</p>
 
-            <h3 style="font-size: 1.4rem; margin-top: 2rem; color: #1a1a1a;">2. Explicit Cookie Disclosure</h3>
+            <h3 style="font-size: 1.4rem; margin-top: 2rem; color: var(--text-main);">2. Explicit Cookie Disclosure</h3>
             <p>We use standard technical identifiers and tracker systems to maintain fundamental service integrity. This section outlines how cookies operate on Rip Boosters:</p>
             <ul style="padding-left: 1.25rem; margin-bottom: 1rem;">
                 <li><strong>Essential Cookies:</strong> We utilize small text identifiers to record foundational metrics across application loads.</li>
@@ -592,17 +927,17 @@
                 <li><strong>Analytical Interaction Records (Clarity & Cloudflare):</strong> These systems evaluate cursor motion parameters and click heatmaps to prevent backend processing dead-ends.</li>
             </ul>
 
-            <h3 style="font-size: 1.4rem; margin-top: 2rem; color: #1a1a1a;">3. Acceptable Use Policy</h3>
+            <h3 style="font-size: 1.4rem; margin-top: 2rem; color: var(--text-main);">3. Acceptable Use Policy</h3>
             <p>Users agree not to exploit our application framework by deploying automated scrape scripts, database harvesting robots, denial of service attacks, or layout modification parameters that degrade performance metrics for other users on the network host.</p>
 
-            <h3 style="font-size: 1.4rem; margin-top: 2rem; color: #1a1a1a;">4. Disclaimer of Liability</h3>
+            <h3 style="font-size: 1.4rem; margin-top: 2rem; color: var(--text-main);">4. Disclaimer of Liability</h3>
             <p>Rip Boosters is provided completely "as is" without hardware guarantees. We accept zero liability for browser cache clearing incidents that reset local card collection tracking progress scores, or external data feed availability disruptions from third-party lookup endpoints like Scryfall.</p>
         </div>
 
         <!-- DEDICATED HELP AND CONTACT US CONTAINER -->
-        <div id="view-contact-us" style="display: none; max-width: 800px; margin: 0 auto; line-height: 1.6; font-family: -apple-system, BlinkMacSystemFont, sans-serif; color: #333; padding-bottom: 3rem;">
-            <h2 style="font-size: 2.2rem; margin-bottom: 0.5rem; color: #1a1a1a;">Contact Us</h2>
-            <p style="color: #636366; font-size: 0.9rem; margin-bottom: 2rem;">Last Updated: July 2026</p>
+        <div id="view-contact-us" style="display: none; max-width: 800px; margin: 0 auto; line-height: 1.6; font-family: -apple-system, BlinkMacSystemFont, sans-serif; color: var(--text-main); padding-bottom: 3rem;">
+            <h2 style="font-size: 2.2rem; margin-bottom: 0.5rem; color: var(--text-main);">Contact Us</h2>
+            <p style="color: var(--text-sub); font-size: 0.9rem; margin-bottom: 2rem;">Last Updated: July 2026</p>
 
             <p>Welcome to the Rip Boosters support and assistance directory. We value user feedback and endeavor to maintain a completely secure, functional nostalgic card pack simulation tool. If you encounter missing card assets, collection counting performance bugs, or have inquiries regarding copyright settings, please interact with us through our primary web communication channels:</p>
             
@@ -617,7 +952,7 @@
                 </li>
             </ul>
 
-            <h3 style="font-size: 1.4rem; margin-top: 2rem; color: #1a1a1a;">Response Time Expectations</h3>
+            <h3 style="font-size: 1.4rem; margin-top: 2rem; color: var(--text-main);">Response Time Expectations</h3>
             <p>Rip Boosters is maintained and managed entirely as a non-commercial digital hobby project. While we check form submittals and tracking dashboard logs regularly, please allow a couple of days for review and integration of data changes. We deeply appreciate your support and help in making this project better!</p>
         </div>
 
@@ -677,6 +1012,36 @@
         import { GPK1_DATA } from './data-gpk1.js';
         import { MOTU1984_DATA } from './data-motu1984.js';
         import { MTG_CONFIGS, ensureSetData } from './data-mtg.js';
+
+        // THEME TOGGLE CONTROLLER
+        const themeToggleBtn = document.getElementById('theme-toggle-btn');
+        const themeBtnIcon = document.getElementById('theme-btn-icon');
+        const themeBtnText = document.getElementById('theme-btn-text');
+
+        function applyTheme(theme) {
+            if (theme === 'light') {
+                document.body.classList.add('light-mode');
+                themeBtnIcon.textContent = '☀️';
+                if (themeBtnText) themeBtnText.textContent = 'Light Mode';
+            } else {
+                document.body.classList.remove('light-mode');
+                themeBtnIcon.textContent = '🌙';
+                if (themeBtnText) themeBtnText.textContent = 'Dark Mode';
+            }
+        }
+
+        // Default to Dark Mode unless Light Mode was explicitly saved
+        const savedTheme = localStorage.getItem('theme_preference') || 'dark';
+        applyTheme(savedTheme);
+
+        if (themeToggleBtn) {
+            themeToggleBtn.addEventListener('click', () => {
+                const isLight = document.body.classList.contains('light-mode');
+                const newTheme = isLight ? 'dark' : 'light';
+                localStorage.setItem('theme_preference', newTheme);
+                applyTheme(newTheme);
+            });
+        }
 
         const DATA_MAP = { 
             mm1992: MM1992_DATA, 
