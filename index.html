@@ -114,6 +114,33 @@
             margin: 1rem auto 0 auto;
         }
 
+        /* ABOUT MODAL CONTRAST & READABILITY FIXES */
+        .about-modal-content {
+            background-color: #ffffff !important;
+            color: #2c2c2e !important;
+        }
+
+        .about-modal-content h3 {
+            color: #1a1a1a !important;
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-top: 0;
+            margin-bottom: 0.75rem;
+        }
+
+        .about-modal-content p {
+            color: #48484a !important;
+            line-height: 1.5;
+        }
+
+        .about-modal-close {
+            color: #636366 !important;
+        }
+
+        .about-modal-close:hover {
+            color: #1a1a1a !important;
+        }
+
         /* CONDENSED BOTTOM DASHBOARD OVERVIEW BLOCK STYLES */
         .dashboard-bottom-overview {
             margin-top: 3.5rem;
@@ -1053,7 +1080,7 @@
 
                     <div class="collection-header" style="margin-top:2.5rem;">
                         <div>
-                            <p class="collection-sub">Base Set &mdash; 100 cards</p>
+                            <p class="collection-sub">Base Set &mdash; 91 cards (excluding puzzle cards 91–99)</p>
                         </div>
                     </div>
                     <div class="collection-grid" id="collectionGrid"></div>`;
@@ -1301,7 +1328,7 @@
                 });
             }
 
-            // RED BORDER PUZZLE GRID FOR MOTU STICKERS (Top: 18, 11, 13, 15, 12 | Bottom: 19R, 21, 17, 20, 16)
+            // RED BORDER PUZZLE GRID FOR MOTU STICKERS
             if (gridMotuRedPuzzle && setKey === 'motu1984') {
                 const redPuzzleSequence = [
                     { id: "S18", n: 18, variant: "" },
@@ -1333,7 +1360,7 @@
                 });
             }
 
-            // BLUE BORDER PUZZLE GRID FOR MOTU STICKERS (Top: 19B, 10, 8, 5, 4 | Bottom: 14, 9, 7, 6, 3)
+            // BLUE BORDER PUZZLE GRID FOR MOTU STICKERS
             if (gridMotuBluePuzzle && setKey === 'motu1984') {
                 const bluePuzzleSequence = [
                     { id: "S19B", n: 19, variant: "b" },
@@ -1546,7 +1573,6 @@
                     setTimeout(() => {
                         if (pack) pack.classList.remove('pack-tearing');
                         
-                        // Swap to a random MOTU wrapper image for the next pack display
                         if (setKey === 'motu1984') {
                             const packImgEl = document.getElementById('packWrapperImg');
                             if (packImgEl) {
@@ -1623,7 +1649,6 @@
                             slot.onclick = () => showLightbox(getImgPath(card.n, 'front', true, card.variant || ''), getImgPath(card.n, 'back', true, card.variant || ''));
                         }
 
-                        // Also update Red & Blue puzzle slots for MOTU stickers
                         if (setKey === 'motu1984') {
                             const redPuzzleSlot = document.getElementById(`col-motu-red-puzzle-${card.id}`);
                             if (redPuzzleSlot && isCollected && redPuzzleSlot.classList.contains('no-image')) {
@@ -1779,11 +1804,11 @@
             if (activeSetQuery && DATA_MAP[activeSetQuery]) {
                 navigateToView(activeSetQuery, false);
             } else if (activeSetQuery === 'privacy') {
-                navigateToView(privacy, false);
+                navigateToView('privacy', false);
             } else if (activeSetQuery === 'terms') {
-                navigateToView(terms, false);
+                navigateToView('terms', false);
             } else if (activeSetQuery === 'contact') {
-                navigateToView(contact, false);
+                navigateToView('contact', false);
             } else {
                 navigateToView(null, false);
             }
