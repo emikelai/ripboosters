@@ -1346,6 +1346,8 @@
                 redPuzzleSequence.forEach(item => {
                     const slot = document.createElement('div');
                     const isCollected = savedData.spectra.map(String).includes(item.id);
+                    const stickerObj = activeSetData.stickerCards.find(s => s.id === item.id);
+                    const displayName = stickerObj ? stickerObj.name : `Sticker #${item.n}`;
                     
                     slot.className = `col-slot ${isCollected ? 'filled' : 'no-image'}`;
                     slot.id = `col-motu-red-puzzle-${item.id}`;
@@ -1354,7 +1356,7 @@
                         slot.innerHTML = `<img src="${getImgPath(item.n, 'back', true, item.variant)}">`;
                         slot.onclick = () => showLightbox(getImgPath(item.n, 'front', true, item.variant), getImgPath(item.n, 'back', true, item.variant));
                     } else {
-                        slot.innerHTML = `<span class="col-num">#${item.n}</span><span class="col-name">Sticker #${item.n}</span>`;
+                        slot.innerHTML = `<span class="col-num">#${item.n}</span><span class="col-name">${displayName}</span>`;
                     }
                     gridMotuRedPuzzle.appendChild(slot);
                 });
@@ -1378,6 +1380,8 @@
                 bluePuzzleSequence.forEach(item => {
                     const slot = document.createElement('div');
                     const isCollected = savedData.spectra.map(String).includes(item.id);
+                    const stickerObj = activeSetData.stickerCards.find(s => s.id === item.id);
+                    const displayName = stickerObj ? stickerObj.name : `Sticker #${item.n}`;
 
                     slot.className = `col-slot ${isCollected ? 'filled' : 'no-image'}`;
                     slot.id = `col-motu-blue-puzzle-${item.id}`;
@@ -1386,7 +1390,7 @@
                         slot.innerHTML = `<img src="${getImgPath(item.n, 'back', true, item.variant)}">`;
                         slot.onclick = () => showLightbox(getImgPath(item.n, 'front', true, item.variant), getImgPath(item.n, 'back', true, item.variant));
                     } else {
-                        slot.innerHTML = `<span class="col-num">#${item.n}</span><span class="col-name">Sticker #${item.n}</span>`;
+                        slot.innerHTML = `<span class="col-num">#${item.n}</span><span class="col-name">${displayName}</span>`;
                     }
                     gridMotuBluePuzzle.appendChild(slot);
                 });
