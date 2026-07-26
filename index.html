@@ -77,6 +77,17 @@
             transition: background-color 0.3s ease, color 0.3s ease;
         }
 
+        /* LIGHTBOX IMAGE EQUALIZATION FIX */
+        #lightbox-front,
+        #lightbox-back {
+            height: 70vh;
+            max-height: 800px;
+            width: auto;
+            object-fit: contain;
+            border-radius: 8px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
         /* UNIQUE SPA HEADER LAYOUT ARCHITECTURE */
         #global-header {
             display: flex;
@@ -580,6 +591,11 @@
                 font-size: 0.75rem;
             }
             .puzzle-2x5-grid { max-width: 95vw; }
+            #lightbox-front,
+            #lightbox-back {
+                height: auto;
+                max-width: 44vw;
+            }
         }
 
         @media (max-width: 480px) {
@@ -1548,7 +1564,7 @@
                     <div class="cards-row" id="slots-base"></div>
                 </div>
                 <div class="collection-section">${collectionHeaderHTML}</div>
-                <div id="lightbox"><button id="lightbox-close">&times;</button><div style="display:flex; gap:1rem; max-width:90vw;"><img id="lightbox-front" src=""><img id="lightbox-back" src=""></div ></div>
+                <div id="lightbox"><button id="lightbox-close">&times;</button><div style="display:flex; gap:1rem; max-width:90vw; align-items:center; justify-content:center;"><img id="lightbox-front" src=""><img id="lightbox-back" src=""></div ></div>
             `;
             const lb = document.getElementById('lightbox');
             if (lb) {
