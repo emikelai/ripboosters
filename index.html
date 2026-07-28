@@ -558,6 +558,26 @@
             font-size: 0.95rem;
         }
 
+        /* PORTAL BOTTOM SET ABOUT SECTION STYLES (ADSENSE TEXT OPTIMIZATION) */
+        .set-about-section {
+            margin-top: 4rem;
+            border-top: 1px solid var(--border-color);
+            padding-top: 2.5rem;
+            color: var(--text-sub);
+            line-height: 1.6;
+            font-size: 0.95rem;
+        }
+        .set-about-section h3 {
+            font-size: 1.3rem;
+            color: var(--text-main);
+            font-weight: 700;
+            margin: 0 0 0.75rem 0;
+        }
+        .set-about-section p {
+            margin: 0;
+            color: var(--text-sub);
+        }
+
         /* SITE FOOTER STYLES */
         .site-footer {
             background-color: var(--footer-bg);
@@ -1159,7 +1179,7 @@
             'isd': { mainTitle: 'Magic: The Gathering', subTitle: '2011 Innistrad &middot; WotC', seoTitle: 'MTG Innistrad Booster Simulator - Rip Boosters', seoDesc: 'Simulate opening iconic 2011 MTG Innistrad booster packs. Hunt for Liliana of the Veil and Snapcaster Mage.' }
         };
 
-        // Static Database for Custom Set Detail Modals
+        // Static Database for Custom Set Detail Modals and Portal Text Sections
         const SET_ABOUT_BLURBS = {
             mtglea: {
                 title: "Magic: The Gathering – Limited Edition Alpha (1993)",
@@ -1606,6 +1626,9 @@
                 }
             }
 
+            // DYNAMIC INGESTION OF SET ABOUT BLURBS
+            const setBlurb = SET_ABOUT_BLURBS[setKey] || { title: "About This Set", text: "" };
+
             viewAppPortal.innerHTML = `
                 <div class="pack-section">
                     <div class="pack-row">
@@ -1659,6 +1682,13 @@
                 -->
 
                 <div class="collection-section">${collectionHeaderHTML}</div>
+
+                <!-- INDEXABLE SET HISTORY & ABOUT SECTION FOR ADSENSE COMPLIANCE -->
+                <div class="set-about-section">
+                    <h3>${setBlurb.title}</h3>
+                    <p>${setBlurb.text}</p>
+                </div>
+
                 <div id="lightbox"><button id="lightbox-close">&times;</button><div style="display:flex; gap:1rem; max-width:90vw; align-items:center; justify-content:center;"><img id="lightbox-front" src=""><img id="lightbox-back" src=""></div ></div>
             `;
             const lb = document.getElementById('lightbox');
