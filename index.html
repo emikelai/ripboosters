@@ -46,6 +46,8 @@
             --modal-text: #d1d5db;
             --modal-heading: #ffffff;
             --modal-subtext: #a0a5b5;
+            --dropdown-bg: #1a1c23;
+            --dropdown-hover: rgba(255, 255, 255, 0.08);
         }
 
         /* LIGHT MODE OVERRIDES */
@@ -65,6 +67,8 @@
             --modal-text: #2c2c2e;
             --modal-heading: #1a1a1a;
             --modal-subtext: #48484a;
+            --dropdown-bg: #ffffff;
+            --dropdown-hover: rgba(0, 0, 0, 0.05);
         }
 
         /* GLOBAL SPA ATMOSPHERIC THEMING */
@@ -117,9 +121,8 @@
         .header-extra-links {
             display: flex;
             align-items: center;
-            gap: 1.25rem;
-            position: static;
-            transform: none;
+            gap: 1rem;
+            position: relative;
         }
         .back-link {
             white-space: nowrap;
@@ -155,6 +158,7 @@
             padding: 0.4rem 0.8rem;
             border-radius: 6px;
             border: 1px solid rgba(223, 152, 69, 0.3);
+            white-space: nowrap;
         }
         .header-btn.coffee:hover {
             background: rgba(223, 152, 69, 0.3);
@@ -175,6 +179,7 @@
             display: flex;
             align-items: center;
             gap: 0.4rem;
+            white-space: nowrap;
         }
         body.light-mode .theme-toggle-btn {
             background: rgba(0, 0, 0, 0.05);
@@ -182,6 +187,77 @@
         .theme-toggle-btn:hover {
             border-color: #df9845;
             color: #df9845;
+        }
+
+        /* MOBILE OVERFLOW MENU STYLES */
+        .header-menu-container {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+        .menu-trigger-btn {
+            background: none;
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            font-size: 1.1rem;
+            padding: 0.3rem 0.6rem;
+            border-radius: 8px;
+            cursor: pointer;
+            display: none; /* Hidden on desktop */
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            line-height: 1;
+        }
+        .menu-trigger-btn:hover {
+            border-color: #df9845;
+            color: #df9845;
+        }
+        .header-dropdown-menu {
+            position: absolute;
+            top: 120%;
+            right: 0;
+            background-color: var(--dropdown-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+            display: flex;
+            flex-direction: column;
+            min-width: 140px;
+            overflow: hidden;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-8px);
+            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+            z-index: 1001;
+        }
+        .header-dropdown-menu.open {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+        .header-dropdown-menu .menu-item {
+            padding: 0.75rem 1rem;
+            color: var(--text-main);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            border: none;
+            background: none;
+            text-align: left;
+            cursor: pointer;
+            width: 100%;
+            transition: background-color 0.15s ease, color 0.15s ease;
+        }
+        .header-dropdown-menu .menu-item:hover {
+            background-color: var(--dropdown-hover);
+            color: #df9845;
+        }
+
+        .desktop-header-links {
+            display: flex;
+            align-items: center;
+            gap: 1.25rem;
         }
 
         .page-title-container {
@@ -218,6 +294,17 @@
             max-width: 1200px;
             margin: 0 auto;
             padding: 1rem 1.5rem 3rem 1.5rem;
+        }
+
+        /* ADSENSE CONTAINER STYLES */
+        .ad-container {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 1.5rem 0;
+            min-height: 90px;
+            overflow: hidden;
         }
 
         /* CATEGORY SECTION STYLING */
@@ -598,15 +685,23 @@
             }
         }
 
-        @media (max-width: 480px) {
-            #global-header { 
-                padding: 1rem; 
+        @media (max-width: 600px) {
+            /* SHOW OVERFLOW MENU & HIDE STANDALONE DESKTOP LINKS ON MOBILE */
+            .desktop-header-links {
+                display: none;
+            }
+            .menu-trigger-btn {
+                display: flex;
             }
             .header-extra-links {
-                gap: 0.5rem; 
-                justify-content: flex-end; 
-                flex: 1;
+                gap: 0.5rem;
             }
+            #global-header {
+                padding: 0.8rem 1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
             .page-title-container { padding: 5.5rem 1rem 0.25rem 1rem; }
             #global-header-title { font-size: 1.8rem; }
             #header-subtitle { font-size: 0.95rem; }
@@ -628,12 +723,27 @@
                 <span id="theme-btn-icon">🌙</span>
                 <span id="theme-btn-text" class="desktop-text">Dark Mode</span>
             </button>
-            <a href="https://forms.gle/LGtRVJ5uTHjnBgMV6" target="_blank" class="header-btn" id="nav-feedback-btn">Feedback</a>
-            <a href="#" class="header-btn" id="about-nav-btn">About</a>
+
+            <!-- ALWAYS VISIBLE SUPPORT BUTTON -->
             <a href="https://ko-fi.com/ripboosters" target="_blank" class="header-btn coffee" id="nav-kofi-btn">
                 <span class="desktop-text">☕ Support on Ko-fi</span>
                 <span class="mobile-text">☕ Support</span>
             </a>
+
+            <!-- DESKTOP DEDICATED LINKS -->
+            <div class="desktop-header-links">
+                <a href="https://forms.gle/LGtRVJ5uTHjnBgMV6" target="_blank" class="header-btn" id="nav-feedback-btn">Feedback</a>
+                <a href="#" class="header-btn" id="about-nav-btn">About</a>
+            </div>
+
+            <!-- MOBILE OVERFLOW MENU CONTAINER -->
+            <div class="header-menu-container">
+                <button class="menu-trigger-btn" id="menu-trigger-btn" aria-label="More options">⋮</button>
+                <div class="header-dropdown-menu" id="header-dropdown-menu">
+                    <a href="https://forms.gle/LGtRVJ5uTHjnBgMV6" target="_blank" class="menu-item" id="menu-feedback-btn">Feedback</a>
+                    <button class="menu-item" id="menu-about-btn">About</button>
+                </div>
+            </div>
         </div>
     </header>
 
@@ -643,6 +753,19 @@
             <span id="header-subtitle"></span>
         </h1>
     </div>
+
+    <!-- STRATEGIC ADSENSE SLOT 1: TOP DASHBOARD LEADERBOARD -->
+    <!--
+    <div class="ad-container">
+        <ins class="adsbygoogle"
+             style="display:block"
+             data-ad-client="ca-pub-4033699653937150"
+             data-ad-slot="YOUR_AD_SLOT_ID_1"
+             data-ad-format="auto"
+             data-full-width-responsive="true"></ins>
+        <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+    </div>
+    -->
 
     <main id="spa-app-container">
         <div id="view-dashboard">
@@ -1059,6 +1182,24 @@
             });
         }
 
+        // MOBILE OVERFLOW MENU CONTROLLER
+        const menuTriggerBtn = document.getElementById('menu-trigger-btn');
+        const headerDropdownMenu = document.getElementById('header-dropdown-menu');
+
+        if (menuTriggerBtn && headerDropdownMenu) {
+            menuTriggerBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                headerDropdownMenu.classList.toggle('open');
+            });
+
+            // Close dropdown when clicking anywhere outside
+            document.addEventListener('click', (e) => {
+                if (!headerDropdownMenu.contains(e.target) && e.target !== menuTriggerBtn) {
+                    headerDropdownMenu.classList.remove('open');
+                }
+            });
+        }
+
         const DATA_MAP = { 
             mm1992: MM1992_DATA, 
             mm1993: MM1993_DATA, 
@@ -1175,6 +1316,7 @@
         const headerSubtitle = document.getElementById('header-subtitle');
 
         const aboutNavBtn = document.getElementById('about-nav-btn');
+        const menuAboutBtn = document.getElementById('menu-about-btn');
         const aboutModal = document.getElementById('aboutModal');
         const aboutModalClose = document.getElementById('aboutModalClose');
 
@@ -1184,11 +1326,18 @@
         const setAboutTitle = document.getElementById('setAboutTitle');
         const setAboutText = document.getElementById('setAboutText');
 
-        if (aboutNavBtn && aboutModal && aboutModalClose) {
-            aboutNavBtn.onclick = (e) => {
-                e.preventDefault();
-                aboutModal.classList.add('open');
-            };
+        function triggerAboutModal(e) {
+            if (e) e.preventDefault();
+            if (headerDropdownMenu) headerDropdownMenu.classList.remove('open');
+            aboutModal.classList.add('open');
+            if (typeof zaraz !== 'undefined') zaraz.track("about_clicked");
+            if (typeof window.clarity === "function") window.clarity("event", "about_clicked");
+        }
+
+        if (aboutNavBtn) aboutNavBtn.onclick = triggerAboutModal;
+        if (menuAboutBtn) menuAboutBtn.onclick = triggerAboutModal;
+
+        if (aboutModalClose && aboutModal) {
             aboutModalClose.onclick = () => aboutModal.classList.remove('open');
             aboutModal.onclick = (e) => {
                 if (e.target === aboutModal) aboutModal.classList.remove('open');
@@ -1558,11 +1707,39 @@
                         <p class="pack-instructions">Drag across the pack to tear it open,<br>or click the button above.</p>
                     </div>
                 </div>
+
+                <!-- STRATEGIC ADSENSE SLOT 2: BELOW PACK OPENER -->
+                <!--
+                <div class="ad-container">
+                    <ins class="adsbygoogle"
+                         style="display:block"
+                         data-ad-client="ca-pub-4033699653937150"
+                         data-ad-slot="YOUR_AD_SLOT_ID_2"
+                         data-ad-format="auto"
+                         data-full-width-responsive="true"></ins>
+                    <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+                </div>
+                -->
+
                 <div class="section-divider" id="divider"><span>Cards Pulled</span></div>
                 <div class="cards-section" id="cardsSection">
                     ${rowLabelHTML}
                     <div class="cards-row" id="slots-base"></div>
                 </div>
+
+                <!-- STRATEGIC ADSENSE SLOT 3: ABOVE COLLECTION CHECKLIST -->
+                <!--
+                <div class="ad-container">
+                    <ins class="adsbygoogle"
+                         style="display:block"
+                         data-ad-client="ca-pub-4033699653937150"
+                         data-ad-slot="YOUR_AD_SLOT_ID_3"
+                         data-ad-format="auto"
+                         data-full-width-responsive="true"></ins>
+                    <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+                </div>
+                -->
+
                 <div class="collection-section">${collectionHeaderHTML}</div>
                 <div id="lightbox"><button id="lightbox-close">&times;</button><div style="display:flex; gap:1rem; max-width:90vw; align-items:center; justify-content:center;"><img id="lightbox-front" src=""><img id="lightbox-back" src=""></div ></div>
             `;
@@ -2137,12 +2314,14 @@
             }
 
             const feedbackBtn = document.getElementById('nav-feedback-btn');
-            if (feedbackBtn) {
-                feedbackBtn.addEventListener('click', () => {
-                    if (typeof zaraz !== 'undefined') zaraz.track("feedback_clicked");
-                    if (typeof window.clarity === "function") window.clarity("event", "feedback_clicked");
-                });
-            }
+            const menuFeedbackBtn = document.getElementById('menu-feedback-btn');
+            const trackFeedbackClick = () => {
+                if (headerDropdownMenu) headerDropdownMenu.classList.remove('open');
+                if (typeof zaraz !== 'undefined') zaraz.track("feedback_clicked");
+                if (typeof window.clarity === "function") window.clarity("event", "feedback_clicked");
+            };
+            if (feedbackBtn) feedbackBtn.addEventListener('click', trackFeedbackClick);
+            if (menuFeedbackBtn) menuFeedbackBtn.addEventListener('click', trackFeedbackClick);
 
             const kofiBtn = document.getElementById('nav-kofi-btn');
             if (kofiBtn) {
@@ -2152,14 +2331,6 @@
                 });
             }
 
-            const aboutNavBtn = document.getElementById('about-nav-btn');
-            if (aboutNavBtn) {
-                aboutNavBtn.addEventListener('click', () => {
-                    if (typeof zaraz !== 'undefined') zaraz.track("about_clicked");
-                    if (typeof window.clarity === "function") window.clarity("event", "about_clicked");
-                });
-            }
-            
             // PREVENT SET CARD NAVIGATION WHEN CLICKING "ABOUT"
             document.querySelectorAll('.set-card').forEach(card => {
                 card.onclick = (e) => {
