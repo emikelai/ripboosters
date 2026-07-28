@@ -28,7 +28,7 @@
     <link rel="stylesheet" href="style.css">
     <style>
         /* ==========================================================================
-           GLOBAL THEME VARIABLES (DEFAULT TO DARK MODE)
+           GLOBAL THEME VARIABLES (DARK MODE)
            ========================================================================== */
         :root {
             --bg-color: #0d0e12;
@@ -48,27 +48,6 @@
             --modal-subtext: #a0a5b5;
             --dropdown-bg: #1a1c23;
             --dropdown-hover: rgba(255, 255, 255, 0.08);
-        }
-
-        /* LIGHT MODE OVERRIDES */
-        body.light-mode {
-            --bg-color: #f8f9fa;
-            --text-main: #1a1a1a;
-            --text-sub: #636366;
-            --header-bg: rgba(255, 255, 255, 0.95);
-            --border-color: rgba(0, 0, 0, 0.1);
-            --card-base-bg: #ffffff;
-            --card-base-border: rgba(0, 0, 0, 0.08);
-            --overview-border: #dee2e6;
-            --summary-card-bg: rgba(0, 0, 0, 0.02);
-            --footer-bg: #1a1a1a;
-            --footer-text: #8e8e93;
-            --modal-bg: #ffffff;
-            --modal-text: #2c2c2e;
-            --modal-heading: #1a1a1a;
-            --modal-subtext: #48484a;
-            --dropdown-bg: #ffffff;
-            --dropdown-hover: rgba(0, 0, 0, 0.05);
         }
 
         /* GLOBAL SPA ATMOSPHERIC THEMING */
@@ -165,30 +144,6 @@
             color: var(--text-main);
         }
 
-        /* THEME TOGGLE BUTTON STYLES */
-        .theme-toggle-btn {
-            background: rgba(255, 255, 255, 0.08);
-            border: 1px solid var(--border-color);
-            color: var(--text-main);
-            padding: 0.4rem 0.75rem;
-            border-radius: 20px;
-            font-size: 0.82rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            display: flex;
-            align-items: center;
-            gap: 0.4rem;
-            white-space: nowrap;
-        }
-        body.light-mode .theme-toggle-btn {
-            background: rgba(0, 0, 0, 0.05);
-        }
-        .theme-toggle-btn:hover {
-            border-color: #df9845;
-            color: #df9845;
-        }
-
         /* MOBILE OVERFLOW MENU STYLES */
         .header-menu-container {
             position: relative;
@@ -278,8 +233,6 @@
             font-style: normal;
             font-weight: 800;
             color: var(--text-main);
-        }
-        body:not(.light-mode) #header-main-title {
             background: linear-gradient(135deg, #ffffff 0%, #b0b3c0 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -438,10 +391,10 @@
         }
 
         /* PER-SET CUSTOM COLOR SCHEMES */
-        body:not(.light-mode) .set-card[data-set-key="mtglea"],
-        body:not(.light-mode) .set-card[data-set-key="mtgleb"],
-        body:not(.light-mode) .set-card[data-set-key="mtg2ed"],
-        body:not(.light-mode) .set-card[data-set-key="mtg3ed"] {
+        .set-card[data-set-key="mtglea"],
+        .set-card[data-set-key="mtgleb"],
+        .set-card[data-set-key="mtg2ed"],
+        .set-card[data-set-key="mtg3ed"] {
             --card-bg: #15131a;
             --card-accent: #e5b35c;
             --card-glow: rgba(229, 179, 92, 0.22);
@@ -449,10 +402,10 @@
             --card-border: rgba(229, 179, 92, 0.2);
         }
 
-        body:not(.light-mode) .set-card[data-set-key="mtgarn"],
-        body:not(.light-mode) .set-card[data-set-key="mtgatq"],
-        body:not(.light-mode) .set-card[data-set-key="mtgleg"],
-        body:not(.light-mode) .set-card[data-set-key="mtgdrk"] {
+        .set-card[data-set-key="mtgarn"],
+        .set-card[data-set-key="mtgatq"],
+        .set-card[data-set-key="mtgleg"],
+        .set-card[data-set-key="mtgdrk"] {
             --card-bg: #131718;
             --card-accent: #4cb8a5;
             --card-glow: rgba(76, 184, 165, 0.22);
@@ -460,14 +413,14 @@
             --card-border: rgba(76, 184, 165, 0.2);
         }
 
-        body:not(.light-mode) .set-card[data-set-key="rav"] {
+        .set-card[data-set-key="rav"] {
             --card-bg: #141a15;
             --card-accent: #58b972;
             --card-glow: rgba(88, 185, 114, 0.22);
             --card-gradient: radial-gradient(circle at 50% 0%, rgba(88, 185, 114, 0.15) 0%, transparent 75%);
             --card-border: rgba(88, 185, 114, 0.2);
         }
-        body:not(.light-mode) .set-card[data-set-key="isd"] {
+        .set-card[data-set-key="isd"] {
             --card-bg: #17181e;
             --card-accent: #8199b5;
             --card-glow: rgba(129, 153, 181, 0.22);
@@ -475,7 +428,7 @@
             --card-border: rgba(129, 153, 181, 0.2);
         }
 
-        body:not(.light-mode) .set-card[data-set-key="mu1990"] {
+        .set-card[data-set-key="mu1990"] {
             --card-bg: #1c1113;
             --card-accent: #e63946;
             --card-glow: rgba(230, 57, 70, 0.25);
@@ -483,8 +436,8 @@
             --card-border: rgba(230, 57, 70, 0.25);
         }
 
-        body:not(.light-mode) .set-card[data-set-key="mm1992"],
-        body:not(.light-mode) .set-card[data-set-key="mm1993"] {
+        .set-card[data-set-key="mm1992"],
+        .set-card[data-set-key="mm1993"] {
             --card-bg: #1a1610;
             --card-accent: #f4a261;
             --card-glow: rgba(244, 162, 97, 0.25);
@@ -492,7 +445,7 @@
             --card-border: rgba(244, 162, 97, 0.25);
         }
 
-        body:not(.light-mode) .set-card[data-set-key="xmen1992"] {
+        .set-card[data-set-key="xmen1992"] {
             --card-bg: #0f1821;
             --card-accent: #00b4d8;
             --card-glow: rgba(0, 180, 216, 0.25);
@@ -500,7 +453,7 @@
             --card-border: rgba(0, 180, 216, 0.25);
         }
 
-        body:not(.light-mode) .set-card[data-set-key="motu1984"] {
+        .set-card[data-set-key="motu1984"] {
             --card-bg: #1c1510;
             --card-accent: #e76f51;
             --card-glow: rgba(231, 111, 81, 0.25);
@@ -508,7 +461,7 @@
             --card-border: rgba(231, 111, 81, 0.25);
         }
 
-        body:not(.light-mode) .set-card[data-set-key="gpk1"] {
+        .set-card[data-set-key="gpk1"] {
             --card-bg: #1c180e;
             --card-accent: #ffb703;
             --card-glow: rgba(255, 183, 3, 0.25);
@@ -719,11 +672,6 @@
             </a>
         </div>
         <div class="header-extra-links">
-            <button class="theme-toggle-btn" id="theme-toggle-btn">
-                <span id="theme-btn-icon">🌙</span>
-                <span id="theme-btn-text" class="desktop-text">Dark Mode</span>
-            </button>
-
             <!-- ALWAYS VISIBLE SUPPORT BUTTON -->
             <a href="https://ko-fi.com/ripboosters" target="_blank" class="header-btn coffee" id="nav-kofi-btn">
                 <span class="desktop-text">☕ Support on Ko-fi</span>
@@ -1151,36 +1099,6 @@
         import { GPK1_DATA } from './data-gpk1.js';
         import { MOTU1984_DATA } from './data-motu1984.js';
         import { MTG_CONFIGS, ensureSetData } from './data-mtg.js';
-
-        // THEME TOGGLE CONTROLLER
-        const themeToggleBtn = document.getElementById('theme-toggle-btn');
-        const themeBtnIcon = document.getElementById('theme-btn-icon');
-        const themeBtnText = document.getElementById('theme-btn-text');
-
-        function applyTheme(theme) {
-            if (theme === 'light') {
-                document.body.classList.add('light-mode');
-                themeBtnIcon.textContent = '☀️';
-                if (themeBtnText) themeBtnText.textContent = 'Light Mode';
-            } else {
-                document.body.classList.remove('light-mode');
-                themeBtnIcon.textContent = '🌙';
-                if (themeBtnText) themeBtnText.textContent = 'Dark Mode';
-            }
-        }
-
-        // Default to Dark Mode unless Light Mode was explicitly saved
-        const savedTheme = localStorage.getItem('theme_preference') || 'dark';
-        applyTheme(savedTheme);
-
-        if (themeToggleBtn) {
-            themeToggleBtn.addEventListener('click', () => {
-                const isLight = document.body.classList.contains('light-mode');
-                const newTheme = isLight ? 'dark' : 'light';
-                localStorage.setItem('theme_preference', newTheme);
-                applyTheme(newTheme);
-            });
-        }
 
         // MOBILE OVERFLOW MENU CONTROLLER
         const menuTriggerBtn = document.getElementById('menu-trigger-btn');
