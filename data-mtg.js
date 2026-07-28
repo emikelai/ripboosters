@@ -1,3 +1,11 @@
+// Shared Hit Configurations for ABU (Alpha, Beta, Unlimited) Sets
+const ABU_POWER_AND_DUALS = [
+    "Black Lotus", "Mox Sapphire", "Mox Jet", "Mox Ruby", "Mox Emerald", "Mox Pearl",
+    "Ancestral Recall", "Time Walk", "Timetwister",
+    "Underground Sea", "Tundra", "Tropical Island", "Taiga",
+    "Savannah", "Scrubland", "Bayou", "Badlands", "Plateau"
+];
+
 export const MTG_CONFIGS = {
     mtglea: {
         setKey: 'mtglea',
@@ -5,12 +13,7 @@ export const MTG_CONFIGS = {
         code: 'lea',
         year: 1993,
         maxCount: 295,
-        hitCardNames: [
-            "Black Lotus", "Mox Sapphire", "Mox Jet", "Mox Ruby", "Mox Emerald", "Mox Pearl",
-            "Ancestral Recall", "Time Walk", "Timetwister",
-            "Volcanic Island", "Underground Sea", "Tundra", "Tropical Island", "Taiga",
-            "Savannah", "Scrubland", "Bayou", "Badlands", "Plateau"
-        ]
+        hitCardNames: ABU_POWER_AND_DUALS // Note: Volcanic Island excluded (not printed in Alpha)
     },
     mtgleb: {
         setKey: 'mtgleb',
@@ -18,12 +21,7 @@ export const MTG_CONFIGS = {
         code: 'leb',
         year: 1993,
         maxCount: 302,
-        hitCardNames: [
-            "Black Lotus", "Mox Sapphire", "Mox Jet", "Mox Ruby", "Mox Emerald", "Mox Pearl",
-            "Ancestral Recall", "Time Walk", "Timetwister",
-            "Volcanic Island", "Underground Sea", "Tundra", "Tropical Island", "Taiga",
-            "Savannah", "Scrubland", "Bayou", "Badlands", "Plateau"
-        ]
+        hitCardNames: [...ABU_POWER_AND_DUALS, "Volcanic Island"]
     },
     mtg2ed: {
         setKey: 'mtg2ed',
@@ -31,12 +29,7 @@ export const MTG_CONFIGS = {
         code: '2ed',
         year: 1993,
         maxCount: 302,
-        hitCardNames: [
-            "Black Lotus", "Mox Sapphire", "Mox Jet", "Mox Ruby", "Mox Emerald", "Mox Pearl",
-            "Ancestral Recall", "Time Walk", "Timetwister",
-            "Volcanic Island", "Underground Sea", "Tundra", "Tropical Island", "Taiga",
-            "Savannah", "Scrubland", "Bayou", "Badlands", "Plateau"
-        ]
+        hitCardNames: [...ABU_POWER_AND_DUALS, "Volcanic Island"]
     },
     mtgarn: {
         setKey: 'mtgarn',
@@ -76,7 +69,7 @@ export const MTG_CONFIGS = {
         year: 1994,
         maxCount: 310,
         hitCardNames: [
-            "The Tabernacle at Pendrell Vale", "Moat", "Chains of Mephistopheles", "The Nether Void", "Gwendlyn Di Corci"
+            "The Tabernacle at Pendrell Vale", "Moat", "Chains of Mephistopheles", "Nether Void", "Gwendlyn Di Corci"
         ]
     },
     mtgdrk: {
@@ -138,12 +131,17 @@ export async function ensureSetData(setKey) {
             }
             url = (json && json.has_more) ? json.next_page : null;
             if (url) {
-                await new Promise(r => setTimeout(r, 100)); // Respect Scryfall 50-100ms rate limits
+                await new Promise(r => setTimeout(r, 100)); // Respect Scryfall rate limits
             }
         } catch (err) {
             console.error("Failed to fetch page from Scryfall:", err);
             break;
         }
+    }
+
+    // Fail early if no cards were fetched to prevent caching broken empty datasets
+    if (allCards.length === 0) {
+        throw new Error(`Unable to load card data for set ${setKey} from Scryfall.`);
     }
 
     const baseCards = [];
@@ -175,7 +173,13 @@ export async function ensureSetData(setKey) {
         else if (card.rarity === 'uncommon') uncommonPool.push(cardObj);
         else commonPool.push(cardObj);
 
-        if (config.hitCardNames.some(hitName => card.name.toLowerCase().includes(hitName.toLowerCase()))) {
+        // Exact match check with lowercase fallback to ensure hits are caught accurately
+        const isHit = config.hitCardNames.some(hitName => 
+            card.name.toLowerCase() === hitName.toLowerCase() ||
+            card.name.toLowerCase().startsWith(hitName.toLowerCase())
+        );
+
+        if (isHit) {
             hitPool.push(cardObj);
         }
 

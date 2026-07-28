@@ -1,5 +1,6 @@
 // data-gpk1.js
 export const GPK1_DATA = {
+    maxCount: 82,
     baseCards: [
         { n: 1, v: 'a', name: 'Nasty Nick' },         { n: 1, v: 'b', name: 'Evil Eddie' },
         { n: 2, v: 'a', name: 'Junkfood John' },      { n: 2, v: 'b', name: 'Ray Decay' },
