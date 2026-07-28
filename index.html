@@ -26,661 +26,6 @@
     </script>
 
     <link rel="stylesheet" href="style.css">
-    <style>
-        /* ==========================================================================
-           GLOBAL THEME VARIABLES (DARK MODE)
-           ========================================================================== */
-        :root {
-            --bg-color: #0d0e12;
-            --text-main: #f0f0f5;
-            --text-sub: #8e92a4;
-            --header-bg: rgba(13, 14, 18, 0.85);
-            --border-color: rgba(255, 255, 255, 0.1);
-            --card-base-bg: #161820;
-            --card-base-border: rgba(255, 255, 255, 0.08);
-            --overview-border: rgba(255, 255, 255, 0.08);
-            --summary-card-bg: rgba(255, 255, 255, 0.03);
-            --footer-bg: #08090b;
-            --footer-text: #636778;
-            --modal-bg: #1a1c23;
-            --modal-text: #d1d5db;
-            --modal-heading: #ffffff;
-            --modal-subtext: #a0a5b5;
-            --dropdown-bg: #1a1c23;
-            --dropdown-hover: rgba(255, 255, 255, 0.08);
-        }
-
-        /* GLOBAL SPA ATMOSPHERIC THEMING */
-        body {
-            background-color: var(--bg-color);
-            color: var(--text-main);
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            transition: background-color 0.3s ease, color 0.3s ease;
-        }
-
-        /* LIGHTBOX IMAGE EQUALIZATION FIX */
-        #lightbox-front,
-        #lightbox-back {
-            height: 70vh;
-            max-height: 800px;
-            width: auto;
-            object-fit: contain;
-            border-radius: 8px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-        }
-
-        /* UNIQUE SPA HEADER LAYOUT ARCHITECTURE */
-        #global-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 1rem 1.5rem;
-            border-bottom: 1px solid var(--border-color);
-            background: var(--header-bg);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            min-height: 50px;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            width: 100%;
-            z-index: 1000;
-            will-change: transform;
-            transform: translateZ(0);
-            -webkit-transform: translateZ(0);
-            transition: background 0.3s ease, border-color 0.3s ease;
-        }
-        .header-left {
-            display: flex;
-            align-items: center;
-        }
-        .header-extra-links {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            position: relative;
-        }
-        .back-link {
-            white-space: nowrap;
-            text-decoration: none;
-            color: var(--text-main);
-            font-weight: 500;
-            position: static;
-            transform: none;
-            transition: color 0.2s ease;
-        }
-        .back-link:hover {
-            color: #df9845;
-        }
-
-        .header-btn {
-            color: var(--text-sub);
-            text-decoration: none;
-            font-size: 0.9rem;
-            font-weight: 500;
-            transition: all 0.2s ease;
-            background: none;
-            border: none;
-            cursor: pointer;
-            padding: 0;
-            font-family: inherit;
-        }
-        .header-btn:hover {
-            color: var(--text-main);
-        }
-        .header-btn.coffee {
-            background: rgba(223, 152, 69, 0.15);
-            color: #df9845;
-            padding: 0.4rem 0.8rem;
-            border-radius: 6px;
-            border: 1px solid rgba(223, 152, 69, 0.3);
-            white-space: nowrap;
-        }
-        .header-btn.coffee:hover {
-            background: rgba(223, 152, 69, 0.3);
-            color: var(--text-main);
-        }
-
-        /* MOBILE OVERFLOW MENU STYLES */
-        .header-menu-container {
-            position: relative;
-            display: flex;
-            align-items: center;
-        }
-        .menu-trigger-btn {
-            background: none;
-            border: 1px solid var(--border-color);
-            color: var(--text-main);
-            font-size: 1.1rem;
-            padding: 0.3rem 0.6rem;
-            border-radius: 8px;
-            cursor: pointer;
-            display: none; /* Hidden on desktop */
-            align-items: center;
-            justify-content: center;
-            transition: all 0.2s ease;
-            line-height: 1;
-        }
-        .menu-trigger-btn:hover {
-            border-color: #df9845;
-            color: #df9845;
-        }
-        .header-dropdown-menu {
-            position: absolute;
-            top: 120%;
-            right: 0;
-            background-color: var(--dropdown-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 10px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
-            display: flex;
-            flex-direction: column;
-            min-width: 140px;
-            overflow: hidden;
-            opacity: 0;
-            visibility: hidden;
-            transform: translateY(-8px);
-            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-            z-index: 1001;
-        }
-        .header-dropdown-menu.open {
-            opacity: 1;
-            visibility: visible;
-            transform: translateY(0);
-        }
-        .header-dropdown-menu .menu-item {
-            padding: 0.75rem 1rem;
-            color: var(--text-main);
-            text-decoration: none;
-            font-size: 0.9rem;
-            font-weight: 500;
-            border: none;
-            background: none;
-            text-align: left;
-            cursor: pointer;
-            width: 100%;
-            transition: background-color 0.15s ease, color 0.15s ease;
-        }
-        .header-dropdown-menu .menu-item:hover {
-            background-color: var(--dropdown-hover);
-            color: #df9845;
-        }
-
-        .desktop-header-links {
-            display: flex;
-            align-items: center;
-            gap: 1.25rem;
-        }
-
-        .page-title-container {
-            padding: 6.5rem 1.5rem 1rem 1.5rem;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-        #global-header-title {
-            font-size: 2.4rem;
-            margin: 0;
-            line-height: 1.2;
-            display: flex;
-            flex-direction: column;
-            gap: 0.35rem;
-            letter-spacing: -0.02em;
-        }
-        #header-main-title {
-            font-style: normal;
-            font-weight: 800;
-            color: var(--text-main);
-            background: linear-gradient(135deg, #ffffff 0%, #b0b3c0 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        #header-subtitle {
-            font-size: 1.15rem;
-            font-weight: 400;
-            color: var(--text-sub);
-        }
-
-        #spa-app-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 1rem 1.5rem 3rem 1.5rem;
-        }
-
-        /* ADSENSE CONTAINER STYLES */
-        .ad-container {
-            width: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin: 1.5rem 0;
-            min-height: 90px;
-            overflow: hidden;
-        }
-
-        /* CATEGORY SECTION STYLING */
-        .category-block {
-            margin-bottom: 3rem;
-        }
-        .category-label {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--text-main);
-            margin-bottom: 0.25rem;
-            letter-spacing: -0.01em;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        .category-sub {
-            font-size: 0.9rem;
-            color: var(--text-sub);
-            margin-bottom: 1.5rem;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            font-weight: 600;
-        }
-
-        /* SET CARDS GRID & CUSTOM THEMED CARDS */
-        .sets-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-            gap: 1.5rem;
-        }
-
-        .set-card {
-            background-color: var(--card-bg, var(--card-base-bg));
-            background-image: var(--card-gradient, radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.05) 0%, transparent 75%));
-            border: 1px solid var(--card-border, var(--card-base-border));
-            border-radius: 14px;
-            overflow: hidden;
-            cursor: pointer;
-            transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.25s ease, box-shadow 0.25s ease, background-color 0.3s ease;
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-        }
-
-        .set-card:hover {
-            transform: translateY(-5px);
-            border-color: var(--card-accent, #df9845);
-            box-shadow: 0 12px 30px var(--card-glow, rgba(223, 152, 69, 0.25));
-        }
-
-        .set-cover {
-            width: 100%;
-            height: 200px;
-            overflow: hidden;
-            position: relative;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: rgba(0, 0, 0, 0.08);
-            padding: 1rem 0;
-        }
-
-        .set-cover img {
-            max-height: 180px;
-            max-width: 80%;
-            object-fit: contain;
-            filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.3));
-            transition: transform 0.3s ease;
-        }
-
-        .set-card:hover .set-cover img {
-            transform: scale(1.06) rotate(1deg);
-        }
-
-        .set-body {
-            padding: 1.25rem;
-            display: flex;
-            flex-direction: column;
-            flex-grow: 1;
-            z-index: 2;
-        }
-
-        .set-name {
-            font-size: 1.15rem;
-            font-weight: 700;
-            color: var(--text-main);
-            margin-bottom: 0.35rem;
-            line-height: 1.3;
-        }
-
-        .set-meta {
-            font-size: 0.82rem;
-            color: var(--text-sub);
-            margin-bottom: 1rem;
-        }
-
-        .set-meta-about-trigger {
-            color: var(--card-accent, #df9845);
-            font-weight: 600;
-            cursor: pointer;
-            text-decoration: underline;
-            text-underline-offset: 2px;
-            transition: color 0.15s ease;
-        }
-
-        .set-meta-about-trigger:hover {
-            color: var(--text-main);
-        }
-
-        .set-progress-track {
-            height: 6px;
-            background: rgba(150, 150, 150, 0.2);
-            border-radius: 3px;
-            overflow: hidden;
-            margin-bottom: 0.5rem;
-            margin-top: auto;
-        }
-
-        .set-progress-bar {
-            height: 100%;
-            border-radius: 3px;
-            transition: width 0.4s ease;
-        }
-
-        .set-progress-label {
-            font-size: 0.78rem;
-            color: var(--text-sub);
-            font-weight: 600;
-        }
-
-        /* PER-SET CUSTOM COLOR SCHEMES */
-        .set-card[data-set-key="mtglea"],
-        .set-card[data-set-key="mtgleb"],
-        .set-card[data-set-key="mtg2ed"],
-        .set-card[data-set-key="mtg3ed"] {
-            --card-bg: #15131a;
-            --card-accent: #e5b35c;
-            --card-glow: rgba(229, 179, 92, 0.22);
-            --card-gradient: radial-gradient(circle at 50% 0%, rgba(229, 179, 92, 0.12) 0%, transparent 75%);
-            --card-border: rgba(229, 179, 92, 0.2);
-        }
-
-        .set-card[data-set-key="mtgarn"],
-        .set-card[data-set-key="mtgatq"],
-        .set-card[data-set-key="mtgleg"],
-        .set-card[data-set-key="mtgdrk"] {
-            --card-bg: #131718;
-            --card-accent: #4cb8a5;
-            --card-glow: rgba(76, 184, 165, 0.22);
-            --card-gradient: radial-gradient(circle at 50% 0%, rgba(76, 184, 165, 0.12) 0%, transparent 75%);
-            --card-border: rgba(76, 184, 165, 0.2);
-        }
-
-        .set-card[data-set-key="rav"] {
-            --card-bg: #141a15;
-            --card-accent: #58b972;
-            --card-glow: rgba(88, 185, 114, 0.22);
-            --card-gradient: radial-gradient(circle at 50% 0%, rgba(88, 185, 114, 0.15) 0%, transparent 75%);
-            --card-border: rgba(88, 185, 114, 0.2);
-        }
-        .set-card[data-set-key="isd"] {
-            --card-bg: #17181e;
-            --card-accent: #8199b5;
-            --card-glow: rgba(129, 153, 181, 0.22);
-            --card-gradient: radial-gradient(circle at 50% 0%, rgba(129, 153, 181, 0.15) 0%, transparent 75%);
-            --card-border: rgba(129, 153, 181, 0.2);
-        }
-
-        .set-card[data-set-key="mu1990"] {
-            --card-bg: #1c1113;
-            --card-accent: #e63946;
-            --card-glow: rgba(230, 57, 70, 0.25);
-            --card-gradient: radial-gradient(circle at 50% 0%, rgba(230, 57, 70, 0.18) 0%, transparent 75%);
-            --card-border: rgba(230, 57, 70, 0.25);
-        }
-
-        .set-card[data-set-key="mm1992"],
-        .set-card[data-set-key="mm1993"] {
-            --card-bg: #1a1610;
-            --card-accent: #f4a261;
-            --card-glow: rgba(244, 162, 97, 0.25);
-            --card-gradient: radial-gradient(circle at 50% 0%, rgba(244, 162, 97, 0.18) 0%, transparent 75%);
-            --card-border: rgba(244, 162, 97, 0.25);
-        }
-
-        .set-card[data-set-key="xmen1992"] {
-            --card-bg: #0f1821;
-            --card-accent: #00b4d8;
-            --card-glow: rgba(0, 180, 216, 0.25);
-            --card-gradient: radial-gradient(circle at 50% 0%, rgba(0, 180, 216, 0.18) 0%, transparent 75%);
-            --card-border: rgba(0, 180, 216, 0.25);
-        }
-
-        .set-card[data-set-key="motu1984"] {
-            --card-bg: #1c1510;
-            --card-accent: #e76f51;
-            --card-glow: rgba(231, 111, 81, 0.25);
-            --card-gradient: radial-gradient(circle at 50% 0%, rgba(231, 111, 81, 0.18) 0%, transparent 75%);
-            --card-border: rgba(231, 111, 81, 0.25);
-        }
-
-        .set-card[data-set-key="gpk1"] {
-            --card-bg: #1c180e;
-            --card-accent: #ffb703;
-            --card-glow: rgba(255, 183, 3, 0.25);
-            --card-gradient: radial-gradient(circle at 50% 0%, rgba(255, 183, 3, 0.18) 0%, transparent 75%);
-            --card-border: rgba(255, 183, 3, 0.25);
-        }
-
-        /* 3x3 PUZZLE GRID LAYOUT ARCHITECTURE */
-        .puzzle-3x3-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 0.15rem;
-            max-width: 540px;
-            margin: 1rem auto 0 auto;
-        }
-
-        /* 2x5 HE-MAN STICKER PUZZLE GRID LAYOUT ARCHITECTURE */
-        .puzzle-2x5-grid {
-            display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            gap: 0.15rem;
-            max-width: 750px;
-            margin: 1rem auto 0 auto;
-        }
-
-        /* ABOUT MODAL CONTRAST & READABILITY FIXES */
-        .about-modal-content {
-            background-color: var(--modal-bg) !important;
-            color: var(--modal-text) !important;
-            border: 1px solid var(--border-color);
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
-            transition: background-color 0.3s ease, color 0.3s ease;
-        }
-
-        .about-modal-content h3 {
-            color: var(--modal-heading) !important;
-            font-size: 1.4rem;
-            font-weight: 700;
-            margin-top: 0;
-            margin-bottom: 0.75rem;
-        }
-
-        .about-modal-content p {
-            color: var(--modal-subtext) !important;
-            line-height: 1.5;
-        }
-
-        .about-modal-close {
-            color: var(--text-sub) !important;
-        }
-
-        .about-modal-close:hover {
-            color: var(--text-main) !important;
-        }
-
-        /* CONDENSED BOTTOM DASHBOARD OVERVIEW BLOCK STYLES */
-        .dashboard-bottom-overview {
-            margin-top: 4rem;
-            border-top: 1px solid var(--overview-border);
-            padding-top: 2.5rem;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            color: var(--text-sub);
-            line-height: 1.6;
-        }
-        .dashboard-bottom-overview h2 {
-            font-size: 1.3rem;
-            color: var(--text-main);
-            font-weight: 700;
-            margin: 0 0 0.5rem 0;
-        }
-        .dashboard-bottom-overview p {
-            margin: 0 0 1.5rem 0;
-            font-size: 0.92rem;
-        }
-        .dashboard-feature-summary {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 1.25rem;
-            margin-top: 1.5rem;
-        }
-        .summary-item-card {
-            font-size: 0.85rem;
-            color: var(--text-sub);
-            background: var(--summary-card-bg);
-            border: 1px solid var(--border-color);
-            padding: 1rem;
-            border-radius: 10px;
-        }
-        .summary-item-card strong {
-            display: block;
-            color: #df9845;
-            margin-bottom: 0.25rem;
-            font-weight: 600;
-            font-size: 0.95rem;
-        }
-
-        /* PORTAL BOTTOM SET ABOUT SECTION STYLES (ADSENSE TEXT OPTIMIZATION) */
-        .set-about-section {
-            margin-top: 4rem;
-            border-top: 1px solid var(--border-color);
-            padding-top: 2.5rem;
-            color: var(--text-sub);
-            line-height: 1.6;
-            font-size: 0.95rem;
-        }
-        .set-about-section h3 {
-            font-size: 1.3rem;
-            color: var(--text-main);
-            font-weight: 700;
-            margin: 0 0 0.75rem 0;
-        }
-        .set-about-section p {
-            margin: 0;
-            color: var(--text-sub);
-        }
-
-        /* SITE FOOTER STYLES */
-        .site-footer {
-            background-color: var(--footer-bg);
-            color: var(--footer-text);
-            font-size: 0.8rem;
-            line-height: 1.5;
-            padding: 3rem 1.5rem;
-            margin-top: 5rem;
-            border-top: 1px solid var(--border-color);
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            transition: background-color 0.3s ease;
-        }
-
-        .footer-content {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-        }
-
-        .footer-content p {
-            margin: 0;
-        }
-
-        .footer-content a {
-            color: #df9845;
-            text-decoration: none;
-            transition: color 0.2s ease;
-        }
-
-        .footer-content a:hover {
-            color: #f5b05d;
-            text-decoration: underline;
-        }
-
-        .footer-links-row {
-            display: flex;
-            gap: 1.5rem;
-            justify-content: center;
-            font-size: 0.8rem;
-            margin-top: 0.5rem;
-            flex-wrap: wrap;
-        }
-
-        .footer-links-row a {
-            color: var(--text-sub) !important;
-        }
-
-        .footer-links-row a:hover {
-            color: #df9845 !important;
-        }
-
-        .footer-divider {
-            height: 1px;
-            background-color: var(--border-color);
-            margin: 0.75rem 0;
-        }
-
-        .footer-copyright {
-            font-size: 0.75rem;
-            color: var(--footer-text);
-            text-align: center;
-            margin-top: 0.25rem;
-        }
-
-        @media (max-width: 768px) {
-            .site-footer {
-                padding: 2rem 1rem;
-                margin-top: 3rem;
-                font-size: 0.75rem;
-            }
-            .puzzle-2x5-grid { max-width: 95vw; }
-            #lightbox-front,
-            #lightbox-back {
-                height: auto;
-                max-width: 44vw;
-            }
-        }
-
-        @media (max-width: 600px) {
-            /* SHOW OVERFLOW MENU & HIDE STANDALONE DESKTOP LINKS ON MOBILE */
-            .desktop-header-links {
-                display: none;
-            }
-            .menu-trigger-btn {
-                display: flex;
-            }
-            .header-extra-links {
-                gap: 0.5rem;
-            }
-            #global-header {
-                padding: 0.8rem 1rem;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .page-title-container { padding: 5.5rem 1rem 0.25rem 1rem; }
-            #global-header-title { font-size: 1.8rem; }
-            #header-subtitle { font-size: 0.95rem; }
-            .puzzle-3x3-grid { max-width: 95vw; }
-        }
-    </style>
 </head>
 
 <body>
@@ -692,19 +37,16 @@
             </a>
         </div>
         <div class="header-extra-links">
-            <!-- ALWAYS VISIBLE SUPPORT BUTTON -->
             <a href="https://ko-fi.com/ripboosters" target="_blank" class="header-btn coffee" id="nav-kofi-btn">
                 <span class="desktop-text">☕ Support on Ko-fi</span>
                 <span class="mobile-text">☕ Support</span>
             </a>
 
-            <!-- DESKTOP DEDICATED LINKS -->
             <div class="desktop-header-links">
                 <a href="https://forms.gle/LGtRVJ5uTHjnBgMV6" target="_blank" class="header-btn" id="nav-feedback-btn">Feedback</a>
                 <a href="#" class="header-btn" id="about-nav-btn">About</a>
             </div>
 
-            <!-- MOBILE OVERFLOW MENU CONTAINER -->
             <div class="header-menu-container">
                 <button class="menu-trigger-btn" id="menu-trigger-btn" aria-label="More options">⋮</button>
                 <div class="header-dropdown-menu" id="header-dropdown-menu">
@@ -722,19 +64,6 @@
         </h1>
     </div>
 
-    <!-- STRATEGIC ADSENSE SLOT 1: TOP DASHBOARD LEADERBOARD -->
-    <!--
-    <div class="ad-container">
-        <ins class="adsbygoogle"
-             style="display:block"
-             data-ad-client="ca-pub-4033699653937150"
-             data-ad-slot="YOUR_AD_SLOT_ID_1"
-             data-ad-format="auto"
-             data-full-width-responsive="true"></ins>
-        <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
-    </div>
-    -->
-
     <main id="spa-app-container">
         <div id="view-dashboard">
             
@@ -743,12 +72,8 @@
                 <div class="category-label">Magic: The Gathering</div>
                 <div class="category-sub">10 sets available</div>
                 <div class="sets-grid">
-                    
-                    <!-- ALPHA -->
                     <div class="set-card" data-set-key="mtglea">
-                        <div class="set-cover">
-                            <img src="card_images/mtg_sets/mtg_alpha_beta_pack_wrapper.jpg" alt="Alpha Edition pack">
-                        </div>
+                        <div class="set-cover"><img src="card_images/mtg_sets/mtg_alpha_beta_pack_wrapper.jpg" alt="Alpha Edition pack"></div>
                         <div class="set-body">
                             <div class="set-name">Limited Edition Alpha</div>
                             <div class="set-meta">1993 &middot; WotC &middot; <span class="set-meta-about-trigger" data-set-key="mtglea">About</span> &middot; 295 cards</div>
@@ -757,11 +82,8 @@
                         </div>
                     </div>
 
-                    <!-- BETA -->
                     <div class="set-card" data-set-key="mtgleb">
-                        <div class="set-cover">
-                            <img src="card_images/mtg_sets/mtg_alpha_beta_pack_wrapper.jpg" alt="Beta Edition pack">
-                        </div>
+                        <div class="set-cover"><img src="card_images/mtg_sets/mtg_alpha_beta_pack_wrapper.jpg" alt="Beta Edition pack"></div>
                         <div class="set-body">
                             <div class="set-name">Limited Edition Beta</div>
                             <div class="set-meta">1993 &middot; WotC &middot; <span class="set-meta-about-trigger" data-set-key="mtgleb">About</span> &middot; 302 cards</div>
@@ -770,11 +92,8 @@
                         </div>
                     </div>
 
-                    <!-- UNLIMITED -->
                     <div class="set-card" data-set-key="mtg2ed">
-                        <div class="set-cover">
-                            <img src="card_images/mtg_sets/mtg_unlimited_pack_wrapper.jpg" alt="Unlimited Edition pack">
-                        </div>
+                        <div class="set-cover"><img src="card_images/mtg_sets/mtg_unlimited_pack_wrapper.jpg" alt="Unlimited Edition pack"></div>
                         <div class="set-body">
                             <div class="set-name">Unlimited Edition</div>
                             <div class="set-meta">1993 &middot; WotC &middot; <span class="set-meta-about-trigger" data-set-key="mtg2ed">About</span> &middot; 302 cards</div>
@@ -783,11 +102,8 @@
                         </div>
                     </div>
 
-                    <!-- ARABIAN NIGHTS -->
                     <div class="set-card" data-set-key="mtgarn">
-                        <div class="set-cover">
-                            <img src="card_images/mtg_sets/mtg_arn_pack_wrapper.jpg" alt="Arabian Nights pack">
-                        </div>
+                        <div class="set-cover"><img src="card_images/mtg_sets/mtg_arn_pack_wrapper.jpg" alt="Arabian Nights pack"></div>
                         <div class="set-body">
                             <div class="set-name">Arabian Nights</div>
                             <div class="set-meta">1993 &middot; WotC &middot; <span class="set-meta-about-trigger" data-set-key="mtgarn">About</span> &middot; 92 cards</div>
@@ -796,11 +112,8 @@
                         </div>
                     </div>
 
-                    <!-- ANTIQUITIES -->
                     <div class="set-card" data-set-key="mtgatq">
-                        <div class="set-cover">
-                            <img src="card_images/mtg_sets/mtg_atq_pack_wrapper.jpg" alt="Antiquities pack">
-                        </div>
+                        <div class="set-cover"><img src="card_images/mtg_sets/mtg_atq_pack_wrapper.jpg" alt="Antiquities pack"></div>
                         <div class="set-body">
                             <div class="set-name">Antiquities</div>
                             <div class="set-meta">1994 &middot; WotC &middot; <span class="set-meta-about-trigger" data-set-key="mtgatq">About</span> &middot; 100 cards</div>
@@ -809,11 +122,8 @@
                         </div>
                     </div>
 
-                    <!-- REVISED -->
                     <div class="set-card" data-set-key="mtg3ed">
-                        <div class="set-cover">
-                            <img src="card_images/mtg_sets/mtg_3ed_revised_pack_wrapper.jpg" alt="Revised Edition pack">
-                        </div>
+                        <div class="set-cover"><img src="card_images/mtg_sets/mtg_3ed_revised_pack_wrapper.jpg" alt="Revised Edition pack"></div>
                         <div class="set-body">
                             <div class="set-name">Revised Edition</div>
                             <div class="set-meta">1994 &middot; WotC &middot; <span class="set-meta-about-trigger" data-set-key="mtg3ed">About</span> &middot; 306 cards</div>
@@ -822,11 +132,8 @@
                         </div>
                     </div>
 
-                    <!-- LEGENDS -->
                     <div class="set-card" data-set-key="mtgleg">
-                        <div class="set-cover">
-                            <img src="card_images/mtg_sets/mtg_leg_pack_wrapper.jpg" alt="Legends pack">
-                        </div>
+                        <div class="set-cover"><img src="card_images/mtg_sets/mtg_leg_pack_wrapper.jpg" alt="Legends pack"></div>
                         <div class="set-body">
                             <div class="set-name">Legends</div>
                             <div class="set-meta">1994 &middot; WotC &middot; <span class="set-meta-about-trigger" data-set-key="mtgleg">About</span> &middot; 310 cards</div>
@@ -835,11 +142,8 @@
                         </div>
                     </div>
 
-                    <!-- THE DARK -->
                     <div class="set-card" data-set-key="mtgdrk">
-                        <div class="set-cover">
-                            <img src="card_images/mtg_sets/mtg_drk_pack_wrapper.jpg" alt="The Dark pack">
-                        </div>
+                        <div class="set-cover"><img src="card_images/mtg_sets/mtg_drk_pack_wrapper.jpg" alt="The Dark pack"></div>
                         <div class="set-body">
                             <div class="set-name">The Dark</div>
                             <div class="set-meta">1994 &middot; WotC &middot; <span class="set-meta-about-trigger" data-set-key="mtgdrk">About</span> &middot; 119 cards</div>
@@ -848,11 +152,8 @@
                         </div>
                     </div>
 
-                    <!-- RAVNICA: CITY OF GUILDS -->
                     <div class="set-card" data-set-key="rav">
-                        <div class="set-cover">
-                            <img src="card_images/mtg_sets/mtg_rav_packwrapper4.jpg" alt="Ravnica: City of Guilds pack">
-                        </div>
+                        <div class="set-cover"><img src="card_images/mtg_sets/mtg_rav_packwrapper4.jpg" alt="Ravnica: City of Guilds pack"></div>
                         <div class="set-body">
                             <div class="set-name">Ravnica: City of Guilds</div>
                             <div class="set-meta">2005 &middot; WotC &middot; <span class="set-meta-about-trigger" data-set-key="rav">About</span> &middot; 306 cards</div>
@@ -861,11 +162,8 @@
                         </div>
                     </div>
 
-                    <!-- INNISTRAD -->
                     <div class="set-card" data-set-key="isd">
-                        <div class="set-cover">
-                            <img src="card_images/mtg_sets/mtg_isd_packwrapper1.jpg" alt="Innistrad pack">
-                        </div>
+                        <div class="set-cover"><img src="card_images/mtg_sets/mtg_isd_packwrapper1.jpg" alt="Innistrad pack"></div>
                         <div class="set-body">
                             <div class="set-name">Innistrad</div>
                             <div class="set-meta">2011 &middot; WotC &middot; <span class="set-meta-about-trigger" data-set-key="isd">About</span> &middot; 264 cards</div>
@@ -873,7 +171,6 @@
                             <div class="set-progress-label" id="label-isd">0 / 264 collected</div>
                         </div>
                     </div>
-
                 </div>
             </div>
 
@@ -882,12 +179,8 @@
                 <div class="category-label">Marvel</div>
                 <div class="category-sub">4 sets available</div>
                 <div class="sets-grid">
-                    
-                    <!-- MU1990 -->
                     <div class="set-card" data-set-key="mu1990">
-                        <div class="set-cover">
-                            <img src="card_images/marvel_impel_1990/marvel_impel_1990_packimage2_spiderman.jpg" alt="Marvel Universe 1990 pack">
-                        </div>
+                        <div class="set-cover"><img src="card_images/marvel_impel_1990/marvel_impel_1990_packimage2_spiderman.jpg" alt="Marvel Universe 1990 pack"></div>
                         <div class="set-body">
                             <div class="set-name">Marvel Universe</div>
                             <div class="set-meta">1990 &middot; Impel &middot; <span class="set-meta-about-trigger" data-set-key="mu1990">About</span> &middot; 167 cards</div>
@@ -896,11 +189,8 @@
                         </div>
                     </div>
 
-                    <!-- MM1992 -->
                     <div class="set-card" data-set-key="mm1992">
-                        <div class="set-cover">
-                            <img src="card_images/marvel_masterpieces_1992/mm1992_packimage1_wolverine.jpg" alt="Marvel Masterpieces 1992 pack">
-                        </div>
+                        <div class="set-cover"><img src="card_images/marvel_masterpieces_1992/mm1992_packimage1_wolverine.jpg" alt="Marvel Masterpieces 1992 pack"></div>
                         <div class="set-body">
                             <div class="set-name">Marvel Masterpieces</div>
                             <div class="set-meta">1992 &middot; SkyBox &middot; <span class="set-meta-about-trigger" data-set-key="mm1992">About</span> &middot; 105 cards</div>
@@ -909,11 +199,8 @@
                         </div>
                     </div>
 
-                    <!-- XMEN1992 -->
                     <div class="set-card" data-set-key="xmen1992">
-                        <div class="set-cover">
-                            <img src="card_images/xmen_impel_1992/uncanny_xmen_1992_packimage2_teal.jpg" alt="The Uncanny X-Men 1992 pack">
-                        </div>
+                        <div class="set-cover"><img src="card_images/xmen_impel_1992/uncanny_xmen_1992_packimage2_teal.jpg" alt="The Uncanny X-Men 1992 pack"></div>
                         <div class="set-body">
                             <div class="set-name">The Uncanny X-Men</div>
                             <div class="set-meta">1992 &middot; Impel &middot; <span class="set-meta-about-trigger" data-set-key="xmen1992">About</span> &middot; 105 cards</div>
@@ -922,11 +209,8 @@
                         </div>
                     </div>
 
-                    <!-- MM1993 -->
                     <div class="set-card" data-set-key="mm1993">
-                        <div class="set-cover">
-                            <img src="card_images/marvel_masterpieces_1993/mm1993_packimage1_silversurfer.jpg" alt="Marvel Masterpieces 1993 pack">
-                        </div>
+                        <div class="set-cover"><img src="card_images/marvel_masterpieces_1993/mm1993_packimage1_silversurfer.jpg" alt="Marvel Masterpieces 1993 pack"></div>
                         <div class="set-body">
                             <div class="set-name">Marvel Masterpieces</div>
                             <div class="set-meta">1993 &middot; SkyBox &middot; <span class="set-meta-about-trigger" data-set-key="mm1993">About</span> &middot; 98 cards</div>
@@ -942,12 +226,8 @@
                 <div class="category-label">Pop Culture & Cartoons</div>
                 <div class="category-sub">2 sets available</div>
                 <div class="sets-grid">
-                    
-                    <!-- MOTU1984 -->
                     <div class="set-card" data-set-key="motu1984">
-                        <div class="set-cover">
-                            <img src="card_images/motu_1984/motu1984_packwrapper1.jpg" alt="Masters of the Universe 1984 pack">
-                        </div>
+                        <div class="set-cover"><img src="card_images/motu_1984/motu1984_packwrapper1.jpg" alt="Masters of the Universe 1984 pack"></div>
                         <div class="set-body">
                             <div class="set-name">Masters of the Universe</div>
                             <div class="set-meta">1984 &middot; Topps &middot; <span class="set-meta-about-trigger" data-set-key="motu1984">About</span> &middot; 110 cards</div>
@@ -956,11 +236,8 @@
                         </div>
                     </div>
 
-                    <!-- GARBAGE PAIL KIDS OS1 -->
                     <div class="set-card" data-set-key="gpk1">
-                        <div class="set-cover">
-                            <img src="card_images/gpk_series1/gpk_series1_pack_wrapper.jpg" alt="Garbage Pail Kids Series 1 pack">
-                        </div>
+                        <div class="set-cover"><img src="card_images/gpk_series1/gpk_series1_pack_wrapper.jpg" alt="Garbage Pail Kids Series 1 pack"></div>
                         <div class="set-body">
                             <div class="set-name">Garbage Pail Kids OS1</div>
                             <div class="set-meta">1985 &middot; Topps &middot; <span class="set-meta-about-trigger" data-set-key="gpk1">About</span> &middot; 82 stickers</div>
@@ -968,11 +245,10 @@
                             <div class="set-progress-label" id="label-gpk1">0 / 82 collected</div>
                         </div>
                     </div>
-
                 </div>
             </div>
 
-            <!-- CONDENSED BOTTOM DASHBOARD OVERVIEW BLOCK -->
+            <!-- BOTTOM DASHBOARD OVERVIEW BLOCK -->
             <div class="dashboard-bottom-overview">
                 <h2>About Rip Boosters</h2>
                 <p>Hey there, welcome to Rip Boosters! This site is a completely free, non-commercial passion project built for anyone who loves trading cards and the classic rush of opening a fresh pack. Whether you're chasing the Power Nine in Magic: The Gathering sets, hunting for Spectra Hits in Marvel Masterpieces, or looking for retro Garbage Pail Kids stickers and Masters of the Universe cards, we've built this simulator to recreate those exact card-opening experiences online.</p>
@@ -995,78 +271,52 @@
 
         </div>
 
-        <!-- PRIVACY POLICY CONTAINER COMPLYING WITH GOOGLE ADSENSE AND PRIVACY LAWS -->
-        <div id="view-privacy-policy" style="display: none; max-width: 800px; margin: 0 auto; line-height: 1.6; font-family: -apple-system, BlinkMacSystemFont, sans-serif; color: var(--text-main); padding-bottom: 3rem;">
-            <h2 style="font-size: 2.2rem; margin-bottom: 0.5rem; color: var(--text-main);">Privacy Policy</h2>
+        <!-- PRIVACY POLICY CONTAINER -->
+        <div id="view-privacy-policy" style="display: none; max-width: 800px; margin: 0 auto; line-height: 1.6; color: var(--text-main); padding-bottom: 3rem;">
+            <h2 style="font-size: 2.2rem; margin-bottom: 0.5rem;">Privacy Policy</h2>
             <p style="color: var(--text-sub); font-size: 0.9rem; margin-bottom: 2rem;">Last Updated: July 2026</p>
-
             <p>Welcome to Rip Boosters. Your privacy is critically important to us. This Privacy Policy document outlines the types of personal information that is received and collected by Rip Boosters and how it is used.</p>
-
-            <h3 style="font-size: 1.4rem; margin-top: 2rem; color: var(--text-main);">1. Google AdSense & Third-Party Advertising</h3>
+            <h3 style="font-size: 1.4rem; margin-top: 2rem;">1. Google AdSense & Third-Party Advertising</h3>
             <p>This website uses Google AdSense, a web advertising service provided by Google, Inc. Google uses cookies to serve ads on our site. Google's use of advertising cookies enables it and its partners to serve ads to our users based on their visit to this site and/or other sites on the Internet.</p>
-            <p>Users may opt out of personalized advertising by visiting <a href="https://www.google.com/settings/ads" target="_blank" style="color: #df9845;">Google Ad Settings</a> or by utilizing standard browser tracking opt-out preferences.</p>
-
-            <h3 style="font-size: 1.4rem; margin-top: 2rem; color: var(--text-main);">2. Web Analytics Tracking</h3>
-            <p>We leverage automated analytics tools including <strong>Cloudflare Web Analytics/Zaraz</strong> and <strong>Microsoft Clarity</strong> to analyze user movement and optimize site layout experiences. These services collect network metrics, timing indicators, mouse movements, scrolling interactions, and baseline click patterns. This data is entirely anonymized and is used solely to spot client-side application performance issues or evaluate trading card pack simulation popularity trends.</p>
-
-            <h3 style="font-size: 1.4rem; margin-top: 2rem; color: var(--text-main);">3. Local Storage Architecture</h3>
-            <p>Rip Boosters saves your simulation collection milestone data (such as card pull records, counts, and completed binder checklists) directly within your browser's local storage database (LocalStorage). This data remains isolated entirely to your local device hardware and is never synchronized to backend system servers managed by us.</p>
-
-            <h3 style="font-size: 1.4rem; margin-top: 2rem; color: var(--text-main);">4. External Links</h3>
-            <p>Our site contains links to external platforms including Google Forms, Ko-fi, and the Scryfall API. Once you leave our domain, we do not maintain authority over third-party data processing procedures.</p>
+            <p>Users may opt out of personalized advertising by visiting <a href="https://www.google.com/settings/ads" target="_blank" style="color: #df9845;">Google Ad Settings</a>.</p>
+            <h3 style="font-size: 1.4rem; margin-top: 2rem;">2. Web Analytics Tracking</h3>
+            <p>We leverage automated analytics tools including Cloudflare Web Analytics and Microsoft Clarity to analyze user movement and optimize site layout experiences. This data is entirely anonymized.</p>
+            <h3 style="font-size: 1.4rem; margin-top: 2rem;">3. Local Storage Architecture</h3>
+            <p>Rip Boosters saves your simulation collection milestone data directly within your browser's local storage database (LocalStorage). This data remains isolated entirely to your device.</p>
         </div>
 
-        <!-- TERMS OF SERVICE & COOKIE POLICY CONTAINER -->
-        <div id="view-terms-of-service" style="display: none; max-width: 800px; margin: 0 auto; line-height: 1.6; font-family: -apple-system, BlinkMacSystemFont, sans-serif; color: var(--text-main); padding-bottom: 3rem;">
-            <h2 style="font-size: 2.2rem; margin-bottom: 0.5rem; color: var(--text-main);">Terms of Service & Cookie Policy</h2>
+        <!-- TERMS OF SERVICE CONTAINER -->
+        <div id="view-terms-of-service" style="display: none; max-width: 800px; margin: 0 auto; line-height: 1.6; color: var(--text-main); padding-bottom: 3rem;">
+            <h2 style="font-size: 2.2rem; margin-bottom: 0.5rem;">Terms of Service & Cookie Policy</h2>
             <p style="color: var(--text-sub); font-size: 0.9rem; margin-bottom: 2rem;">Last Updated: July 2026</p>
-
-            <p>By accessing or using Rip Boosters, you agree to be bound by these simple Terms of Service. If you do not agree with any part of these terms, please discontinue using the simulator application.</p>
-
-            <h3 style="font-size: 1.4rem; margin-top: 2rem; color: var(--text-main);">1. Nature of the Simulator Service</h3>
-            <p>Rip Boosters is a completely free, non-commercial trading card pack opening simulator intended purely for nostalgic, entertainment, and educational collection tracking purposes. No real currency is ever traded, transacted, or exchanged on this platform. The card packs opened here do not possess any real-world physical or secondary marketplace asset evaluation.</p>
-
-            <h3 style="font-size: 1.4rem; margin-top: 2rem; color: var(--text-main);">2. Explicit Cookie Disclosure</h3>
-            <p>We use standard technical identifiers and tracker systems to maintain fundamental service integrity. This section outlines how cookies operate on Rip Boosters:</p>
-            <ul style="padding-left: 1.25rem; margin-bottom: 1rem;">
-                <li><strong>Essential Cookies:</strong> We utilize small text identifiers to record foundational metrics across application loads.</li>
-                <li><strong>Advertising Cookies (Google AdSense):</strong> Google utilizes core vendors to place tracking codes inside your local browser storage cache to customize banner layouts based on historic global search queries.</li>
-                <li><strong>Analytical Interaction Records (Clarity & Cloudflare):</strong> These systems evaluate cursor motion parameters and click heatmaps to prevent backend processing dead-ends.</li>
-            </ul>
-
-            <h3 style="font-size: 1.4rem; margin-top: 2rem; color: var(--text-main);">3. Acceptable Use Policy</h3>
-            <p>Users agree not to exploit our application framework by deploying automated scrape scripts, database harvesting robots, denial of service attacks, or layout modification parameters that degrade performance metrics for other users on the network host.</p>
-
-            <h3 style="font-size: 1.4rem; margin-top: 2rem; color: var(--text-main);">4. Disclaimer of Liability</h3>
-            <p>Rip Boosters is provided completely "as is" without hardware guarantees. We accept zero liability for browser cache clearing incidents that reset local card collection tracking progress scores, or external data feed availability disruptions from third-party lookup endpoints like Scryfall.</p>
+            <p>By accessing or using Rip Boosters, you agree to be bound by these simple Terms of Service.</p>
+            <h3 style="font-size: 1.4rem; margin-top: 2rem;">1. Nature of the Simulator Service</h3>
+            <p>Rip Boosters is a completely free, non-commercial trading card pack opening simulator intended purely for nostalgic, entertainment, and educational collection tracking purposes. No real currency is ever traded or transacted on this platform.</p>
+            <h3 style="font-size: 1.4rem; margin-top: 2rem;">2. Cookie Disclosure</h3>
+            <p>We use standard technical identifiers to maintain fundamental service integrity, deliver ads via Google AdSense, and track user interaction patterns via Microsoft Clarity.</p>
         </div>
 
-        <!-- DEDICATED HELP AND CONTACT US CONTAINER -->
-        <div id="view-contact-us" style="display: none; max-width: 800px; margin: 0 auto; line-height: 1.6; font-family: -apple-system, BlinkMacSystemFont, sans-serif; color: var(--text-main); padding-bottom: 3rem;">
-            <h2 style="font-size: 2.2rem; margin-bottom: 0.5rem; color: var(--text-main);">Contact Us</h2>
+        <!-- CONTACT US CONTAINER -->
+        <div id="view-contact-us" style="display: none; max-width: 800px; margin: 0 auto; line-height: 1.6; color: var(--text-main); padding-bottom: 3rem;">
+            <h2 style="font-size: 2.2rem; margin-bottom: 0.5rem;">Contact Us</h2>
             <p style="color: var(--text-sub); font-size: 0.9rem; margin-bottom: 2rem;">Last Updated: July 2026</p>
-
-            <p>Welcome to the Rip Boosters support and assistance directory. We value user feedback and endeavor to maintain a completely secure, functional nostalgic card pack simulation tool. If you encounter missing card assets, collection counting performance bugs, or have inquiries regarding copyright settings, please interact with us through our primary web communication channels:</p>
-            
+            <p>If you encounter missing card assets, collection counting performance bugs, or have inquiries regarding copyright settings, please interact with us through our primary web communication channels:</p>
             <ul style="padding-left: 1.25rem; margin-bottom: 1.5rem; list-style-type: none;">
                 <li style="margin-bottom: 1rem;">
                     <strong>Technical Inquiries & Feature Requests:</strong> 
-                    Please log all site bug reports, tracking layout corrections, or missing card database errors through our secure <a href="https://forms.gle/LGtRVJ5uTHjnBgMV6" target="_blank" style="color: #df9845;">Google Forms Feedback Channel</a>.
+                    Submit bug updates through our <a href="https://forms.gle/LGtRVJ5uTHjnBgMV6" target="_blank" style="color: #df9845;">Google Forms Feedback Channel</a>.
                 </li>
                 <li style="margin-bottom: 1rem;">
-                    <strong>Creator Support & Community Outreach:</strong> 
-                    For project update logs, feature announcements, or general coordination inquiries, check out our digital space on our official <a href="https://ko-fi.com/ripboosters" target="_blank" style="color: #df9845;">Ko-fi Support Page</a>.
+                    <strong>Creator Support:</strong> 
+                    Visit our official <a href="https://ko-fi.com/ripboosters" target="_blank" style="color: #df9845;">Ko-fi Support Page</a>.
                 </li>
             </ul>
-
-            <h3 style="font-size: 1.4rem; margin-top: 2rem; color: var(--text-main);">Response Time Expectations</h3>
-            <p>Rip Boosters is maintained and managed entirely as a non-commercial digital hobby project. While we check form submittals and tracking dashboard logs regularly, please allow a couple of days for review and integration of data changes. We deeply appreciate your support and help in making this project better!</p>
         </div>
 
         <div id="view-app-portal" style="display: none;"></div>
     </main>
 
-    <!-- GLOBAL SITE FOOTER WITH CARD DISCLAIMERS -->
+    <!-- FOOTER -->
     <footer class="site-footer">
         <div class="footer-content">
             <p>
@@ -1079,7 +329,7 @@
                 Card data, search configurations, and high-resolution imagery for all Magic: The Gathering sets are dynamically supplied 
                 by the <a href="https://scryfall.com" target="_blank" rel="noopener noreferrer">Scryfall API</a>. 
                 Marvel, Garbage Pail Kids, and Masters of the Universe trading card layouts, brand names, and original illustrations are copyright 
-                their respective owners (SkyBox, Impel, Topps, Mattel, and Marvel) and are used strictly for non-commercial, nostalgic/educational simulation purposes.
+                their respective owners (SkyBox, Impel, Topps, Mattel, and Marvel) and are used strictly for non-commercial simulation purposes.
             </p>
             <div class="footer-divider"></div>
             <div class="footer-links-row">
@@ -1091,18 +341,18 @@
         </div>
     </footer>
 
-    <!-- MAIN SITE GLOBAL ABOUT MODAL -->
+    <!-- MAIN GLOBAL ABOUT MODAL -->
     <div class="about-modal-overlay" id="aboutModal">
         <div class="about-modal-content">
             <button class="about-modal-close" id="aboutModalClose">&times;</button>
             <h3>Welcome to Rip Boosters!</h3>
             <p>Remember the thrill of walking out of the local hobby shop, tearing open a fresh foil pack, and hunting for that elusive insert card?</p>
-            <p><strong>Rip Boosters</strong> is a digital passion project built to recreate that exact pack-opening magic. Whether you are here to trip down memory lane with classic late '80s and '90s nostalgia or you want to rip into high-gloss modern sets, we’ve got you covered. Dive into full collections complete with accurate pack sizes, authentic pull rates, and high-quality card backs.</p>
+            <p><strong>Rip Boosters</strong> is a digital passion project built to recreate that exact pack-opening magic. Whether you are here to trip down memory lane with classic late '80s and '90s nostalgia or you want to rip into high-gloss modern sets, we’ve got you covered.</p>
             <p style="margin-bottom: 0;">Pick your favorite era, cross your fingers for a big hit, and happy collecting!</p>
         </div>
     </div>
 
-    <!-- SET-SPECIFIC PORTAL DETAILS MODAL -->
+    <!-- SET ABOUT MODAL -->
     <div class="about-modal-overlay" id="setAboutModal">
         <div class="about-modal-content">
             <button class="about-modal-close" id="setAboutModalClose">&times;</button>
@@ -1120,7 +370,6 @@
         import { MOTU1984_DATA } from './data-motu1984.js';
         import { MTG_CONFIGS, ensureSetData } from './data-mtg.js';
 
-        // MOBILE OVERFLOW MENU CONTROLLER
         const menuTriggerBtn = document.getElementById('menu-trigger-btn');
         const headerDropdownMenu = document.getElementById('header-dropdown-menu');
 
@@ -1130,7 +379,6 @@
                 headerDropdownMenu.classList.toggle('open');
             });
 
-            // Close dropdown when clicking anywhere outside
             document.addEventListener('click', (e) => {
                 if (!headerDropdownMenu.contains(e.target) && e.target !== menuTriggerBtn) {
                     headerDropdownMenu.classList.remove('open');
@@ -1179,72 +427,23 @@
             'isd': { mainTitle: 'Magic: The Gathering', subTitle: '2011 Innistrad &middot; WotC', seoTitle: 'MTG Innistrad Booster Simulator - Rip Boosters', seoDesc: 'Simulate opening iconic 2011 MTG Innistrad booster packs. Hunt for Liliana of the Veil and Snapcaster Mage.' }
         };
 
-        // Static Database for Custom Set Detail Modals and Portal Text Sections
         const SET_ABOUT_BLURBS = {
-            mtglea: {
-                title: "Magic: The Gathering – Limited Edition Alpha (1993)",
-                text: "Released in August 1993, Limited Edition Alpha (LEA) is the historic set that started it all. With a black-bordered print run of just 295 cards, it introduced players to Richard Garfield's revolutionary trading card game. Collectors and enthusiasts rip into these packs chasing the legendary 'Power Nine'—including the mythical Black Lotus—and early, powerful artifacts, alongside lands and original creature printings."
-            },
-            mtgleb: {
-                title: "Magic: The Gathering – Limited Edition Beta (1993)",
-                text: "Released in October 1993, Limited Edition Beta (LEB) followed immediately after Alpha to correct print errors, slightly adjusting card corners and adding missing cards like Volcanic Island and Cop: Black. This black-bordered 302-card set represents the most polished form of the original release, containing the full 'Power Nine' and the complete cycle of ten Dual Lands."
-            },
-            mtg2ed: {
-                title: "Magic: The Gathering – Unlimited Edition (1993)",
-                text: "Released in December 1993, Unlimited Edition (2ED) was the first white-bordered reprint set of Magic: The Gathering. To meet massive consumer demand, Wizards of the Coast printed this 302-card set as a direct replica of Beta. It contains the identical card pool—including the coveted Power Nine and Dual Lands—presented with a clean, white-bordered look."
-            },
-            mtgarn: {
-                title: "Magic: The Gathering – Arabian Nights (1993)",
-                text: "Released in December 1993, Arabian Nights is the very first expansion set for Magic: The Gathering. Drawing inspiration from One Thousand and One Nights, it introduced iconic cards like Juzám Djinn, Bazaar of Baghdad, and Library of Alexandria, transporting players to the mystical world of Rabiah."
-            },
-            mtgatq: {
-                title: "Magic: The Gathering – Antiquities (1994)",
-                text: "Released in March 1994, Antiquities tells the tragic story of the brothers Urza and Mishra and their devastating war. This artifact-focused set introduced legendary mechanics, Urza's power plant lands (the 'UrzaTron' cycle), and iconic historic pieces like Mishra's Workshop."
-            },
-            mtg3ed: {
-                title: "Magic: The Gathering – Revised Edition (1994)",
-                text: "Released in April 1994, Revised Edition (3ED) marked a massive growing point for Magic: The Gathering. With the infamous \"Power Nine\" removed to balance gameplay, this 306-card white-bordered core set became the definitive MTG experience for many early players. Players opened Booster packs hunting for one of the Dual Lands, and get waves of nostalgia when they see (the now very power crept) cards like Force of Nature and Shivan Dragon."
-            },
-            mtgleg: {
-                title: "Magic: The Gathering – Legends (1994)",
-                text: "Released in June 1994, Legends introduced the concept of legendary creatures, multicolor gold cards, and world enchantments. Boasting a massive card list, this set allowed players to cast legendary commanders for the first time, forever shaping the multiplayer identity of Magic."
-            },
-            mtgdrk: {
-                title: "Magic: The Gathering – The Dark (1994)",
-                text: "Released in August 1994, The Dark explores a bleak, superstitious fantasy setting falling into ruin. Known for its gothic horror themes and eerie art, it introduced enduring staples like Blood Moon, Maze of Ith, and Tormod's Crypt."
-            },
-            rav: {
-                title: "Magic: The Gathering – Ravnica: City of Guilds (2005)",
-                text: "Released in October 2005, Ravnica: City of Guilds introduced players to a world-spanning metropolis ruled by ten distinct two-color guilds. It debuted the iconic cycle of 'Shock Lands'—including Overgrown Tomb and Temple Garden—and format-defining staples like Dark Confidant, making it one of the most beloved draft and set environments in Magic history."
-            },
-            isd: {
-                title: "Magic: The Gathering – Innistrad (2011)",
-                text: "Released in September 2011, Innistrad is widely celebrated as one of the greatest Magic expansion sets ever created. Inspired by gothic horror, it introduced double-faced cards, Werewolves, Vampires, and Zombies alongside legendary staples like Liliana of the Veil, Snapcaster Mage, and Geist of Saint Traft."
-            },
-            mm1992: {
-                title: "Marvel Masterpieces (1992)",
-                text: "Released by SkyBox in 1992, Marvel Masterpieces forever changed the non-sports trading card industry. Every single one of the 100 base cards features fully painted, museum-quality artwork by legendary illustrator Joe Jusko, elevating comic characters to fine art. The ultimate pull rate thrill? Finding one of the 5 stunning Battle Spectra-Etch inserts highlighting Marvel's greatest rivalries. This set is arguably the greatest Marvel set to be released."
-            },
-            mm1993: {
-                title: "Marvel Masterpieces (1993)",
-                text: "Following the massive success of the '92 edition, SkyBox returned in 1993 with a new approach: inviting a diverse roster of legendary fantasy and comic artists—including Jim Steranko, Boris Vallejo, and Julie Bell—to paint the Marvel universe. This 90-card base set maintained the premium, high-end feel of its predecessor and introduced an 8-card X-Men 2099 Dyna-Etch insert set that gave fans a foil-stamped glimpse into the future."
-            },
-            mu1990: {
-                title: "Marvel Universe (1990)",
-                text: "The set that started it all. Produced by Impel in 1990, Series I launched the modern Marvel trading card boom. Featuring iconic classic comic art, trivia-filled card backs, and power ratings, this 162-card base set was a playground staple for sharing and trading. The absolute pinnacle of recess bragging rights was pulling one of the 5 elusive holographic chase cards, including the highly coveted Cosmic Spider-Man."
-            },
-            xmen1992: {
-                title: "The Uncanny X-Men (1992)",
-                text: "Drawn entirely by legendary comic artist Jim Lee, Impel’s 1992 X-Men set defined the visual style of Marvel's mutants for an entire generation. Featuring 100 base cards—which famously included a massive 9-card Danger Room puzzle—this set perfectly captures the neon energy of the early '90s X-Men boom. Keep an eye out for the 5 ultra-rare Gold Hologram inserts."
-            },
-            gpk1: {
-                title: "Garbage Pail Kids: OS1 (1985)",
-                text: "Released by Topps in 1985 as a gross-out parody of the Cabbage Patch Kids craze, Garbage Pail Kids became an instant pop-culture phenomenon (and a target for school bans). The 82-sticker set features 41 uniquely disgusting characters, each printed with an 'A' or 'B' name variation—like the iconic Nasty Nick and Evil Eddie. It's pure, unapologetic 80s nostalgia."
-            },
-            motu1984: {
-                title: "Masters of the Universe (1984)",
-                text: "Released by Topps in 1984 during the peak of Filmation's animated series, Masters of the Universe captured Prince Adam, Skeletor, and Castle Grayskull in trading card form. Featuring 88 cartoon stills framed with iconic speech bubbles and 22 die-cut sticker inserts, it brought the magic of Eternia directly to recess lunchtables."
-            }
+            mtglea: { title: "Magic: The Gathering – Limited Edition Alpha (1993)", text: "Released in August 1993, Limited Edition Alpha (LEA) is the historic set that started it all. With a black-bordered print run of just 295 cards, it introduced players to Richard Garfield's revolutionary trading card game. Collectors and enthusiasts rip into these packs chasing the legendary 'Power Nine'—including the mythical Black Lotus—and early, powerful artifacts, alongside lands and original creature printings." },
+            mtgleb: { title: "Magic: The Gathering – Limited Edition Beta (1993)", text: "Released in October 1993, Limited Edition Beta (LEB) followed immediately after Alpha to correct print errors, slightly adjusting card corners and adding missing cards like Volcanic Island and Cop: Black. This black-bordered 302-card set represents the most polished form of the original release." },
+            mtg2ed: { title: "Magic: The Gathering – Unlimited Edition (1993)", text: "Released in December 1993, Unlimited Edition (2ED) was the first white-bordered reprint set of Magic: The Gathering. To meet massive consumer demand, Wizards of the Coast printed this 302-card set as a direct replica of Beta." },
+            mtgarn: { title: "Magic: The Gathering – Arabian Nights (1993)", text: "Released in December 1993, Arabian Nights is the very first expansion set for Magic: The Gathering. Drawing inspiration from One Thousand and One Nights, it introduced iconic cards like Juzám Djinn and Bazaar of Baghdad." },
+            mtgatq: { title: "Magic: The Gathering – Antiquities (1994)", text: "Released in March 1994, Antiquities tells the tragic story of the brothers Urza and Mishra and their devastating war. This artifact-focused set introduced legendary mechanics and the 'UrzaTron' land cycle." },
+            mtg3ed: { title: "Magic: The Gathering – Revised Edition (1994)", text: "Released in April 1994, Revised Edition (3ED) marked a massive growing point for Magic: The Gathering. This 306-card white-bordered core set became the definitive MTG experience for many early players." },
+            mtgleg: { title: "Magic: The Gathering – Legends (1994)", text: "Released in June 1994, Legends introduced the concept of legendary creatures, multicolor gold cards, and world enchantments, forever shaping the multiplayer identity of Magic." },
+            mtgdrk: { title: "Magic: The Gathering – The Dark (1994)", text: "Released in August 1994, The Dark explores a bleak, superstitious fantasy setting falling into ruin. Known for its gothic horror themes and eerie art." },
+            rav: { title: "Magic: The Gathering – Ravnica: City of Guilds (2005)", text: "Released in October 2005, Ravnica introduced players to a world-spanning metropolis ruled by ten distinct two-color guilds. It debuted the iconic cycle of 'Shock Lands'." },
+            isd: { title: "Magic: The Gathering – Innistrad (2011)", text: "Released in September 2011, Innistrad is widely celebrated as one of the greatest Magic expansion sets ever created. Inspired by gothic horror, it introduced double-faced cards, Werewolves, and Vampires." },
+            mm1992: { title: "Marvel Masterpieces (1992)", text: "Released by SkyBox in 1992, Marvel Masterpieces forever changed the non-sports trading card industry. Every single one of the 100 base cards features fully painted artwork by legendary illustrator Joe Jusko." },
+            mm1993: { title: "Marvel Masterpieces (1993)", text: "SkyBox returned in 1993 with a new approach: inviting a diverse roster of legendary fantasy and comic artists—including Jim Steranko, Boris Vallejo, and Julie Bell—to paint the Marvel universe." },
+            mu1990: { title: "Marvel Universe (1990)", text: "Produced by Impel in 1990, Series I launched the modern Marvel trading card boom. Featuring iconic classic comic art, trivia-filled card backs, and power ratings." },
+            xmen1992: { title: "The Uncanny X-Men (1992)", text: "Drawn entirely by legendary comic artist Jim Lee, Impel’s 1992 X-Men set defined the visual style of Marvel's mutants for an entire generation." },
+            gpk1: { title: "Garbage Pail Kids: OS1 (1985)", text: "Released by Topps in 1985 as a gross-out parody of the Cabbage Patch Kids craze, Garbage Pail Kids became an instant pop-culture phenomenon featuring 41 uniquely disgusting characters." },
+            motu1984: { title: "Masters of the Universe (1984)", text: "Released by Topps in 1984 during the peak of Filmation's animated series, Masters of the Universe captured Prince Adam, Skeletor, and Castle Grayskull in trading card form." }
         };
 
         const viewDashboard = document.getElementById('view-dashboard');
@@ -1258,7 +457,6 @@
         const aboutModal = document.getElementById('aboutModal');
         const aboutModalClose = document.getElementById('aboutModalClose');
 
-        // Dynamic Set Detail Modal Binding Controls
         const setAboutModal = document.getElementById('setAboutModal');
         const setAboutModalClose = document.getElementById('setAboutModalClose');
         const setAboutTitle = document.getElementById('setAboutTitle');
@@ -1268,8 +466,6 @@
             if (e) e.preventDefault();
             if (headerDropdownMenu) headerDropdownMenu.classList.remove('open');
             aboutModal.classList.add('open');
-            if (typeof zaraz !== 'undefined') zaraz.track("about_clicked");
-            if (typeof window.clarity === "function") window.clarity("event", "about_clicked");
         }
 
         if (aboutNavBtn) aboutNavBtn.onclick = triggerAboutModal;
@@ -1277,16 +473,12 @@
 
         if (aboutModalClose && aboutModal) {
             aboutModalClose.onclick = () => aboutModal.classList.remove('open');
-            aboutModal.onclick = (e) => {
-                if (e.target === aboutModal) aboutModal.classList.remove('open');
-            };
+            aboutModal.onclick = (e) => { if (e.target === aboutModal) aboutModal.classList.remove('open'); };
         }
 
         if (setAboutModalClose && setAboutModal) {
             setAboutModalClose.onclick = () => setAboutModal.classList.remove('open');
-            setAboutModal.onclick = (e) => {
-                if (e.target === setAboutModal) setAboutModal.classList.remove('open');
-            };
+            setAboutModal.onclick = (e) => { if (e.target === setAboutModal) setAboutModal.classList.remove('open'); };
         }
 
         function openSetAboutModal(setKey) {
@@ -1298,7 +490,6 @@
             }
         }
 
-        // SPA SEO CONTROLLER TO UPDATE THE DOCUMENT HEAD DYNAMICALLY FOR GOOGLE BOT INDEXING
         function updateSpaHeadMetadata(setKey) {
             const titleNode = document.getElementById('seo-title');
             const descNode = document.getElementById('seo-description');
@@ -1315,7 +506,6 @@
             }
         }
 
-        // FULL PAGE DYNAMIC PACK BACKGROUND CONTROLLER
         function applySetBodyTheme(setKey) {
             if (!setKey) {
                 document.body.classList.remove('set-active-bg');
@@ -1353,18 +543,13 @@
 
         async function navigateToView(setKey, updateHistory = true) {
             window.openingPackState = false;
-
-            // Reset scroll position to top of page on every view navigation
             window.scrollTo({ top: 0, behavior: 'instant' });
-
-            // Apply dynamic background image overlay for active set view
             applySetBodyTheme(setKey);
 
             const viewPrivacy = document.getElementById('view-privacy-policy');
             const viewTerms = document.getElementById('view-terms-of-service');
             const viewContact = document.getElementById('view-contact-us');
 
-            // Inject SEO Tag Updates
             updateSpaHeadMetadata(setKey);
 
             if (!setKey) {
@@ -1378,7 +563,6 @@
                 headerMainTitle.textContent = "Rip Boosters"; 
                 headerSubtitle.innerHTML = ""; 
                 
-                // Refresh home dashboard track bars
                 updateDashboardProgressTracks();
                 
                 if (updateHistory) {
@@ -1396,9 +580,7 @@
                 headerMainTitle.textContent = APP_ROUTES.privacy.mainTitle;
                 headerSubtitle.innerHTML = APP_ROUTES.privacy.subTitle;
                 
-                if (updateHistory) {
-                    history.pushState({ set: 'privacy' }, '', '?set=privacy');
-                }
+                if (updateHistory) history.pushState({ set: 'privacy' }, '', '?set=privacy');
             } else if (setKey === 'terms') {
                 viewDashboard.style.display = 'none';
                 viewAppPortal.style.display = 'none';
@@ -1411,9 +593,7 @@
                 headerMainTitle.textContent = APP_ROUTES.terms.mainTitle;
                 headerSubtitle.innerHTML = APP_ROUTES.terms.subTitle;
                 
-                if (updateHistory) {
-                    history.pushState({ set: 'terms' }, '', '?set=terms');
-                }
+                if (updateHistory) history.pushState({ set: 'terms' }, '', '?set=terms');
             } else if (setKey === 'contact') {
                 viewDashboard.style.display = 'none';
                 viewAppPortal.style.display = 'none';
@@ -1426,38 +606,35 @@
                 headerMainTitle.textContent = APP_ROUTES.contact.mainTitle;
                 headerSubtitle.innerHTML = APP_ROUTES.contact.subTitle;
                 
-                if (updateHistory) {
-                    history.pushState({ set: 'contact' }, '', '?set=contact');
-                }
+                if (updateHistory) history.pushState({ set: 'contact' }, '', '?set=contact');
             } else {
                 if (viewPrivacy) viewPrivacy.style.display = 'none';
                 if (viewTerms) viewTerms.style.display = 'none';
                 if (viewContact) viewContact.style.display = 'none';
                 const metadata = APP_ROUTES[setKey]; if (!metadata) return navigateToView(null, true);
                 
-                // Dynamic verification block covering all MTG releases
                 const isMtg = ['mtglea', 'mtgleb', 'mtg2ed', 'mtgarn', 'mtgatq', 'mtg3ed', 'mtgleg', 'mtgdrk', 'rav', 'isd'].includes(setKey);
                 if (isMtg) {
                     headerMainTitle.textContent = "Loading Scryfall...";
                     headerSubtitle.innerHTML = "Gathering card sheets from historical archives...";
                     try {
                         const fetchedConfig = await ensureSetData(setKey);
-                        DATA_MAP[setKey] = fetchedConfig; // Ensure DATA_MAP has refreshed dataset reference
+                        DATA_MAP[setKey] = fetchedConfig;
                     } catch (e) {
                         alert("Could not load Scryfall API details. Please check your connection.");
                         return navigateToView(null, true);
                     }
                 }
 
-                viewDashboard.style.display = 'none'; viewAppPortal.style.display = 'block'; spaBackBtn.style.visibility = 'visible';
+                viewDashboard.style.display = 'none'; 
+                viewAppPortal.style.display = 'block'; 
+                spaBackBtn.style.visibility = 'visible';
                 headerMainTitle.textContent = metadata.mainTitle; 
                 headerSubtitle.innerHTML = `${metadata.subTitle} &middot; <span class="set-meta-about-trigger" data-set-key="${setKey}">About</span>`;
                 
                 loadViewLayout(setKey);
                 
-                if (updateHistory) {
-                    history.pushState({ set: setKey }, '', `?set=${setKey}`);
-                }
+                if (updateHistory) history.pushState({ set: setKey }, '', `?set=${setKey}`);
             }
         }
 
@@ -1505,7 +682,6 @@
                     </div>
                     <div class="collection-grid" id="collectionGrid"></div>`;
                 
-                // Randomize across the 4 pack wrapper variations
                 const randomMotuPackNum = Math.floor(Math.random() * 4) + 1;
                 packCoverHTML = `<img id="packWrapperImg" src="card_images/motu_1984/motu1984_packwrapper${randomMotuPackNum}.jpg" alt="Masters of the Universe 1984 pack" style="width:100%;height:100%;object-fit:cover;border-radius:6px;">`;
             } else if (setKey === 'mm1992') {
@@ -1573,19 +749,12 @@
                 let showcaseSubText = "";
                 const isAbu = ['mtglea', 'mtgleb', 'mtg2ed'].includes(setKey);
                 
-                if (isAbu) {
-                    showcaseSubText = "Dual Lands & Power Nine";
-                } else if (setKey === "mtg3ed") {
-                    showcaseSubText = "Dual Lands & Wheel of Fortune";
-                } else if (setKey === "rav") {
-                    showcaseSubText = "Shock Lands & Guild Staples";
-                } else if (setKey === "isd") {
-                    showcaseSubText = "Gothic Mythics & Planeswalkers";
-                }
+                if (isAbu) showcaseSubText = "Dual Lands & Power Nine";
+                else if (setKey === "mtg3ed") showcaseSubText = "Dual Lands & Wheel of Fortune";
+                else if (setKey === "rav") showcaseSubText = "Shock Lands & Guild Staples";
+                else if (setKey === "isd") showcaseSubText = "Gothic Mythics & Planeswalkers";
 
-                const subMarkup = showcaseSubText 
-                    ? `<p class="collection-sub" style="color:#b08d24;">${showcaseSubText}</p>` 
-                    : ``;
+                const subMarkup = showcaseSubText ? `<p class="collection-sub" style="color:#b08d24;">${showcaseSubText}</p>` : ``;
 
                 collectionHeaderHTML = `
                     <div class="collection-header">
@@ -1605,28 +774,17 @@
                     </div>
                     <div class="collection-grid" id="collectionGrid"></div>`;
                 
-                if (setKey === 'rav') {
-                    packCoverHTML = `<img id="packWrapperImg" src="card_images/mtg_sets/mtg_rav_packwrapper4.jpg" alt="Ravnica: City of Guilds pack" style="width:100%;height:100%;object-fit:cover;border-radius:6px;">`;
-                } else if (setKey === 'isd') {
-                    packCoverHTML = `<img id="packWrapperImg" src="card_images/mtg_sets/mtg_isd_packwrapper1.jpg" alt="Pack" style="width:100%;height:100%;object-fit:cover;border-radius:6px;">`;
-                } else if (setKey === 'mtg3ed') {
-                    packCoverHTML = `<img src="card_images/mtg_sets/mtg_3ed_revised_pack_wrapper.jpg" alt="Pack" style="width:100%;height:100%;object-fit:cover;border-radius:6px;">`;
-                } else if (setKey === 'mtglea' || setKey === 'mtgleb') {
-                    packCoverHTML = `<img src="card_images/mtg_sets/mtg_alpha_beta_pack_wrapper.jpg" alt="Pack" style="width:100%;height:100%;object-fit:cover;border-radius:6px;">`;
-                } else if (setKey === 'mtg2ed') {
-                    packCoverHTML = `<img src="card_images/mtg_sets/mtg_unlimited_pack_wrapper.jpg" alt="Pack" style="width:100%;height:100%;object-fit:cover;border-radius:6px;">`;
-                } else if (setKey === 'mtgarn') {
-                    packCoverHTML = `<img src="card_images/mtg_sets/mtg_arn_pack_wrapper.jpg" alt="Pack" style="width:100%;height:100%;object-fit:cover;border-radius:6px;">`;
-                } else if (setKey === 'mtgatq') {
-                    packCoverHTML = `<img src="card_images/mtg_sets/mtg_atq_pack_wrapper.jpg" alt="Pack" style="width:100%;height:100%;object-fit:cover;border-radius:6px;">`;
-                } else if (setKey === 'mtgleg') {
-                    packCoverHTML = `<img src="card_images/mtg_sets/mtg_leg_pack_wrapper.jpg" alt="Pack" style="width:100%;height:100%;object-fit:cover;border-radius:6px;">`;
-                } else if (setKey === 'mtgdrk') {
-                    packCoverHTML = `<img src="card_images/mtg_sets/mtg_drk_pack_wrapper.jpg" alt="Pack" style="width:100%;height:100%;object-fit:cover;border-radius:6px;">`;
-                }
+                if (setKey === 'rav') packCoverHTML = `<img id="packWrapperImg" src="card_images/mtg_sets/mtg_rav_packwrapper4.jpg" alt="Pack" style="width:100%;height:100%;object-fit:cover;border-radius:6px;">`;
+                else if (setKey === 'isd') packCoverHTML = `<img id="packWrapperImg" src="card_images/mtg_sets/mtg_isd_packwrapper1.jpg" alt="Pack" style="width:100%;height:100%;object-fit:cover;border-radius:6px;">`;
+                else if (setKey === 'mtg3ed') packCoverHTML = `<img src="card_images/mtg_sets/mtg_3ed_revised_pack_wrapper.jpg" alt="Pack" style="width:100%;height:100%;object-fit:cover;border-radius:6px;">`;
+                else if (setKey === 'mtglea' || setKey === 'mtgleb') packCoverHTML = `<img src="card_images/mtg_sets/mtg_alpha_beta_pack_wrapper.jpg" alt="Pack" style="width:100%;height:100%;object-fit:cover;border-radius:6px;">`;
+                else if (setKey === 'mtg2ed') packCoverHTML = `<img src="card_images/mtg_sets/mtg_unlimited_pack_wrapper.jpg" alt="Pack" style="width:100%;height:100%;object-fit:cover;border-radius:6px;">`;
+                else if (setKey === 'mtgarn') packCoverHTML = `<img src="card_images/mtg_sets/mtg_arn_pack_wrapper.jpg" alt="Pack" style="width:100%;height:100%;object-fit:cover;border-radius:6px;">`;
+                else if (setKey === 'mtgatq') packCoverHTML = `<img src="card_images/mtg_sets/mtg_atq_pack_wrapper.jpg" alt="Pack" style="width:100%;height:100%;object-fit:cover;border-radius:6px;">`;
+                else if (setKey === 'mtgleg') packCoverHTML = `<img src="card_images/mtg_sets/mtg_leg_pack_wrapper.jpg" alt="Pack" style="width:100%;height:100%;object-fit:cover;border-radius:6px;">`;
+                else if (setKey === 'mtgdrk') packCoverHTML = `<img src="card_images/mtg_sets/mtg_drk_pack_wrapper.jpg" alt="Pack" style="width:100%;height:100%;object-fit:cover;border-radius:6px;">`;
             }
 
-            // DYNAMIC INGESTION OF SET ABOUT BLURBS
             const setBlurb = SET_ABOUT_BLURBS[setKey] || { title: "About This Set", text: "" };
 
             viewAppPortal.innerHTML = `
@@ -1649,41 +807,14 @@
                     </div>
                 </div>
 
-                <!-- STRATEGIC ADSENSE SLOT 2: BELOW PACK OPENER -->
-                <!--
-                <div class="ad-container">
-                    <ins class="adsbygoogle"
-                         style="display:block"
-                         data-ad-client="ca-pub-4033699653937150"
-                         data-ad-slot="YOUR_AD_SLOT_ID_2"
-                         data-ad-format="auto"
-                         data-full-width-responsive="true"></ins>
-                    <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
-                </div>
-                -->
-
                 <div class="section-divider" id="divider"><span>Cards Pulled</span></div>
                 <div class="cards-section" id="cardsSection">
                     ${rowLabelHTML}
                     <div class="cards-row" id="slots-base"></div>
                 </div>
 
-                <!-- STRATEGIC ADSENSE SLOT 3: ABOVE COLLECTION CHECKLIST -->
-                <!--
-                <div class="ad-container">
-                    <ins class="adsbygoogle"
-                         style="display:block"
-                         data-ad-client="ca-pub-4033699653937150"
-                         data-ad-slot="YOUR_AD_SLOT_ID_3"
-                         data-ad-format="auto"
-                         data-full-width-responsive="true"></ins>
-                    <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
-                </div>
-                -->
-
                 <div class="collection-section">${collectionHeaderHTML}</div>
 
-                <!-- INDEXABLE SET HISTORY & ABOUT SECTION FOR ADSENSE COMPLIANCE -->
                 <div class="set-about-section">
                     <h3>${setBlurb.title}</h3>
                     <p>${setBlurb.text}</p>
@@ -1700,14 +831,19 @@
         }
 
         function initializePackOpenerScript(setKey) {
-            const wrapper = document.getElementById('packWrapper'); const MIN_DRAG = 60; let dragging = false, lastX = 0, lastY = 0, cumDist = 0, canvas, ctx, points = [];
+            const wrapper = document.getElementById('packWrapper'); 
+            const MIN_DRAG = 60; 
+            let dragging = false, lastX = 0, lastY = 0, cumDist = 0, canvas, ctx, points = [];
+            
             function initCanvas() {
                 const pack = document.getElementById('pack'); if (!pack) return; pack.style.position = 'relative'; canvas = document.createElement('canvas');
                 canvas.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;border-radius:6px;pointer-events:none;z-index:10;';
                 canvas.width = pack.offsetWidth || 150; canvas.height = pack.offsetHeight || 224; pack.appendChild(canvas); ctx = canvas.getContext('2d');
             }
+            
             function getPos(e) { const rect = canvas.getBoundingClientRect(); const src = e.touches ? e.touches[0] : e; return { x: (src.clientX - rect.left) * (canvas.width / rect.width), y: (src.clientY - rect.top) * (canvas.height / rect.height) }; }
             function drawLine() { ctx.clearRect(0, 0, canvas.width, canvas.height); if (points.length < 2) return; ctx.save(); ctx.strokeStyle = 'rgba(255,255,255,0.92)'; ctx.lineWidth = 3; ctx.lineCap = 'round'; ctx.lineJoin = 'round'; ctx.beginPath(); ctx.moveTo(points[0].x, points[0].y); for (let i = 1; i < points.length; i++) ctx.lineTo(points[i].x, points[i].y); ctx.stroke(); ctx.restore(); }
+            
             if (wrapper) {
                 wrapper.onpointerdown = (e) => { if (window.openingPackState) return; if (!canvas) initCanvas(); dragging = true; points = []; cumDist = 0; ctx.clearRect(0,0,canvas.width,canvas.height); const pos = getPos(e); lastX = pos.x; lastY = pos.y; points.push(pos); wrapper.setPointerCapture(e.pointerId); e.preventDefault(); };
                 wrapper.onpointermove = (e) => { if (!dragging) return; const pos = getPos(e); cumDist += Math.sqrt(Math.pow(pos.x-lastX,2)+Math.pow(pos.y-lastY,2)); lastX = pos.x; lastY = pos.y; points.push(pos); drawLine(); e.preventDefault(); };
@@ -1727,11 +863,9 @@
 
                 if (isMtg) {
                     const cardObj = activeSetData.baseCards.find(c => c.n == n);
-                    if (targetSide === 'front') {
-                        return cardObj ? cardObj.frontImg : "card_images/card_back.jpg";
-                    } else {
-                        return "card_images/mtg_sets/Magic_the_Gathering_Card_Back.jpg";
-                    }
+                    return targetSide === 'front' 
+                        ? (cardObj ? cardObj.frontImg : "card_images/card_back.jpg") 
+                        : "card_images/mtg_sets/Magic_the_Gathering_Card_Back.jpg";
                 }
                 if (setKey === 'gpk1') {
                     return targetSide === 'back' 
@@ -1753,9 +887,7 @@
                 
                 if (setKey === 'mu1990') {
                     let numStr = String(n).trim().toUpperCase();
-                    if (numStr.startsWith('MH')) {
-                        numStr = numStr.substring(2);
-                    }
+                    if (numStr.startsWith('MH')) numStr = numStr.substring(2);
                     let parsedNum = parseInt(numStr, 10);
 
                     if (isInsert || parsedNum > 162) {
@@ -1764,7 +896,6 @@
                             ? `card_images/marvel_impel_1990/mh${holoIdx}_hologram_front.png`
                             : `card_images/marvel_impel_1990/mh_hologram_back.png`;
                     }
-                    
                     return `card_images/marvel_impel_1990/${targetSide}_${numStr.padStart(3, '0')}.jpg`;
                 }
                 if (setKey === 'xmen1992') return isInsert ? `card_images/xmen_impel_1992/holo_${targetSide}_${n}.jpg` : `card_images/xmen_impel_1992/${targetSide}_${String(n).padStart(3, '0')}.jpg`;
@@ -1779,7 +910,7 @@
                     ...(Array.isArray(savedData.spectra) ? savedData.spectra.map(String) : [])
                 ]).size;
                 
-                const maxCount = activeSetData.maxCount || (setKey === 'motu1984' ? 110 : (setKey === 'mu1990' ? 167 : (setKey === 'mm1993' ? 98 : (setKey === 'gpk1' ? 82 : 105))));
+                const maxCount = activeSetData.maxCount || 105;
                 document.getElementById('collectionCount').textContent = `${Math.min(uniqueCollected, maxCount)} / ${maxCount}`;
             };
 
@@ -1834,19 +965,13 @@
                 });
             }
 
-            // RED BORDER PUZZLE GRID FOR MOTU STICKERS
             if (gridMotuRedPuzzle && setKey === 'motu1984') {
                 const redPuzzleSequence = [
-                    { id: "S18", n: 18, variant: "" },
-                    { id: "S11", n: 11, variant: "" },
-                    { id: "S13", n: 13, variant: "" },
-                    { id: "S15", n: 15, variant: "" },
-                    { id: "S12", n: 12, variant: "" },
-                    { id: "S19R", n: 19, variant: "" },
-                    { id: "S21", n: 21, variant: "" },
-                    { id: "S17", n: 17, variant: "" },
-                    { id: "S20", n: 20, variant: "" },
-                    { id: "S16", n: 16, variant: "" }
+                    { id: "S18", n: 18, variant: "" }, { id: "S11", n: 11, variant: "" },
+                    { id: "S13", n: 13, variant: "" }, { id: "S15", n: 15, variant: "" },
+                    { id: "S12", n: 12, variant: "" }, { id: "S19R", n: 19, variant: "" },
+                    { id: "S21", n: 21, variant: "" }, { id: "S17", n: 17, variant: "" },
+                    { id: "S20", n: 20, variant: "" }, { id: "S16", n: 16, variant: "" }
                 ];
                 
                 redPuzzleSequence.forEach(item => {
@@ -1868,19 +993,13 @@
                 });
             }
 
-            // BLUE BORDER PUZZLE GRID FOR MOTU STICKERS
             if (gridMotuBluePuzzle && setKey === 'motu1984') {
                 const bluePuzzleSequence = [
-                    { id: "S19B", n: 19, variant: "b" },
-                    { id: "S10", n: 10, variant: "" },
-                    { id: "S08", n: 8, variant: "" },
-                    { id: "S05", n: 5, variant: "" },
-                    { id: "S04", n: 4, variant: "" },
-                    { id: "S14", n: 14, variant: "" },
-                    { id: "S09", n: 9, variant: "" },
-                    { id: "S07", n: 7, variant: "" },
-                    { id: "S06", n: 6, variant: "" },
-                    { id: "S03", n: 3, variant: "" }
+                    { id: "S19B", n: 19, variant: "b" }, { id: "S10", n: 10, variant: "" },
+                    { id: "S08", n: 8, variant: "" }, { id: "S05", n: 5, variant: "" },
+                    { id: "S04", n: 4, variant: "" }, { id: "S14", n: 14, variant: "" },
+                    { id: "S09", n: 9, variant: "" }, { id: "S07", n: 7, variant: "" },
+                    { id: "S06", n: 6, variant: "" }, { id: "S03", n: 3, variant: "" }
                 ];
 
                 bluePuzzleSequence.forEach(item => {
@@ -1942,7 +1061,9 @@
             updateCounters();
 
             window.openPack = function() {
-                if (window.openingPackState) return; window.openingPackState = true;
+                if (window.openingPackState) return; 
+                window.openingPackState = true;
+                
                 const btn = document.getElementById('openBtn'); if (btn) btn.disabled = true;
                 const pack = document.getElementById('pack'); if (pack) pack.classList.add('pack-tearing');
                 const wrapperEl = document.getElementById('packWrapper');
@@ -1950,14 +1071,6 @@
                 savedData.totalPacks = (savedData.totalPacks || 0) + 1; sessionPacks++;
                 document.getElementById('packsTotal').textContent = savedData.totalPacks;
                 document.getElementById('packsSession').textContent = sessionPacks;
-
-                if (typeof zaraz !== 'undefined') {
-                    zaraz.track("pack_opened", { set: setKey });
-                }
-
-                if (typeof window.clarity === "function") {
-                    window.clarity("event", "pack_opened", { set: setKey });
-                }
 
                 setTimeout(() => {
                     if (wrapperEl) { wrapperEl.classList.add('opened'); wrapperEl.style.opacity = '0.35'; }
@@ -1994,8 +1107,8 @@
                         if (rowCommon) rowCommon.style.display = 'block';
 
                         const pickedRare = activeSetData.pools.rare[Math.floor(Math.random() * activeSetData.pools.rare.length)];
-                        
                         const isHit = activeSetData.pools.hits.some(h => h.n === pickedRare.n);
+                        
                         if (isHit) {
                             if (!savedData.spectra.map(String).includes(String(pickedRare.n))) savedData.spectra.push(String(pickedRare.n));
                         } else {
@@ -2048,20 +1161,13 @@
                         }
 
                         let targetAmt = 5; 
-                        if (setKey === 'gpk1') {
-                            targetAmt = 5;
-                        } else if (setKey === 'motu1984') {
-                            targetAmt = 10;
-                        } else if (setKey === 'mu1990') {
-                            targetAmt = hasInsert ? 11 : 12;
-                        } else {
-                            targetAmt = hasInsert ? 5 : 6;
-                        }
+                        if (setKey === 'gpk1') targetAmt = 5;
+                        else if (setKey === 'motu1984') targetAmt = 10;
+                        else if (setKey === 'mu1990') targetAmt = hasInsert ? 11 : 12;
+                        else targetAmt = hasInsert ? 5 : 6;
 
                         let availablePool = [...activeSetData.baseCards];
-                        if (setKey === 'mu1990') {
-                            availablePool = availablePool.filter(c => parseInt(String(c.n).trim().replace(/^\D+/g, ''), 10) <= 162);
-                        }
+                        if (setKey === 'mu1990') availablePool = availablePool.filter(c => parseInt(String(c.n).trim().replace(/^\D+/g, ''), 10) <= 162);
                         
                         for (let i = availablePool.length - 1; i > 0; i--) {
                             const j = Math.floor(Math.random() * (i + 1));
@@ -2082,7 +1188,6 @@
 
                     setTimeout(() => {
                         if (pack) pack.classList.remove('pack-tearing');
-                        
                         if (setKey === 'motu1984') {
                             const packImgEl = document.getElementById('packWrapperImg');
                             if (packImgEl) {
@@ -2090,10 +1195,9 @@
                                 packImgEl.src = `card_images/motu_1984/motu1984_packwrapper${nextMotuWrapperNum}.jpg`;
                             }
                         }
-
                         if (wrapperEl) { wrapperEl.classList.remove('opened'); wrapperEl.style.opacity = '1'; }
-
-                        window.openingPackState = false; if (btn) { btn.disabled = false; btn.textContent = 'Open Another Pack'; }
+                        window.openingPackState = false; 
+                        if (btn) { btn.disabled = false; btn.textContent = 'Open Another Pack'; }
                     }, delay + 400);
 
                     setTimeout(() => { document.getElementById('divider').scrollIntoView({ behavior: 'smooth', block: 'nearest' }); }, 300);
@@ -2212,9 +1316,7 @@
                     const saved = JSON.parse(localStorage.getItem(set.key)) || {};
                     const baseArr = Array.isArray(saved.base) ? saved.base.map(String) : [];
                     const spectraArr = Array.isArray(saved.spectra) ? saved.spectra.map(String) : [];
-                    
                     const collected = new Set([...baseArr, ...spectraArr]).size;
-                    
                     const pct = Math.min(100, Math.round((collected / set.total) * 100));
                     
                     const barEl = document.getElementById(set.barId);
@@ -2231,60 +1333,13 @@
         document.addEventListener("DOMContentLoaded", () => {
             updateDashboardProgressTracks();
 
-            const privacyBtn = document.getElementById('privacy-nav-btn');
-            if (privacyBtn) {
-                privacyBtn.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    navigateToView('privacy', true);
-                    if (typeof zaraz !== 'undefined') zaraz.track("privacy_policy_viewed");
-                    if (typeof window.clarity === "function") window.clarity("event", "privacy_policy_viewed");
-                });
-            }
+            document.getElementById('privacy-nav-btn')?.addEventListener('click', (e) => { e.preventDefault(); navigateToView('privacy', true); });
+            document.getElementById('terms-nav-btn')?.addEventListener('click', (e) => { e.preventDefault(); navigateToView('terms', true); });
+            document.getElementById('contact-nav-btn')?.addEventListener('click', (e) => { e.preventDefault(); navigateToView('contact', true); });
 
-            const termsBtn = document.getElementById('terms-nav-btn');
-            if (termsBtn) {
-                termsBtn.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    navigateToView('terms', true);
-                    if (typeof zaraz !== 'undefined') zaraz.track("terms_viewed");
-                    if (typeof window.clarity === "function") window.clarity("event", "terms_viewed");
-                });
-            }
-
-            const contactBtn = document.getElementById('contact-nav-btn');
-            if (contactBtn) {
-                contactBtn.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    navigateToView('contact', true);
-                    if (typeof zaraz !== 'undefined') zaraz.track("contact_viewed");
-                    if (typeof window.clarity === "function") window.clarity("event", "contact_viewed");
-                });
-            }
-
-            const feedbackBtn = document.getElementById('nav-feedback-btn');
-            const menuFeedbackBtn = document.getElementById('menu-feedback-btn');
-            const trackFeedbackClick = () => {
-                if (headerDropdownMenu) headerDropdownMenu.classList.remove('open');
-                if (typeof zaraz !== 'undefined') zaraz.track("feedback_clicked");
-                if (typeof window.clarity === "function") window.clarity("event", "feedback_clicked");
-            };
-            if (feedbackBtn) feedbackBtn.addEventListener('click', trackFeedbackClick);
-            if (menuFeedbackBtn) menuFeedbackBtn.addEventListener('click', trackFeedbackClick);
-
-            const kofiBtn = document.getElementById('nav-kofi-btn');
-            if (kofiBtn) {
-                kofiBtn.addEventListener('click', () => {
-                    if (typeof zaraz !== 'undefined') zaraz.track("kofi_clicked");
-                    if (typeof window.clarity === "function") window.clarity("event", "kofi_clicked");
-                });
-            }
-
-            // PREVENT SET CARD NAVIGATION WHEN CLICKING "ABOUT"
             document.querySelectorAll('.set-card').forEach(card => {
                 card.onclick = (e) => {
-                    if (e.target.closest('.set-meta-about-trigger')) {
-                        return; // Prevent navigating to the set page
-                    }
+                    if (e.target.closest('.set-meta-about-trigger')) return;
                     const targetKey = card.getAttribute('data-set-key');
                     navigateToView(targetKey, true);
                 };
@@ -2297,13 +1352,6 @@
                     e.preventDefault();
                     const targetKey = trigger.getAttribute('data-set-key');
                     openSetAboutModal(targetKey);
-                    
-                    if (typeof zaraz !== 'undefined') {
-                        zaraz.track("set_info_viewed", { set: targetKey });
-                    }
-                    if (typeof window.clarity === "function") {
-                        window.clarity("event", "set_info_viewed", { set: targetKey });
-                    }
                 }
             });
 
@@ -2311,12 +1359,8 @@
             const activeSetQuery = urlParams.get('set');
             if (activeSetQuery && DATA_MAP[activeSetQuery]) {
                 navigateToView(activeSetQuery, false);
-            } else if (activeSetQuery === 'privacy') {
-                navigateToView('privacy', false);
-            } else if (activeSetQuery === 'terms') {
-                navigateToView('terms', false);
-            } else if (activeSetQuery === 'contact') {
-                navigateToView('contact', false);
+            } else if (['privacy', 'terms', 'contact'].includes(activeSetQuery)) {
+                navigateToView(activeSetQuery, false);
             } else {
                 navigateToView(null, false);
             }
