@@ -21,112 +21,6 @@ export const STATIC_ROUTES = {
 
 export const SETS_REGISTRY = [
     // -------------------------------------------------------------------------
-    // MARVEL & RETRO NON-SPORT CARD SETS
-    // -------------------------------------------------------------------------
-    {
-        key: 'gpk1',
-        name: 'Garbage Pail Kids Series 1',
-        category: 'Retro Non-Sport Cards',
-        year: '1985',
-        publisher: 'Topps',
-        totalCards: 82,
-        themeColor: '#df9845',
-        coverImage: 'card_images/gpk_series1/gpk_series1_pack_wrapper.jpg',
-        dataFile: './data-gpk1.js',
-        dataExport: 'GPK1_DATA',
-        isMtg: false,
-        aboutTitle: 'About Garbage Pail Kids Series 1',
-        aboutText: 'Released by Topps in 1985, Series 1 launched the iconic Garbage Pail Kids phenomenon with gross-out parodies of Cabbage Patch Kids created by Art Spiegelman, Mark Newgarden, and John Pound.',
-        seoTitle: 'Garbage Pail Kids Series 1 Pack Opener - Rip Boosters',
-        seoDesc: 'Open free virtual 1985 Garbage Pail Kids Series 1 booster packs. Collect all 82 original gross-out sticker cards with authentic pull mechanics.'
-    },
-    {
-        key: 'motu1984',
-        name: 'Masters of the Universe',
-        category: 'Retro Non-Sport Cards',
-        year: '1984',
-        publisher: 'Topps',
-        totalCards: 110,
-        themeColor: '#3a6ea5',
-        coverImage: 'card_images/motu_1984/motu1984_packwrapper1.jpg',
-        dataFile: './data-motu1984.js',
-        dataExport: 'MOTU1984_DATA',
-        isMtg: false,
-        aboutTitle: 'About Masters of the Universe (1984)',
-        aboutText: 'Topps released this classic 88-card base set and 22 sticker insert collection in 1984, capturing iconic scenes and character artwork from the He-Man and the Masters of the Universe animated series.',
-        seoTitle: 'He-Man Masters of the Universe 1984 Pack Opener - Rip Boosters',
-        seoDesc: 'Rip virtual 1984 Topps Masters of the Universe trading card packs. Complete the 88-card base set, 22 sticker inserts, and interlocking puzzle backs.'
-    },
-    {
-        key: 'mu1990',
-        name: 'Marvel Universe Series 1',
-        category: 'Retro Non-Sport Cards',
-        year: '1990',
-        publisher: 'Impel',
-        totalCards: 167,
-        themeColor: '#1a3a8a',
-        coverImage: 'card_images/marvel_impel_1990/marvel_impel_1990_packimage2_spiderman.jpg',
-        dataFile: './data-mu1990.js',
-        dataExport: 'MU1990_DATA',
-        isMtg: false,
-        aboutTitle: 'About Marvel Universe Series 1 (1990)',
-        aboutText: 'The pioneer set that kicked off the 1990s comic trading card boom. Published by Impel in 1990, it features 162 base cards with character power ratings and 5 rare chase Holograms.',
-        seoTitle: 'Marvel Universe 1990 Impel Pack Simulator - Rip Boosters',
-        seoDesc: 'Open 1990 Impel Marvel Universe Series 1 trading card packs. Hunt for Spider-Man, Wolverine, and rare 3D Hologram insert cards.'
-    },
-    {
-        key: 'mm1992',
-        name: 'Marvel Masterpieces 1992',
-        category: 'Retro Non-Sport Cards',
-        year: '1992',
-        publisher: 'SkyBox',
-        totalCards: 105,
-        themeColor: '#df9845',
-        coverImage: 'card_images/marvel_masterpieces_1992/mm1992_packimage1_wolverine.jpg',
-        dataFile: './data-mm1992.js',
-        dataExport: 'MM1992_DATA',
-        isMtg: false,
-        aboutTitle: 'About Marvel Masterpieces (1992)',
-        aboutText: 'Illustrated entirely by painted artist Joe Jusko, this premium 100-card base set redefined comic cards with high-gloss stock and 5 ultra-popular etched foil Battle Spectra chase cards.',
-        seoTitle: 'Marvel Masterpieces 1992 Pack Simulator - Rip Boosters',
-        seoDesc: 'Experience opening 1992 Marvel Masterpieces trading card packs featuring Joe Jusko painted artwork and rare Battle Spectra foil inserts.'
-    },
-    {
-        key: 'xmen1992',
-        name: 'The Uncanny X-Men Series 1',
-        category: 'Retro Non-Sport Cards',
-        year: '1992',
-        publisher: 'Impel',
-        totalCards: 105,
-        themeColor: '#b8860b',
-        coverImage: 'card_images/xmen_impel_1992/uncanny_xmen_1992_packimage2_teal.jpg',
-        dataFile: './data-xmen1992.js',
-        dataExport: 'XMEN1992_DATA',
-        isMtg: false,
-        aboutTitle: 'About The Uncanny X-Men Series 1 (1992)',
-        aboutText: 'Featuring artwork by legendary comic artist Jim Lee, this 100-card set features iconic X-Men heroes, a 9-card Danger Room puzzle mural, and 5 rare Gold Hologram inserts.',
-        seoTitle: '1992 Uncanny X-Men Impel Pack Simulator - Rip Boosters',
-        seoDesc: 'Open 1992 Impel Uncanny X-Men Series 1 packs with Jim Lee artwork. Complete the 9-card mural puzzle and collect rare Gold Hologram hits.'
-    },
-    {
-        key: 'mm1993',
-        name: 'Marvel Masterpieces 1993',
-        category: 'Retro Non-Sport Cards',
-        year: '1993',
-        publisher: 'SkyBox',
-        totalCards: 98,
-        themeColor: '#1a6a1a',
-        coverImage: 'card_images/marvel_masterpieces_1993/mm1993_packimage1_silversurfer.jpg',
-        dataFile: './data-mm1993.js',
-        dataExport: 'MM1993_DATA',
-        isMtg: false,
-        aboutTitle: 'About Marvel Masterpieces (1993)',
-        aboutText: 'Featuring fully painted art by Greg and Tim Hildebrandt, Marvel Masterpieces 1993 expanded on the premium legacy with 90 base cards and 8 textured Dyna-Etch foil insert cards.',
-        seoTitle: 'Marvel Masterpieces 1993 Pack Opener - Rip Boosters',
-        seoDesc: 'Rip 1993 Marvel Masterpieces booster packs with Hildebrandt Brothers painted card art and Dyna-Etch foil insert hits.'
-    },
-
-    // -------------------------------------------------------------------------
     // MAGIC: THE GATHERING SETS
     // -------------------------------------------------------------------------
     {
@@ -293,5 +187,115 @@ export const SETS_REGISTRY = [
         aboutText: 'Step into the Marvel Universe featuring iconic heroes, villains, comic panel showcases, and collector booster treatments.',
         seoTitle: 'Marvel Super Heroes Collector Booster Simulator - Rip Boosters',
         seoDesc: 'Open Marvel Super Heroes Magic: The Gathering Collector Boosters. Collect serialized cards, borderless comic art, and source material inserts.'
+    },
+
+    // -------------------------------------------------------------------------
+    // MARVEL TRADING CARDS
+    // -------------------------------------------------------------------------
+    {
+        key: 'mu1990',
+        name: 'Marvel Universe Series 1',
+        category: 'Marvel Trading Cards',
+        year: '1990',
+        publisher: 'Impel',
+        totalCards: 167,
+        themeColor: '#1a3a8a',
+        coverImage: 'card_images/marvel_impel_1990/marvel_impel_1990_packimage2_spiderman.jpg',
+        dataFile: './data-mu1990.js',
+        dataExport: 'MU1990_DATA',
+        isMtg: false,
+        aboutTitle: 'About Marvel Universe Series 1 (1990)',
+        aboutText: 'The pioneer set that kicked off the 1990s comic trading card boom. Published by Impel in 1990, it features 162 base cards with character power ratings and 5 rare chase Holograms.',
+        seoTitle: 'Marvel Universe 1990 Impel Pack Simulator - Rip Boosters',
+        seoDesc: 'Open 1990 Impel Marvel Universe Series 1 trading card packs. Hunt for Spider-Man, Wolverine, and rare 3D Hologram insert cards.'
+    },
+    {
+        key: 'mm1992',
+        name: 'Marvel Masterpieces 1992',
+        category: 'Marvel Trading Cards',
+        year: '1992',
+        publisher: 'SkyBox',
+        totalCards: 105,
+        themeColor: '#df9845',
+        coverImage: 'card_images/marvel_masterpieces_1992/mm1992_packimage1_wolverine.jpg',
+        dataFile: './data-mm1992.js',
+        dataExport: 'MM1992_DATA',
+        isMtg: false,
+        aboutTitle: 'About Marvel Masterpieces (1992)',
+        aboutText: 'Illustrated entirely by painted artist Joe Jusko, this premium 100-card base set redefined comic cards with high-gloss stock and 5 ultra-popular etched foil Battle Spectra chase cards.',
+        seoTitle: 'Marvel Masterpieces 1992 Pack Simulator - Rip Boosters',
+        seoDesc: 'Experience opening 1992 Marvel Masterpieces trading card packs featuring Joe Jusko painted artwork and rare Battle Spectra foil inserts.'
+    },
+    {
+        key: 'xmen1992',
+        name: 'The Uncanny X-Men Series 1',
+        category: 'Marvel Trading Cards',
+        year: '1992',
+        publisher: 'Impel',
+        totalCards: 105,
+        themeColor: '#b8860b',
+        coverImage: 'card_images/xmen_impel_1992/uncanny_xmen_1992_packimage2_teal.jpg',
+        dataFile: './data-xmen1992.js',
+        dataExport: 'XMEN1992_DATA',
+        isMtg: false,
+        aboutTitle: 'About The Uncanny X-Men Series 1 (1992)',
+        aboutText: 'Featuring artwork by legendary comic artist Jim Lee, this 100-card set features iconic X-Men heroes, a 9-card Danger Room puzzle mural, and 5 rare Gold Hologram inserts.',
+        seoTitle: '1992 Uncanny X-Men Impel Pack Simulator - Rip Boosters',
+        seoDesc: 'Open 1992 Impel Uncanny X-Men Series 1 packs with Jim Lee artwork. Complete the 9-card mural puzzle and collect rare Gold Hologram hits.'
+    },
+    {
+        key: 'mm1993',
+        name: 'Marvel Masterpieces 1993',
+        category: 'Marvel Trading Cards',
+        year: '1993',
+        publisher: 'SkyBox',
+        totalCards: 98,
+        themeColor: '#1a6a1a',
+        coverImage: 'card_images/marvel_masterpieces_1993/mm1993_packimage1_silversurfer.jpg',
+        dataFile: './data-mm1993.js',
+        dataExport: 'MM1993_DATA',
+        isMtg: false,
+        aboutTitle: 'About Marvel Masterpieces (1993)',
+        aboutText: 'Featuring fully painted art by Greg and Tim Hildebrandt, Marvel Masterpieces 1993 expanded on the premium legacy with 90 base cards and 8 textured Dyna-Etch foil insert cards.',
+        seoTitle: 'Marvel Masterpieces 1993 Pack Opener - Rip Boosters',
+        seoDesc: 'Rip 1993 Marvel Masterpieces booster packs with Hildebrandt Brothers painted card art and Dyna-Etch foil insert hits.'
+    },
+
+    // -------------------------------------------------------------------------
+    // RETRO 80S CARDS
+    // -------------------------------------------------------------------------
+    {
+        key: 'motu1984',
+        name: 'Masters of the Universe',
+        category: 'Retro 80s',
+        year: '1984',
+        publisher: 'Topps',
+        totalCards: 110,
+        themeColor: '#3a6ea5',
+        coverImage: 'card_images/motu_1984/motu1984_packwrapper1.jpg',
+        dataFile: './data-motu1984.js',
+        dataExport: 'MOTU1984_DATA',
+        isMtg: false,
+        aboutTitle: 'About Masters of the Universe (1984)',
+        aboutText: 'Topps released this classic 88-card base set and 22 sticker insert collection in 1984, capturing iconic scenes and character artwork from the He-Man and the Masters of the Universe animated series.',
+        seoTitle: 'He-Man Masters of the Universe 1984 Pack Opener - Rip Boosters',
+        seoDesc: 'Rip virtual 1984 Topps Masters of the Universe trading card packs. Complete the 88-card base set, 22 sticker inserts, and interlocking puzzle backs.'
+    },
+    {
+        key: 'gpk1',
+        name: 'Garbage Pail Kids Series 1',
+        category: 'Retro 80s',
+        year: '1985',
+        publisher: 'Topps',
+        totalCards: 82,
+        themeColor: '#df9845',
+        coverImage: 'card_images/gpk_series1/gpk_series1_pack_wrapper.jpg',
+        dataFile: './data-gpk1.js',
+        dataExport: 'GPK1_DATA',
+        isMtg: false,
+        aboutTitle: 'About Garbage Pail Kids Series 1',
+        aboutText: 'Released by Topps in 1985, Series 1 launched the iconic Garbage Pail Kids phenomenon with gross-out parodies of Cabbage Patch Kids created by Art Spiegelman, Mark Newgarden, and John Pound.',
+        seoTitle: 'Garbage Pail Kids Series 1 Pack Opener - Rip Boosters',
+        seoDesc: 'Open free virtual 1985 Garbage Pail Kids Series 1 booster packs. Collect all 82 original gross-out sticker cards with authentic pull mechanics.'
     }
 ];

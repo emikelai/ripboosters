@@ -196,6 +196,52 @@
         const setAboutTitle = document.getElementById('setAboutTitle');
         const setAboutText = document.getElementById('setAboutText');
 
+        // MULTI-WRAPPER ART ARRAYS FOR IN-SET PACK RANDOMIZATION (WITH CORRECT MM1993 SILVER SURFER & IRON MAN FILES)
+        const WRAPPERS_MAP = {
+            motu1984: [
+                'card_images/motu_1984/motu1984_packwrapper1.jpg',
+                'card_images/motu_1984/motu1984_packwrapper2.jpg',
+                'card_images/motu_1984/motu1984_packwrapper3.jpg',
+                'card_images/motu_1984/motu1984_packwrapper4.jpg'
+            ],
+            mm1992: [
+                'card_images/marvel_masterpieces_1992/mm1992_packimage1_wolverine.jpg',
+                'card_images/marvel_masterpieces_1992/mm1992_packimage2_spiderman.jpg'
+            ],
+            mm1993: [
+                'card_images/marvel_masterpieces_1993/mm1993_packimage1_silversurfer.jpg',
+                'card_images/marvel_masterpieces_1993/mm1993_packimage2_ironman.jpg'
+            ],
+            mu1990: [
+                'card_images/marvel_impel_1990/marvel_impel_1990_packimage1_capam.jpg',
+                'card_images/marvel_impel_1990/marvel_impel_1990_packimage2_spiderman.jpg',
+                'card_images/marvel_impel_1990/marvel_impel_1990_packimage3_wolverine.jpg'
+            ],
+            xmen1992: [
+                'card_images/xmen_impel_1992/uncanny_xmen_1992_packimage1_yellow.jpg',
+                'card_images/xmen_impel_1992/uncanny_xmen_1992_packimage2_teal.jpg'
+            ],
+            rav: [
+                'card_images/mtg_sets/mtg_rav_packwrapper1.jpg',
+                'card_images/mtg_sets/mtg_rav_packwrapper2.jpg',
+                'card_images/mtg_sets/mtg_rav_packwrapper3.jpg',
+                'card_images/mtg_sets/mtg_rav_packwrapper4.jpg'
+            ],
+            isd: [
+                'card_images/mtg_sets/mtg_isd_packwrapper1.jpg',
+                'card_images/mtg_sets/mtg_isd_packwrapper2.jpg',
+                'card_images/mtg_sets/mtg_isd_packwrapper3.jpg'
+            ]
+        };
+
+        function getRandomPackWrapper(setKey, fallbackImage) {
+            const arr = WRAPPERS_MAP[setKey];
+            if (arr && arr.length > 0) {
+                return arr[Math.floor(Math.random() * arr.length)];
+            }
+            return fallbackImage;
+        }
+
         function renderDashboardGrid() {
             viewDashboard.innerHTML = '';
             
@@ -433,7 +479,7 @@
             if (setKey === 'gpk1') {
                 rowLabelHTML = '<div class="row-label">Series 1 &mdash; 5 stickers per pack &middot; click to view back</div>';
                 collectionHeaderHTML = `<div class="collection-header"><div><h2 class="collection-title">Collection Checklist</h2><p class="collection-sub">82 stickers &mdash; 41 pairs</p></div><span class="collection-count" id="collectionCount">0 / 82</span></div><div class="collection-grid" id="collectionGrid"></div>`;
-                packCoverHTML = `<img src="card_images/gpk_series1/gpk_series1_pack_wrapper.jpg" alt="Garbage Pail Kids Series 1 pack" style="width:100%;height:100%;object-fit:cover;border-radius:6px;">`;
+                packCoverHTML = `<img id="packWrapperImg" src="card_images/gpk_series1/gpk_series1_pack_wrapper.jpg" alt="Garbage Pail Kids Series 1 pack" style="width:100%;height:100%;object-fit:cover;border-radius:6px;">`;
             } else if (setKey === 'motu1984') {
                 rowLabelHTML = `<div id="spectraRow" style="display:none; margin-bottom: 1rem;"><div class="row-label" id="spectraLabel">Sticker Insert</div><div class="cards-row" id="slots-spectra"></div></div><div><div class="row-label">Base Set cards</div></div>`;
                 
@@ -470,26 +516,26 @@
                     </div>
                     <div class="collection-grid" id="collectionGrid"></div>`;
                 
-                const randomMotuPackNum = Math.floor(Math.random() * 4) + 1;
-                packCoverHTML = `<img id="packWrapperImg" src="card_images/motu_1984/motu1984_packwrapper${randomMotuPackNum}.jpg" alt="Masters of the Universe 1984 pack" style="width:100%;height:100%;object-fit:cover;border-radius:6px;">`;
+                const activeWrapper = getRandomPackWrapper(setKey, setConfig.coverImage);
+                packCoverHTML = `<img id="packWrapperImg" src="${activeWrapper}" alt="Masters of the Universe 1984 pack" style="width:100%;height:100%;object-fit:cover;border-radius:6px;">`;
             } else if (setKey === 'mm1992') {
                 rowLabelHTML = `<div id="spectraRow" style="display:none; margin-bottom: 1rem;"><div class="row-label" id="spectraLabel">Battle Spectra Hit</div><div class="cards-row" id="slots-spectra"></div></div><div><div class="row-label">Base Set cards</div></div>`;
                 collectionHeaderHTML = `<div class="collection-header"><div><h2 class="collection-title">Collection Checklist</h2><p class="collection-sub" style="color:var(--spectra)">Battle Spectra &mdash; 5 cards</p></div><span class="collection-count" id="collectionCount">0/105</span></div><div class="collection-grid" id="spectraGrid"></div><div class="collection-header" style="margin-top:2rem;"><div><p class="collection-sub">Base Set &mdash; 100 cards</p></div></div><div class="collection-grid" id="collectionGrid"></div>`;
                 
-                const mm92PackImg = Math.random() < 0.5 
-                    ? 'card_images/marvel_masterpieces_1992/mm1992_packimage1_wolverine.jpg' 
-                    : 'card_images/marvel_masterpieces_1992/mm1992_packimage2_spiderman.jpg';
-                packCoverHTML = `<img id="packWrapperImg" src="${mm92PackImg}" alt="Marvel Masterpieces 1992 pack" style="width:100%;height:100%;object-fit:cover;border-radius:6px;">`;
+                const activeWrapper = getRandomPackWrapper(setKey, setConfig.coverImage);
+                packCoverHTML = `<img id="packWrapperImg" src="${activeWrapper}" alt="Marvel Masterpieces 1992 pack" style="width:100%;height:100%;object-fit:cover;border-radius:6px;">`;
             } else if (setKey === 'mm1993') {
                 rowLabelHTML = `<div id="spectraRow" style="display:none; margin-bottom: 1rem;"><div class="row-label" id="spectraLabel">Dyna-Etch Hit</div><div class="cards-row" id="slots-spectra"></div></div><div><div class="row-label">Base Set cards</div></div>`;
                 collectionHeaderHTML = `<div class="collection-header"><div><h2 class="collection-title">Collection Checklist</h2><p class="collection-sub" style="color:#1a6a1a;">Dyna-Etch &mdash; 8 cards</p></div><span class="collection-count" id="collectionCount">0/98</span></div><div class="collection-grid" id="spectraGrid"></div><div class="collection-header" style="margin-top:2rem;"><div><p class="collection-sub">Base Set &mdash; 90 cards</p></div></div><div class="collection-grid" id="collectionGrid"></div>`;
                 
-                packCoverHTML = `<img id="packWrapperImg" src="card_images/marvel_masterpieces_1993/mm1993_packimage1_silversurfer.jpg" alt="Marvel Masterpieces 1993 pack" style="width:100%;height:100%;object-fit:cover;border-radius:6px;">`;
+                const activeWrapper = getRandomPackWrapper(setKey, setConfig.coverImage);
+                packCoverHTML = `<img id="packWrapperImg" src="${activeWrapper}" alt="Marvel Masterpieces 1993 pack" style="width:100%;height:100%;object-fit:cover;border-radius:6px;">`;
             } else if (setKey === 'mu1990') {
                 rowLabelHTML = `<div id="spectraRow" style="display:none; margin-bottom: 1rem;"><div class="row-label" id="spectraLabel">Hologram Hit</div><div class="cards-row" id="slots-spectra"></div></div><div><div class="row-label">Base Set cards</div></div>`;
                 collectionHeaderHTML = `<div class="collection-header"><div><h2 class="collection-title">Collection Checklist</h2><p class="collection-sub" style="color:#1a3a8a;">Holograms &mdash; 5 cards</p></div><span class="collection-count" id="collectionCount">0/167</span></div><div class="collection-grid" id="spectraGrid"></div><div class="collection-header" style="margin-top:2rem;"><div><p class="collection-sub">Base Set &mdash; 162 cards</p></div></div><div class="collection-grid" id="collectionGrid"></div>`;
                 
-                packCoverHTML = `<img id="packWrapperImg" src="card_images/marvel_impel_1990/marvel_impel_1990_packimage2_spiderman.jpg" alt="Marvel Universe 1990 pack" style="width:100%;height:100%;object-fit:cover;border-radius:6px;">`;
+                const activeWrapper = getRandomPackWrapper(setKey, setConfig.coverImage);
+                packCoverHTML = `<img id="packWrapperImg" src="${activeWrapper}" alt="Marvel Universe 1990 pack" style="width:100%;height:100%;object-fit:cover;border-radius:6px;">`;
             } else if (setKey === 'xmen1992') {
                 rowLabelHTML = `<div id="spectraRow" style="display:none; margin-bottom: 1rem;"><div class="row-label" id="spectraLabel">Gold Hologram Hit</div><div class="cards-row" id="slots-spectra"></div></div><div><div class="row-label">Base Set cards</div></div>`;
                 collectionHeaderHTML = `
@@ -517,11 +563,11 @@
                     </div>
                     <div class="collection-grid" id="collectionGrid"></div>`;
                 
-                packCoverHTML = `<img id="packWrapperImg" src="card_images/xmen_impel_1992/uncanny_xmen_1992_packimage2_teal.jpg" alt="The Uncanny X-Men 1992 pack" style="width:100%;height:100%;object-fit:cover;border-radius:6px;">`;
+                const activeWrapper = getRandomPackWrapper(setKey, setConfig.coverImage);
+                packCoverHTML = `<img id="packWrapperImg" src="${activeWrapper}" alt="The Uncanny X-Men 1992 pack" style="width:100%;height:100%;object-fit:cover;border-radius:6px;">`;
             } else if (setConfig && setConfig.isMtg) {
                 const config = DATA_MAP[setKey];
 
-                // Single unified flex row for all individual per-card slots
                 rowLabelHTML = `
                     <div class="mtg-row" id="mtgMainRow" style="display:none;">
                         <div class="cards-row" id="slots-mtg-main"></div>
@@ -556,16 +602,17 @@
                     </div>
                     <div class="collection-grid" id="collectionGrid"></div>`;
                 
-                if (setKey === 'rav') packCoverHTML = `<img id="packWrapperImg" src="card_images/mtg_sets/mtg_rav_packwrapper4.jpg" alt="Pack" style="width:100%;height:100%;object-fit:cover;border-radius:6px;">`;
-                else if (setKey === 'isd') packCoverHTML = `<img id="packWrapperImg" src="card_images/mtg_sets/mtg_isd_packwrapper1.jpg" alt="Pack" style="width:100%;height:100%;object-fit:cover;border-radius:6px;">`;
-                else if (setKey === 'mtgmsh') packCoverHTML = `<img id="packWrapperImg" src="card_images/mtg_sets/mtg_msh_collectorboosterwrapper.jpg" alt="Marvel Super Heroes Collector Pack" style="width:100%;height:100%;object-fit:contain;border-radius:6px;">`;
-                else if (setKey === 'mtg3ed') packCoverHTML = `<img src="card_images/mtg_sets/mtg_3ed_revised_pack_wrapper.jpg" alt="Pack" style="width:100%;height:100%;object-fit:cover;border-radius:6px;">`;
-                else if (setKey === 'mtglea' || setKey === 'mtgleb') packCoverHTML = `<img src="card_images/mtg_sets/mtg_alpha_beta_pack_wrapper.jpg" alt="Pack" style="width:100%;height:100%;object-fit:cover;border-radius:6px;">`;
-                else if (setKey === 'mtg2ed') packCoverHTML = `<img src="card_images/mtg_sets/mtg_unlimited_pack_wrapper.jpg" alt="Pack" style="width:100%;height:100%;object-fit:cover;border-radius:6px;">`;
-                else if (setKey === 'mtgarn') packCoverHTML = `<img src="card_images/mtg_sets/mtg_arn_pack_wrapper.jpg" alt="Pack" style="width:100%;height:100%;object-fit:cover;border-radius:6px;">`;
-                else if (setKey === 'mtgatq') packCoverHTML = `<img src="card_images/mtg_sets/mtg_atq_pack_wrapper.jpg" alt="Pack" style="width:100%;height:100%;object-fit:cover;border-radius:6px;">`;
-                else if (setKey === 'mtgleg') packCoverHTML = `<img src="card_images/mtg_sets/mtg_leg_pack_wrapper.jpg" alt="Pack" style="width:100%;height:100%;object-fit:cover;border-radius:6px;">`;
-                else if (setKey === 'mtgdrk') packCoverHTML = `<img src="card_images/mtg_sets/mtg_drk_pack_wrapper.jpg" alt="Pack" style="width:100%;height:100%;object-fit:cover;border-radius:6px;">`;
+                if (setKey === 'rav' || setKey === 'isd') {
+                    const activeWrapper = getRandomPackWrapper(setKey, setConfig.coverImage);
+                    packCoverHTML = `<img id="packWrapperImg" src="${activeWrapper}" alt="Pack" style="width:100%;height:100%;object-fit:cover;border-radius:6px;">`;
+                } else if (setKey === 'mtgmsh') packCoverHTML = `<img id="packWrapperImg" src="card_images/mtg_sets/mtg_msh_collectorboosterwrapper.jpg" alt="Marvel Super Heroes Collector Pack" style="width:100%;height:100%;object-fit:contain;border-radius:6px;">`;
+                else if (setKey === 'mtg3ed') packCoverHTML = `<img id="packWrapperImg" src="card_images/mtg_sets/mtg_3ed_revised_pack_wrapper.jpg" alt="Pack" style="width:100%;height:100%;object-fit:cover;border-radius:6px;">`;
+                else if (setKey === 'mtglea' || setKey === 'mtgleb') packCoverHTML = `<img id="packWrapperImg" src="card_images/mtg_sets/mtg_alpha_beta_pack_wrapper.jpg" alt="Pack" style="width:100%;height:100%;object-fit:cover;border-radius:6px;">`;
+                else if (setKey === 'mtg2ed') packCoverHTML = `<img id="packWrapperImg" src="card_images/mtg_sets/mtg_unlimited_pack_wrapper.jpg" alt="Pack" style="width:100%;height:100%;object-fit:cover;border-radius:6px;">`;
+                else if (setKey === 'mtgarn') packCoverHTML = `<img id="packWrapperImg" src="card_images/mtg_sets/mtg_arn_pack_wrapper.jpg" alt="Pack" style="width:100%;height:100%;object-fit:cover;border-radius:6px;">`;
+                else if (setKey === 'mtgatq') packCoverHTML = `<img id="packWrapperImg" src="card_images/mtg_sets/mtg_atq_pack_wrapper.jpg" alt="Pack" style="width:100%;height:100%;object-fit:cover;border-radius:6px;">`;
+                else if (setKey === 'mtgleg') packCoverHTML = `<img id="packWrapperImg" src="card_images/mtg_sets/mtg_leg_pack_wrapper.jpg" alt="Pack" style="width:100%;height:100%;object-fit:cover;border-radius:6px;">`;
+                else if (setKey === 'mtgdrk') packCoverHTML = `<img id="packWrapperImg" src="card_images/mtg_sets/mtg_drk_pack_wrapper.jpg" alt="Pack" style="width:100%;height:100%;object-fit:cover;border-radius:6px;">`;
             }
 
             const aboutBlurb = setConfig ? { title: setConfig.aboutTitle, text: setConfig.aboutText } : { title: "About This Set", text: "" };
@@ -996,13 +1043,14 @@
 
                     setTimeout(() => {
                         if (pack) pack.classList.remove('pack-tearing');
-                        if (setKey === 'motu1984') {
-                            const packImgEl = document.getElementById('packWrapperImg');
-                            if (packImgEl) {
-                                const nextMotuWrapperNum = Math.floor(Math.random() * 4) + 1;
-                                packImgEl.src = `card_images/motu_1984/motu1984_packwrapper${nextMotuWrapperNum}.jpg`;
-                            }
+                        
+                        // CYCLE PACK WRAPPER ART IF MULTIPLE VARIANTS EXIST
+                        const packImgEl = document.getElementById('packWrapperImg');
+                        if (packImgEl && setConfig) {
+                            const nextPackArt = getRandomPackWrapper(setKey, setConfig.coverImage);
+                            if (nextPackArt) packImgEl.src = nextPackArt;
                         }
+
                         if (wrapperEl) { wrapperEl.classList.remove('opened'); wrapperEl.style.opacity = '1'; }
                         window.openingPackState = false; 
                         if (btn) { btn.disabled = false; btn.textContent = 'Open Another Pack'; }
