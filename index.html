@@ -199,7 +199,6 @@
         function renderDashboardGrid() {
             viewDashboard.innerHTML = '';
             
-            // Get unique categories preserving registry order
             const categories = [];
             SETS_REGISTRY.forEach(s => {
                 if (!categories.includes(s.category)) categories.push(s.category);
@@ -212,7 +211,7 @@
 
                 let cardsHTML = '';
                 catSets.forEach(set => {
-                    const cardMetaSub = set.isMtg ? `${set.year} &middot; ${set.publisher}` : `${set.year} &middot; ${set.publisher}`;
+                    const cardMetaSub = `${set.year} &middot; ${set.publisher}`;
                     const unitLabel = set.key === 'gpk1' ? 'stickers' : 'cards';
 
                     cardsHTML += `
@@ -237,7 +236,6 @@
                 viewDashboard.appendChild(catBlock);
             });
 
-            // Append bottom overview block
             const overviewBlock = document.createElement('div');
             overviewBlock.className = 'dashboard-bottom-overview';
             overviewBlock.innerHTML = `
@@ -260,7 +258,6 @@
             `;
             viewDashboard.appendChild(overviewBlock);
 
-            // Re-bind dashboard card clicks
             document.querySelectorAll('.set-card').forEach(card => {
                 card.onclick = (e) => {
                     if (e.target.closest('.set-meta-about-trigger')) return;
@@ -347,7 +344,6 @@
                 DATA_MAP[setKey] = fetchedConfig;
                 return fetchedConfig;
             } else if (setConfig.dataFile) {
-                // DYNAMIC LAZY LOADING IMPORT
                 const mod = await import(setConfig.dataFile);
                 DATA_MAP[setKey] = mod[setConfig.dataExport];
                 return DATA_MAP[setKey];
@@ -524,19 +520,72 @@
                 packCoverHTML = `<img id="packWrapperImg" src="card_images/xmen_impel_1992/uncanny_xmen_1992_packimage2_teal.jpg" alt="The Uncanny X-Men 1992 pack" style="width:100%;height:100%;object-fit:cover;border-radius:6px;">`;
             } else if (setConfig && setConfig.isMtg) {
                 const config = DATA_MAP[setKey];
-                rowLabelHTML = `
-                    <div class="mtg-row" id="mtgRareRow" style="display:none;">
-                        <div class="mtg-row-label rare"><span class="pip"></span>Rare Slot</div>
-                        <div class="cards-row" id="slots-rare"></div>
-                    </div>
-                    <div class="mtg-row" id="mtgUncommonRow" style="display:none;">
-                        <div class="mtg-row-label uncommon"><span class="pip"></span>Uncommon Slots</div>
-                        <div class="cards-row" id="slots-uncommon"></div>
-                    </div>
-                    <div class="mtg-row" id="mtgCommonRow" style="display:none;">
-                        <div class="mtg-row-label common"><span class="pip"></span>Common Slots</div>
-                        <div class="cards-row" id="slots-common"></div>
-                    </div>`;
+
+                if (setKey === 'mtgmsh') {
+                    rowLabelHTML = `
+                        <div class="mtg-row" id="mtgRowFoilBoosterFun" style="display:none;">
+                            <div class="mtg-row-label rare"><span class="pip"></span>1 Foil Booster Fun rare or mythic rare card</div>
+                            <div class="cards-row" id="slots-foil-booster-fun"></div>
+                        </div>
+                        <div class="mtg-row" id="mtgRowNonfoilBoosterFun" style="display:none;">
+                            <div class="mtg-row-label rare"><span class="pip"></span>1 Non-foil rare or mythic rare Booster Fun card</div>
+                            <div class="cards-row" id="slots-nonfoil-booster-fun"></div>
+                        </div>
+                        <div class="mtg-row" id="mtgRowSourceMaterial" style="display:none;">
+                            <div class="mtg-row-label rare"><span class="pip"></span>1 Non-foil or traditional foil source material card</div>
+                            <div class="cards-row" id="slots-source-material"></div>
+                        </div>
+                        <div class="mtg-row" id="mtgRowCommanderBoosterFun" style="display:none;">
+                            <div class="mtg-row-label rare"><span class="pip"></span>1 Non-foil Booster Fun card from the Commander decks</div>
+                            <div class="cards-row" id="slots-commander-booster-fun"></div>
+                        </div>
+                        <div class="mtg-row" id="mtgRowFoilRare" style="display:none;">
+                            <div class="mtg-row-label rare"><span class="pip"></span>1 Traditional foil rare or mythic rare card</div>
+                            <div class="cards-row" id="slots-foil-rare"></div>
+                        </div>
+                        <div class="mtg-row" id="mtgRowFoilScene" style="display:none;">
+                            <div class="mtg-row-label uncommon"><span class="pip"></span>1 Traditional foil common or uncommon scene card</div>
+                            <div class="cards-row" id="slots-foil-scene"></div>
+                        </div>
+                        <div class="mtg-row" id="mtgRowFoilUncommonMsc" style="display:none;">
+                            <div class="mtg-row-label uncommon"><span class="pip"></span>1 Traditional foil uncommon MSC card</div>
+                            <div class="cards-row" id="slots-foil-uncommon-msc"></div>
+                        </div>
+                        <div class="mtg-row" id="mtgRowFoilUncommon" style="display:none;">
+                            <div class="mtg-row-label uncommon"><span class="pip"></span>2 Traditional foil uncommon cards</div>
+                            <div class="cards-row" id="slots-foil-uncommon"></div>
+                        </div>
+                        <div class="mtg-row" id="mtgRowFoilLand" style="display:none;">
+                            <div class="mtg-row-label common"><span class="pip"></span>1 Traditional foil city calm or city chaos basic land</div>
+                            <div class="cards-row" id="slots-foil-land"></div>
+                        </div>
+                        <div class="mtg-row" id="mtgRowFoilCommonMsc" style="display:none;">
+                            <div class="mtg-row-label common"><span class="pip"></span>2 Traditional foil common MSC cards</div>
+                            <div class="cards-row" id="slots-foil-common-msc"></div>
+                        </div>
+                        <div class="mtg-row" id="mtgRowFoilCommon" style="display:none;">
+                            <div class="mtg-row-label common"><span class="pip"></span>3 Traditional foil common cards</div>
+                            <div class="cards-row" id="slots-foil-common"></div>
+                        </div>
+                        <div class="mtg-row" id="mtgRowArtToken" style="display:none;">
+                            <div class="mtg-row-label common"><span class="pip"></span>1 Art card or traditional foil double-sided token</div>
+                            <div class="cards-row" id="slots-art-token"></div>
+                        </div>`;
+                } else {
+                    rowLabelHTML = `
+                        <div class="mtg-row" id="mtgRareRow" style="display:none;">
+                            <div class="mtg-row-label rare"><span class="pip"></span>Rare Slot</div>
+                            <div class="cards-row" id="slots-rare"></div>
+                        </div>
+                        <div class="mtg-row" id="mtgUncommonRow" style="display:none;">
+                            <div class="mtg-row-label uncommon"><span class="pip"></span>Uncommon Slots</div>
+                            <div class="cards-row" id="slots-uncommon"></div>
+                        </div>
+                        <div class="mtg-row" id="mtgCommonRow" style="display:none;">
+                            <div class="mtg-row-label common"><span class="pip"></span>Common Slots</div>
+                            <div class="cards-row" id="slots-common"></div>
+                        </div>`;
+                }
 
                 let showcaseSubText = "";
                 const isAbu = ['mtglea', 'mtgleb', 'mtg2ed'].includes(setKey);
@@ -545,6 +594,7 @@
                 else if (setKey === "mtg3ed") showcaseSubText = "Dual Lands & Wheel of Fortune";
                 else if (setKey === "rav") showcaseSubText = "Shock Lands & Guild Staples";
                 else if (setKey === "isd") showcaseSubText = "Gothic Mythics & Planeswalkers";
+                else if (setKey === "mtgmsh") showcaseSubText = "Avenger Mythics & Comic Panel Showcases";
 
                 const subMarkup = showcaseSubText ? `<p class="collection-sub" style="color:#b08d24;">${showcaseSubText}</p>` : ``;
 
@@ -568,6 +618,7 @@
                 
                 if (setKey === 'rav') packCoverHTML = `<img id="packWrapperImg" src="card_images/mtg_sets/mtg_rav_packwrapper4.jpg" alt="Pack" style="width:100%;height:100%;object-fit:cover;border-radius:6px;">`;
                 else if (setKey === 'isd') packCoverHTML = `<img id="packWrapperImg" src="card_images/mtg_sets/mtg_isd_packwrapper1.jpg" alt="Pack" style="width:100%;height:100%;object-fit:cover;border-radius:6px;">`;
+                else if (setKey === 'mtgmsh') packCoverHTML = `<img id="packWrapperImg" src="card_images/mtg_sets/mtg_msh_collectorboosterwrapper.jpg" alt="Marvel Super Heroes Collector Pack" style="width:100%;height:100%;object-fit:contain;border-radius:6px;">`;
                 else if (setKey === 'mtg3ed') packCoverHTML = `<img src="card_images/mtg_sets/mtg_3ed_revised_pack_wrapper.jpg" alt="Pack" style="width:100%;height:100%;object-fit:cover;border-radius:6px;">`;
                 else if (setKey === 'mtglea' || setKey === 'mtgleb') packCoverHTML = `<img src="card_images/mtg_sets/mtg_alpha_beta_pack_wrapper.jpg" alt="Pack" style="width:100%;height:100%;object-fit:cover;border-radius:6px;">`;
                 else if (setKey === 'mtg2ed') packCoverHTML = `<img src="card_images/mtg_sets/mtg_unlimited_pack_wrapper.jpg" alt="Pack" style="width:100%;height:100%;object-fit:cover;border-radius:6px;">`;
@@ -656,9 +707,13 @@
 
                 if (isMtg) {
                     const cardObj = activeSetData.baseCards.find(c => c.n == n);
-                    return targetSide === 'front' 
-                        ? (cardObj ? cardObj.frontImg : "card_images/card_back.jpg") 
-                        : "card_images/mtg_sets/Magic_the_Gathering_Card_Back.jpg";
+                    if (targetSide === 'front') {
+                        return cardObj ? cardObj.frontImg : "card_images/card_back.jpg";
+                    } else {
+                        return (cardObj && cardObj.backImg) 
+                            ? cardObj.backImg 
+                            : "card_images/mtg_sets/Magic_the_Gathering_Card_Back.jpg";
+                    }
                 }
                 if (setKey === 'gpk1') {
                     return targetSide === 'back' 
@@ -895,49 +950,100 @@
                     let delay = 0; const step = 80; 
 
                     if (isMtg) {
-                        if (rowRare) rowRare.style.display = 'block';
-                        if (rowUncommon) rowUncommon.style.display = 'block';
-                        if (rowCommon) rowCommon.style.display = 'block';
+                        if (setKey === 'mtgmsh') {
+                            const mshRows = [
+                                'mtgRowFoilBoosterFun', 'mtgRowNonfoilBoosterFun', 'mtgRowSourceMaterial',
+                                'mtgRowCommanderBoosterFun', 'mtgRowFoilRare', 'mtgRowFoilScene',
+                                'mtgRowFoilUncommonMsc', 'mtgRowFoilUncommon', 'mtgRowFoilLand',
+                                'mtgRowFoilCommonMsc', 'mtgRowFoilCommon', 'mtgRowArtToken'
+                            ];
+                            mshRows.forEach(rId => {
+                                const el = document.getElementById(rId);
+                                if (el) el.style.display = 'none';
+                            });
 
-                        const pickedRare = activeSetData.pools.rare[Math.floor(Math.random() * activeSetData.pools.rare.length)];
-                        const isHit = activeSetData.pools.hits.some(h => h.n === pickedRare.n);
-                        
-                        if (isHit) {
-                            if (!savedData.spectra.map(String).includes(String(pickedRare.n))) savedData.spectra.push(String(pickedRare.n));
+                            const cPools = activeSetData.collectorPools || {};
+
+                            const sampleAndAdd = (poolArray, containerId, rowId, count = 1, isHitSlot = false) => {
+                                const container = document.getElementById(containerId);
+                                const row = document.getElementById(rowId);
+                                const sourcePool = (poolArray && poolArray.length) ? poolArray : activeSetData.pools.rare;
+                                if (!container || !row || !sourcePool || !sourcePool.length) return;
+                                
+                                container.innerHTML = '';
+                                row.style.display = 'block';
+                                
+                                for (let i = 0; i < count; i++) {
+                                    const pickedCard = sourcePool[Math.floor(Math.random() * sourcePool.length)];
+                                    const strKey = String(pickedCard.n);
+                                    if (isHitSlot) {
+                                        if (!savedData.spectra.map(String).includes(strKey)) savedData.spectra.push(strKey);
+                                    } else {
+                                        if (!savedData.base.map(String).includes(strKey)) savedData.base.push(strKey);
+                                    }
+                                    container.appendChild(createPackCardElement(pickedCard, isHitSlot, delay));
+                                    delay += step;
+                                }
+                            };
+
+                            sampleAndAdd(cPools.foilBoosterFun, 'slots-foil-booster-fun', 'mtgRowFoilBoosterFun', 1, true);
+                            sampleAndAdd(cPools.nonfoilBoosterFun, 'slots-nonfoil-booster-fun', 'mtgRowNonfoilBoosterFun', 1, true);
+                            sampleAndAdd(cPools.sourceMaterial, 'slots-source-material', 'mtgRowSourceMaterial', 1, true);
+                            sampleAndAdd(cPools.commanderBoosterFun, 'slots-commander-booster-fun', 'mtgRowCommanderBoosterFun', 1, false);
+                            sampleAndAdd(cPools.foilRare, 'slots-foil-rare', 'mtgRowFoilRare', 1, true);
+                            sampleAndAdd(cPools.foilScene, 'slots-foil-scene', 'mtgRowFoilScene', 1, false);
+                            sampleAndAdd(cPools.foilUncommonMsc, 'slots-foil-uncommon-msc', 'mtgRowFoilUncommonMsc', 1, false);
+                            sampleAndAdd(cPools.foilUncommon, 'slots-foil-uncommon', 'mtgRowFoilUncommon', 2, false);
+                            sampleAndAdd(cPools.foilLand, 'slots-foil-land', 'mtgRowFoilLand', 1, false);
+                            sampleAndAdd(cPools.foilCommonMsc, 'slots-foil-common-msc', 'mtgRowFoilCommonMsc', 2, false);
+                            sampleAndAdd(cPools.foilCommon, 'slots-foil-common', 'mtgRowFoilCommon', 3, false);
+                            sampleAndAdd(cPools.artToken, 'slots-art-token', 'mtgRowArtToken', 1, false);
+
                         } else {
-                            if (!savedData.base.map(String).includes(String(pickedRare.n))) savedData.base.push(String(pickedRare.n));
-                        }
-                        
-                        sRare.appendChild(createPackCardElement(pickedRare, isHit, delay));
-                        delay += step;
+                            if (rowRare) rowRare.style.display = 'block';
+                            if (rowUncommon) rowUncommon.style.display = 'block';
+                            if (rowCommon) rowCommon.style.display = 'block';
 
-                        let pickedUncommons = [];
-                        const targetUncommons = Math.min(3, activeSetData.pools.uncommon.length);
-                        while (pickedUncommons.length < targetUncommons) {
-                            const rCard = activeSetData.pools.uncommon[Math.floor(Math.random() * activeSetData.pools.uncommon.length)];
-                            if (!pickedUncommons.some(c => c.n === rCard.n)) {
-                                pickedUncommons.push(rCard);
-                                if (!savedData.base.map(String).includes(String(rCard.n))) savedData.base.push(String(rCard.n));
+                            const pickedRare = activeSetData.pools.rare[Math.floor(Math.random() * activeSetData.pools.rare.length)];
+                            const isHit = activeSetData.pools.hits.some(h => h.n === pickedRare.n);
+                            
+                            if (isHit) {
+                                if (!savedData.spectra.map(String).includes(String(pickedRare.n))) savedData.spectra.push(String(pickedRare.n));
+                            } else {
+                                if (!savedData.base.map(String).includes(String(pickedRare.n))) savedData.base.push(String(pickedRare.n));
                             }
-                        }
-                        pickedUncommons.forEach(c => {
-                            sUncommon.appendChild(createPackCardElement(c, false, delay));
+                            
+                            sRare.appendChild(createPackCardElement(pickedRare, isHit, delay));
                             delay += step;
-                        });
 
-                        let pickedCommons = [];
-                        const targetCommons = Math.min(11, activeSetData.pools.common.length);
-                        while (pickedCommons.length < targetCommons) {
-                            const rCard = activeSetData.pools.common[Math.floor(Math.random() * activeSetData.pools.common.length)];
-                            if (!pickedCommons.some(c => c.n === rCard.n)) {
-                                pickedCommons.push(rCard);
-                                if (!savedData.base.map(String).includes(String(rCard.n))) savedData.base.push(String(rCard.n));
+                            let pickedUncommons = [];
+                            const targetUncommons = Math.min(3, activeSetData.pools.uncommon.length);
+                            while (pickedUncommons.length < targetUncommons) {
+                                const rCard = activeSetData.pools.uncommon[Math.floor(Math.random() * activeSetData.pools.uncommon.length)];
+                                if (!pickedUncommons.some(c => c.n === rCard.n)) {
+                                    pickedUncommons.push(rCard);
+                                    if (!savedData.base.map(String).includes(String(rCard.n))) savedData.base.push(String(rCard.n));
+                                }
                             }
+                            pickedUncommons.forEach(c => {
+                                sUncommon.appendChild(createPackCardElement(c, false, delay));
+                                delay += step;
+                            });
+
+                            let pickedCommons = [];
+                            const targetCommons = Math.min(11, activeSetData.pools.common.length);
+                            while (pickedCommons.length < targetCommons) {
+                                const rCard = activeSetData.pools.common[Math.floor(Math.random() * activeSetData.pools.common.length)];
+                                if (!pickedCommons.some(c => c.n === rCard.n)) {
+                                    pickedCommons.push(rCard);
+                                    if (!savedData.base.map(String).includes(String(rCard.n))) savedData.base.push(String(rCard.n));
+                                }
+                            }
+                            pickedCommons.forEach(c => {
+                                sCommon.appendChild(createPackCardElement(c, false, delay));
+                                delay += step;
+                            });
                         }
-                        pickedCommons.forEach(c => {
-                            sCommon.appendChild(createPackCardElement(c, false, delay));
-                            delay += step;
-                        });
 
                     } else {
                         let insertArr = activeSetData.spectraCards || activeSetData.dynaCards || activeSetData.holoCards || activeSetData.stickerCards || [];

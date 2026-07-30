@@ -152,7 +152,21 @@ export const SETS_REGISTRY = [
         aboutTitle: 'Magic: The Gathering – Innistrad (2011)',
         aboutText: 'Released in September 2011, Innistrad is widely celebrated as one of the greatest Magic expansion sets ever created. Inspired by gothic horror, it introduced double-faced cards, Werewolves, and Vampires.'
     },
-
+    {
+        key: 'mtgmsh',
+        name: 'Marvel Super Heroes',
+        year: 2026,
+        publisher: 'WotC',
+        category: 'Magic: The Gathering',
+        totalCards: 357,
+        coverImage: 'card_images/mtg_sets/mtg_msh_collectorboosterwrapper.jpg',
+        themeColor: '#e63946',
+        isMtg: true,
+        seoTitle: 'MTG Marvel Super Heroes Booster Simulator - Rip Boosters',
+        seoDesc: 'Simulate opening 2026 MTG Marvel Super Heroes booster packs. Hunt for showcase comic panel art, iconic Avenger rares, and mythic heroes.',
+        aboutTitle: 'Magic: The Gathering – Marvel Super Heroes (2026)',
+        aboutText: 'Released in June 2026 as part of Universes Beyond, Marvel Super Heroes brings iconic comic book legends including Spider-Man, Wolverine, Captain America, and Iron Man into MTG with showcase comic-panel treatments and borderless scene art.'
+    },
     // --- MARVEL ---
     {
         key: 'mu1990',
