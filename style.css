@@ -406,7 +406,7 @@ body.set-active-bg::before { opacity: 0.38; }
 .pack-instructions { font-size: 0.68rem; color: var(--text-sub); line-height: 1.5; }
 
 /* ==========================================================================
-   6. CARDS DISPLAY GRID & CHECKLISTS
+   6. CARDS DISPLAY GRID & CHECKLISTS (MULTI-LINE SLOT LABELS)
    ========================================================================== */
 .section-divider {
     font-size: 0.65rem; 
@@ -424,14 +424,44 @@ body.set-active-bg::before { opacity: 0.38; }
 .section-divider.visible { opacity: 1; }
 .section-divider::after, .section-divider::before { content: ""; flex: 1; height: 1px; background: var(--border-color); }
 
+/* FLEXBOX LAYOUT FOR MULTI-CARD SLOT ROWS */
 .cards-row {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
-    gap: 1.5rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.25rem;
     margin-bottom: 2.5rem;
+    align-items: flex-start;
 }
 
-.card-slot { text-align: center; }
+.card-slot { 
+    width: clamp(100px, 12.5vw, 130px);
+    flex-shrink: 0;
+    text-align: center; 
+    display: flex;
+    flex-direction: column;
+}
+
+/* MULTI-LINE SLOT HEADER LABEL (NO PIPS, WRAPS NATURAL LINES) */
+.slot-header-label {
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--text-sub);
+    margin-bottom: 0.45rem;
+    min-height: 2.2em;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    text-align: center;
+    white-space: normal;
+    word-break: break-word;
+    line-height: 1.25;
+}
+
+.slot-header-label.rare { color: #df9845; }
+.slot-header-label.uncommon { color: #8199b5; }
+.slot-header-label.common { color: var(--text-sub); }
 
 .card {
     position: relative; 
@@ -449,7 +479,7 @@ body.set-active-bg::before { opacity: 0.38; }
 .card.revealed { opacity: 1; transform: translateY(0); }
 .card img { width: 100%; height: 100%; object-fit: cover; }
 .card:hover { box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4); }
-.flip-hint { font-size: 0.58rem; color: var(--text-sub); text-transform: uppercase; letter-spacing: 0.05em; margin-top: 0.5rem; }
+.flip-hint { font-size: 0.58rem; color: var(--text-sub); text-transform: uppercase; letter-spacing: 0.05em; margin-top: 0.4rem; }
 
 .collection-header { 
     display: flex; 
@@ -511,18 +541,13 @@ body.set-active-bg::before { opacity: 0.38; }
 /* RARITY RAILS & SPECTRA */
 .mtg-row, .spectra-row { margin-bottom: 1.5rem; padding: 0; background: none; border: none; }
 .mtg-row-label, .spectra-label { font-size: 0.65rem; letter-spacing: 0.16em; text-transform: uppercase; margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem; font-weight: 600; }
-.mtg-row-label .pip, .spectra-label .pip { width: 6px; height: 6px; border-radius: 50%; display: inline-block; }
 
 .mtg-row-label.rare { color: #df9845; }
-.mtg-row-label.rare .pip { background: #df9845; }
 .mtg-row-label.uncommon { color: #8199b5; }
-.mtg-row-label.uncommon .pip { background: #8199b5; }
 .mtg-row-label.common { color: var(--text-sub); }
-.mtg-row-label.common .pip { background: var(--text-sub); }
 
 .spectra-row { margin-bottom: 2rem; background: rgba(255, 255, 255, 0.02); padding: 1.25rem; border-radius: 8px; border: 1px dashed var(--border-color); }
 .spectra-label { color: var(--accent-spectra); }
-.spectra-label .pip { background: var(--accent-spectra); }
 
 /* ==========================================================================
    7. LIGHTBOX & MODALS
@@ -664,7 +689,7 @@ body.set-active-bg::before { opacity: 0.38; }
     .page-title-container { padding: 5.5rem 1rem 0.25rem 1rem; }
     #global-header-title { font-size: 1.8rem; }
     #header-subtitle { font-size: 0.95rem; }
-    .cards-row { grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+    .card-slot { width: 110px; }
     .pack-row { gap: 1rem; }
     .pack-counter { padding-left: 1rem; }
     .counter-num { font-size: 1.8rem; }
