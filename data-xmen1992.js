@@ -40,8 +40,8 @@ export const XMEN1992_DATA = {
     holoCards: [
         { id: 'XH1', n: 1, name: "Wolverine" }, 
         { id: 'XH2', n: 2, name: "Cable" },
-        { id: 'XH3', n: 3, name: "Magneto" }, 
-        { id: 'XH4', n: 4, name: "X-Men Team" },
-        { id: 'XH5', n: 5, name: "Shatterstar" }
+        { id: 'XH3', n: 3, name: "Gambit" }, 
+        { id: 'XH4', n: 4, name: "Magneto" },
+        { id: 'XH5', n: 5, name: "X-Men" }
     ]
 };
