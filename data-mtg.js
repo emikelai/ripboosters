@@ -18,6 +18,17 @@ export const MTG_CONFIGS = {
     mtgdrk: { setKey: 'mtgdrk', name: 'The Dark', code: 'drk', year: 1994, maxCount: 119, hitCardNames: ["Blood Moon", "Maze of Ith", "Tormod's Crypt", "Preacher"] },
     rav: { setKey: 'rav', name: 'Ravnica: City of Guilds', code: 'rav', year: 2005, maxCount: 306, hitCardNames: ["Overgrown Tomb", "Temple Garden", "Sacred Foundry", "Watery Grave", "Dark Confidant", "Chord of Calling", "Doubling Season", "Privileged Position"] },
     isd: { setKey: 'isd', name: 'Innistrad', code: 'isd', year: 2011, maxCount: 264, hitCardNames: ["Liliana of the Veil", "Snapcaster Mage", "Geist of Saint Traft", "Garruk Relentless", "Parallel Lives", "Griselbrand"] },
+    mtgsos: {
+        setKey: 'mtgsos',
+        name: 'Secrets of Strixhaven (Collector Booster)',
+        code: 'sos',
+        year: 2026,
+        isCollectorBooster: true,
+        maxCount: 1154,
+        coverImage: 'card_images/mtg_sets/mtg_sos_collectorboosterwrapper.jpg',
+        themeColor: '#1b4f72',
+        hitCardNames: ["Emeritus of Ideation", "Time Warp", "Demonic Tutor", "Counterspell", "Teferi's Protection", "Channel"]
+    },
     mtgmsh: {
         setKey: 'mtgmsh',
         name: 'Marvel Super Heroes',
@@ -35,7 +46,7 @@ const cache = {};
 
 export async function ensureSetData(setKey) {
     if (cache[setKey] && cache[setKey].baseCards) {
-        if (setKey !== 'mtgmsh' || cache[setKey].collectorPools) {
+        if ((setKey !== 'mtgmsh' && setKey !== 'mtgsos') || cache[setKey].collectorPools) {
             return cache[setKey];
         }
     }
@@ -43,9 +54,9 @@ export async function ensureSetData(setKey) {
     const config = MTG_CONFIGS[setKey];
     if (!config) throw new Error(`Unknown MTG Set Key: ${setKey}`);
 
-    const searchQuery = setKey === 'mtgmsh' 
-        ? `(e%3Amsh+OR+e%3Amsc+OR+e%3Amar)&unique=prints` 
-        : `e%3A${config.code}&unique=prints`;
+    let searchQuery = `e%3A${config.code}&unique=prints`;
+    if (setKey === 'mtgmsh') searchQuery = `(e%3Amsh+OR+e%3Amsc+OR+e%3Amar)&unique=prints`;
+    if (setKey === 'mtgsos') searchQuery = `(e%3Asos+OR+e%3Asoa+OR+e%3Asoc+OR+e%3Aspg)&unique=prints`;
 
     let url = `https://api.scryfall.com/cards/search?q=${searchQuery}`;
     let allCards = [];
@@ -76,6 +87,7 @@ export async function ensureSetData(setKey) {
     const commonPool = [];
     const hitPool = [];
 
+    // MSH Collector Pools
     const foilBoosterFunPool = [];
     const nonfoilBoosterFunPool = [];
     const sourceMaterialPool = [];
@@ -88,6 +100,18 @@ export async function ensureSetData(setKey) {
     const foilCommonMscPool = [];
     const foilCommonPool = [];
     const artTokenPool = [];
+
+    // SOS Collector Pools
+    const sosFoilBoosterFunPool = [];
+    const sosRareMythicArchivePool = [];
+    const sosNonfoilBoosterFunPool = [];
+    const sosCommanderRarePool = [];
+    const sosFoilRarePool = [];
+    const sosJpArchivePool = [];
+    const sosUncommonArchivePool = [];
+    const sosFoilLandPool = [];
+    const sosFoilUncommonPool = [];
+    const sosFoilCommonPool = [];
 
     let count = 1;
     allCards.forEach(card => {
@@ -113,7 +137,9 @@ export async function ensureSetData(setKey) {
             typeLine: card.type_line || '',
             borderColor: card.border_color || '',
             frontImg: frontImage,
-            backImg: backImage
+            backImg: backImage,
+            lang: card.lang || 'en',
+            collectorNumber: card.collector_number || ''
         };
 
         baseCards.push(cardObj);
@@ -158,6 +184,37 @@ export async function ensureSetData(setKey) {
             } else {
                 foilCommonPool.push(cardObj);
             }
+        } else if (setKey === 'mtgsos') {
+            const setLower = cardObj.setCode;
+            const typeLower = cardObj.typeLine.toLowerCase();
+
+            if (setLower === 'soa' || cardObj.collectorNumber.startsWith('STA')) {
+                if (cardObj.lang === 'ja') {
+                    sosJpArchivePool.push(cardObj);
+                } else if (card.rarity === 'uncommon') {
+                    sosUncommonArchivePool.push(cardObj);
+                } else {
+                    sosRareMythicArchivePool.push(cardObj);
+                }
+            } else if (setLower === 'soc') {
+                if (card.rarity === 'rare' || card.rarity === 'mythic') sosCommanderRarePool.push(cardObj);
+                else sosFoilUncommonPool.push(cardObj);
+            } else if (typeLower.includes('land')) {
+                sosFoilLandPool.push(cardObj);
+            } else if (cardObj.borderColor === 'borderless' || cardObj.collectorNumber > '280' || isHit) {
+                if (card.rarity === 'rare' || card.rarity === 'mythic') {
+                    sosFoilBoosterFunPool.push(cardObj);
+                    sosNonfoilBoosterFunPool.push(cardObj);
+                } else {
+                    sosFoilUncommonPool.push(cardObj);
+                }
+            } else if (card.rarity === 'rare' || card.rarity === 'mythic') {
+                sosFoilRarePool.push(cardObj);
+            } else if (card.rarity === 'uncommon') {
+                sosFoilUncommonPool.push(cardObj);
+            } else {
+                sosFoilCommonPool.push(cardObj);
+            }
         }
 
         count++;
@@ -192,6 +249,23 @@ export async function ensureSetData(setKey) {
             foilCommonMsc: foilCommonMscPool.length ? foilCommonMscPool : defaultCommon,
             foilCommon: foilCommonPool.length ? foilCommonPool : defaultCommon,
             artToken: artTokenPool.length ? artTokenPool : defaultCommon
+        };
+    } else if (setKey === 'mtgsos') {
+        const defaultRare = dataset.pools.rare;
+        const defaultUncommon = dataset.pools.uncommon;
+        const defaultCommon = dataset.pools.common;
+
+        dataset.collectorPools = {
+            foilBoosterFun: sosFoilBoosterFunPool.length ? sosFoilBoosterFunPool : dataset.pools.hits,
+            rareMythicArchive: sosRareMythicArchivePool.length ? sosRareMythicArchivePool : dataset.pools.hits,
+            nonfoilBoosterFun: sosNonfoilBoosterFunPool.length ? sosNonfoilBoosterFunPool : defaultRare,
+            commanderRare: sosCommanderRarePool.length ? sosCommanderRarePool : defaultRare,
+            foilRare: sosFoilRarePool.length ? sosFoilRarePool : defaultRare,
+            jpArchive: sosJpArchivePool.length ? sosJpArchivePool : (sosRareMythicArchivePool.length ? sosRareMythicArchivePool : dataset.pools.hits),
+            uncommonArchive: sosUncommonArchivePool.length ? sosUncommonArchivePool : defaultUncommon,
+            foilLand: sosFoilLandPool.length ? sosFoilLandPool : defaultCommon,
+            foilUncommon: sosFoilUncommonPool.length ? sosFoilUncommonPool : defaultUncommon,
+            foilCommon: sosFoilCommonPool.length ? sosFoilCommonPool : defaultCommon
         };
     }
 

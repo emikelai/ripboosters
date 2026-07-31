@@ -583,6 +583,7 @@
                 else if (setKey === "mtg3ed") showcaseSubText = "Dual Lands & Wheel of Fortune";
                 else if (setKey === "rav") showcaseSubText = "Shock Lands & Guild Staples";
                 else if (setKey === "isd") showcaseSubText = "Gothic Mythics & Planeswalkers";
+                else if (setKey === "mtgsos") showcaseSubText = "Japanese Mystical Archive & Serialized Emeritus";
                 else if (setKey === "mtgmsh") showcaseSubText = "Avenger Mythics & Comic Panel Showcases";
 
                 const subMarkup = showcaseSubText ? `<p class="collection-sub" style="color:#b08d24;">${showcaseSubText}</p>` : ``;
@@ -608,7 +609,8 @@
                 if (setKey === 'rav' || setKey === 'isd') {
                     const activeWrapper = getRandomPackWrapper(setKey, setConfig.coverImage);
                     packCoverHTML = `<img id="packWrapperImg" src="${activeWrapper}" alt="Pack" style="width:100%;height:100%;object-fit:cover;border-radius:6px;">`;
-                } else if (setKey === 'mtgmsh') packCoverHTML = `<img id="packWrapperImg" src="card_images/mtg_sets/mtg_msh_collectorboosterwrapper.jpg" alt="Marvel Super Heroes Collector Pack" style="width:100%;height:100%;object-fit:contain;border-radius:6px;">`;
+                } else if (setKey === 'mtgsos') packCoverHTML = `<img id="packWrapperImg" src="card_images/mtg_sets/mtg_sos_collectorboosterwrapper.jpg" alt="Secrets of Strixhaven Collector Pack" style="width:100%;height:100%;object-fit:contain;border-radius:6px;">`;
+                else if (setKey === 'mtgmsh') packCoverHTML = `<img id="packWrapperImg" src="card_images/mtg_sets/mtg_msh_collectorboosterwrapper.jpg" alt="Marvel Super Heroes Collector Pack" style="width:100%;height:100%;object-fit:contain;border-radius:6px;">`;
                 else if (setKey === 'mtg3ed') packCoverHTML = `<img id="packWrapperImg" src="card_images/mtg_sets/mtg_3ed_revised_pack_wrapper.jpg" alt="Pack" style="width:100%;height:100%;object-fit:cover;border-radius:6px;">`;
                 else if (setKey === 'mtglea' || setKey === 'mtgleb') packCoverHTML = `<img id="packWrapperImg" src="card_images/mtg_sets/mtg_alpha_beta_pack_wrapper.jpg" alt="Pack" style="width:100%;height:100%;object-fit:cover;border-radius:6px;">`;
                 else if (setKey === 'mtg2ed') packCoverHTML = `<img id="packWrapperImg" src="card_images/mtg_sets/mtg_unlimited_pack_wrapper.jpg" alt="Pack" style="width:100%;height:100%;object-fit:cover;border-radius:6px;">`;
@@ -932,7 +934,40 @@
                             mainContainer.innerHTML = '';
                             mainRow.style.display = 'block';
 
-                            if (setKey === 'mtgmsh') {
+                            if (setKey === 'mtgsos') {
+                                // Secrets of Strixhaven Collector Booster Breakdown (15 Cards, Full WotC Slot Labels)
+                                const cPools = activeSetData.collectorPools || {};
+
+                                const appendSosSlot = (poolArray, labelText, rarityType, count = 1, isHitSlot = false) => {
+                                    const sourcePool = (poolArray && poolArray.length) ? poolArray : activeSetData.pools.rare;
+                                    if (!sourcePool || !sourcePool.length) return;
+                                    
+                                    for (let i = 0; i < count; i++) {
+                                        const pickedCard = sourcePool[Math.floor(Math.random() * sourcePool.length)];
+                                        const strKey = String(pickedCard.n);
+                                        if (isHitSlot) {
+                                            if (!savedData.spectra.map(String).includes(strKey)) savedData.spectra.push(strKey);
+                                        } else {
+                                            if (!savedData.base.map(String).includes(strKey)) savedData.base.push(strKey);
+                                        }
+                                        const slotLabel = count > 1 ? `${labelText} #${i + 1}` : labelText;
+                                        mainContainer.appendChild(createPackCardElement(pickedCard, isHitSlot, delay, slotLabel, rarityType));
+                                        delay += step;
+                                    }
+                                };
+
+                                appendSosSlot(cPools.foilBoosterFun, '1 Foil Booster Fun / Serialized Chase', 'rare', 1, true);
+                                appendSosSlot(cPools.rareMythicArchive, '1 Rare/Mythic Mystical Archive', 'rare', 1, true);
+                                appendSosSlot(cPools.nonfoilBoosterFun, '1 Non-Foil Booster Fun Rare/Mythic', 'rare', 1, true);
+                                appendSosSlot(cPools.commanderRare, '1 Non-Foil Secrets of Strixhaven Commander R/M', 'rare', 1, false);
+                                appendSosSlot(cPools.foilRare, '1 Traditional Foil Main Set Rare/Mythic', 'rare', 1, true);
+                                appendSosSlot(cPools.jpArchive, '1 Japanese Mystical Archive (Silver Scroll / Foil)', 'rare', 1, true);
+                                appendSosSlot(cPools.uncommonArchive, 'Uncommon Mystical Archive', 'uncommon', 2, false);
+                                appendSosSlot(cPools.foilLand, '1 Traditional Foil Spellcraft Land', 'common', 1, false);
+                                appendSosSlot(cPools.foilUncommon, 'Traditional Foil Uncommon', 'uncommon', 3, false);
+                                appendSosSlot(cPools.foilCommon, 'Traditional Foil Common', 'common', 4, false);
+
+                            } else if (setKey === 'mtgmsh') {
                                 // Marvel Super Heroes Collector Booster Breakdown (Full WotC Slot Labels)
                                 const cPools = activeSetData.collectorPools || {};
 

@@ -174,6 +174,21 @@ export const SETS_REGISTRY = [
         seoDesc: 'Rip 2011 MTG Innistrad booster packs online. Hunt for Liliana of the Veil, Snapcaster Mage, and double-faced Werewolf cards.'
     },
     {
+        key: 'mtgsos',
+        name: 'Secrets of Strixhaven',
+        category: 'Magic: The Gathering',
+        year: '2026',
+        publisher: 'Wizards of the Coast',
+        totalCards: 1154,
+        themeColor: '#1b4f72',
+        coverImage: 'card_images/mtg_sets/mtg_sos_collectorboosterwrapper.jpg',
+        isMtg: true,
+        aboutTitle: 'About Secrets of Strixhaven Collector Boosters',
+        aboutText: 'Return to Strixhaven University! Collector Boosters feature exclusive Silver Scroll foil Japanese Mystical Archive cards, Borderless Elder Dragons, Field Notes treatments, and less than 1% chance at a double rainbow foil Serialized Emeritus of Ideation.',
+        seoTitle: 'Secrets of Strixhaven Collector Booster Pack Opening Simulator - Rip Boosters',
+        seoDesc: 'Open free Secrets of Strixhaven Collector Booster packs online. Test your pulls for Japanese Mystical Archive cards, Borderless Elder Dragons, Field Notes, and Serialized Emeritus of Ideation.'
+    },
+    {
         key: 'mtgmsh',
         name: 'Marvel Super Heroes',
         category: 'Magic: The Gathering',
