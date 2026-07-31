@@ -683,13 +683,21 @@ body.set-active-bg::before { opacity: 0.38; }
     .menu-trigger-btn { display: flex; }
     .header-extra-links { gap: 0.5rem; }
     #global-header { padding: 0.8rem 1rem; }
+
+    /* MOBILE 2-CARD SPAN FIX */
+    .cards-row {
+        gap: 1rem;
+        justify-content: space-between;
+    }
+    .card-slot {
+        width: calc(50% - 0.5rem);
+    }
 }
 
 @media (max-width: 480px) {
     .page-title-container { padding: 5.5rem 1rem 0.25rem 1rem; }
     #global-header-title { font-size: 1.8rem; }
     #header-subtitle { font-size: 0.95rem; }
-    .card-slot { width: 110px; }
     .pack-row { gap: 1rem; }
     .pack-counter { padding-left: 1rem; }
     .counter-num { font-size: 1.8rem; }
