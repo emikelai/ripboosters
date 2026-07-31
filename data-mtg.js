@@ -18,6 +18,28 @@ export const MTG_CONFIGS = {
     mtgdrk: { setKey: 'mtgdrk', name: 'The Dark', code: 'drk', year: 1994, maxCount: 119, hitCardNames: ["Blood Moon", "Maze of Ith", "Tormod's Crypt", "Preacher"] },
     rav: { setKey: 'rav', name: 'Ravnica: City of Guilds', code: 'rav', year: 2005, maxCount: 306, hitCardNames: ["Overgrown Tomb", "Temple Garden", "Sacred Foundry", "Watery Grave", "Dark Confidant", "Chord of Calling", "Doubling Season", "Privileged Position"] },
     isd: { setKey: 'isd', name: 'Innistrad', code: 'isd', year: 2011, maxCount: 264, hitCardNames: ["Liliana of the Veil", "Snapcaster Mage", "Geist of Saint Traft", "Garruk Relentless", "Parallel Lives", "Griselbrand"] },
+    mtgecl: {
+        setKey: 'mtgecl',
+        name: 'Lorwyn Eclipsed (Collector Booster)',
+        code: 'ecl',
+        year: 2026,
+        isCollectorBooster: true,
+        maxCount: 749,
+        coverImage: 'card_images/mtg_sets/mtg_ecl_collectorboosterwrapper.jpg',
+        themeColor: '#1e3d59',
+        hitCardNames: ["Bitterbloom Bearer", "Oko, Lorwyn Liege", "Bitterblossom", "Ashling, Rekindled", "Thoughtseize", "Cryptic Command"]
+    },
+    mtgtmt: {
+        setKey: 'mtgtmt',
+        name: 'Teenage Mutant Ninja Turtles (Collector Booster)',
+        code: 'tmt',
+        year: 2026,
+        isCollectorBooster: true,
+        maxCount: 637,
+        coverImage: 'card_images/mtg_sets/mtg_tmt_collectorboosterwrapper.jpg',
+        themeColor: '#1e8449',
+        hitCardNames: ["Leonardo, Sewer Samurai", "Donatello, Mutant Mechanic", "Raphael, Ninja Destroyer", "Michelangelo, Improviser", "Shredder, Shadow Master", "The Last Ronin"]
+    },
     mtgsos: {
         setKey: 'mtgsos',
         name: 'Secrets of Strixhaven (Collector Booster)',
@@ -46,7 +68,7 @@ const cache = {};
 
 export async function ensureSetData(setKey) {
     if (cache[setKey] && cache[setKey].baseCards) {
-        if ((setKey !== 'mtgmsh' && setKey !== 'mtgsos') || cache[setKey].collectorPools) {
+        if ((setKey !== 'mtgmsh' && setKey !== 'mtgsos' && setKey !== 'mtgtmt' && setKey !== 'mtgecl') || cache[setKey].collectorPools) {
             return cache[setKey];
         }
     }
@@ -57,6 +79,8 @@ export async function ensureSetData(setKey) {
     let searchQuery = `e%3A${config.code}&unique=prints`;
     if (setKey === 'mtgmsh') searchQuery = `(e%3Amsh+OR+e%3Amsc+OR+e%3Amar)&unique=prints`;
     if (setKey === 'mtgsos') searchQuery = `(e%3Asos+OR+e%3Asoa+OR+e%3Asoc+OR+e%3Aspg)&unique=prints`;
+    if (setKey === 'mtgtmt') searchQuery = `(e%3Atmt+OR+e%3Atmc+OR+e%3Apza+OR+e%3Aspg)&unique=prints`;
+    if (setKey === 'mtgecl') searchQuery = `(e%3Aecl+OR+e%3Aecc+OR+e%3Aspg)&unique=prints`;
 
     let url = `https://api.scryfall.com/cards/search?q=${searchQuery}`;
     let allCards = [];
@@ -113,12 +137,34 @@ export async function ensureSetData(setKey) {
     const sosFoilUncommonPool = [];
     const sosFoilCommonPool = [];
 
+    // TMNT Collector Pools
+    const tmtFoilBoosterFunPool = [];
+    const tmtFoilJapaneseShowcasePool = [];
+    const tmtFoilSewerFramePool = [];
+    const tmtSourceMaterialPool = [];
+    const tmtCommanderRarePool = [];
+    const tmtFoilRarePool = [];
+    const tmtNonfoilExtendedPool = [];
+    const tmtFoilLandPool = [];
+    const tmtFoilUncommonPool = [];
+    const tmtFoilCommonPool = [];
+
+    // ECL Collector Pools
+    const eclFoilSerializedBearersPool = [];
+    const eclFoilFableFramePool = [];
+    const eclFoilSpecialGuestsPool = [];
+    const eclFoilReversibleShockLandPool = [];
+    const eclExtendedArtRarePool = [];
+    const eclFoilRarePool = [];
+    const eclFoilUncommonPool = [];
+    const eclFoilLandPool = [];
+    const eclFoilCommonPool = [];
+
     let count = 1;
     allCards.forEach(card => {
         let frontImage = "card_images/card_back.jpg";
         let backImage = null;
 
-        // Front & Back Image Extraction for Double-Faced Cards
         if (card.image_uris && card.image_uris.normal) {
             frontImage = card.image_uris.normal;
         } else if (card.card_faces && card.card_faces[0] && card.card_faces[0].image_uris) {
@@ -215,6 +261,58 @@ export async function ensureSetData(setKey) {
             } else {
                 sosFoilCommonPool.push(cardObj);
             }
+        } else if (setKey === 'mtgtmt') {
+            const setLower = cardObj.setCode;
+            const typeLower = cardObj.typeLine.toLowerCase();
+
+            if (setLower === 'pza' || cardObj.collectorNumber.startsWith('PZA')) {
+                tmtSourceMaterialPool.push(cardObj);
+            } else if (setLower === 'tmc') {
+                if (card.rarity === 'rare' || card.rarity === 'mythic') tmtCommanderRarePool.push(cardObj);
+                else tmtFoilUncommonPool.push(cardObj);
+            } else if (cardObj.lang === 'ja' || cardObj.collectorNumber.includes('JP')) {
+                tmtFoilJapaneseShowcasePool.push(cardObj);
+            } else if (cardObj.collectorNumber.includes('SWR') || cardObj.typeLine.includes('Sewer')) {
+                tmtFoilSewerFramePool.push(cardObj);
+            } else if (typeLower.includes('basic land') || typeLower.includes('rooftop')) {
+                tmtFoilLandPool.push(cardObj);
+            } else if (cardObj.borderColor === 'borderless' || isHit) {
+                if (card.rarity === 'rare' || card.rarity === 'mythic') {
+                    tmtFoilBoosterFunPool.push(cardObj);
+                    tmtNonfoilExtendedPool.push(cardObj);
+                } else {
+                    tmtFoilUncommonPool.push(cardObj);
+                }
+            } else if (card.rarity === 'rare' || card.rarity === 'mythic') {
+                tmtFoilRarePool.push(cardObj);
+            } else if (card.rarity === 'uncommon') {
+                tmtFoilUncommonPool.push(cardObj);
+            } else {
+                tmtFoilCommonPool.push(cardObj);
+            }
+        } else if (setKey === 'mtgecl') {
+            const setLower = cardObj.setCode;
+            const typeLower = cardObj.typeLine.toLowerCase();
+
+            if (setLower === 'spg') {
+                eclFoilSpecialGuestsPool.push(cardObj);
+            } else if (cardObj.name.includes('Bitterbloom Bearer') || cardObj.collectorNumber.includes('SER')) {
+                eclFoilSerializedBearersPool.push(cardObj);
+            } else if (typeLower.includes('shock land') || (typeLower.includes('land') && cardObj.borderColor === 'borderless')) {
+                eclFoilReversibleShockLandPool.push(cardObj);
+            } else if (cardObj.collectorNumber.includes('FABLE') || cardObj.borderColor === 'borderless') {
+                eclFoilFableFramePool.push(cardObj);
+            } else if (cardObj.collectorNumber.includes('EXT') || (card.rarity === 'rare' && cardObj.borderColor === 'extended')) {
+                eclExtendedArtRarePool.push(cardObj);
+            } else if (typeLower.includes('land')) {
+                eclFoilLandPool.push(cardObj);
+            } else if (card.rarity === 'rare' || card.rarity === 'mythic') {
+                eclFoilRarePool.push(cardObj);
+            } else if (card.rarity === 'uncommon') {
+                eclFoilUncommonPool.push(cardObj);
+            } else {
+                eclFoilCommonPool.push(cardObj);
+            }
         }
 
         count++;
@@ -266,6 +364,39 @@ export async function ensureSetData(setKey) {
             foilLand: sosFoilLandPool.length ? sosFoilLandPool : defaultCommon,
             foilUncommon: sosFoilUncommonPool.length ? sosFoilUncommonPool : defaultUncommon,
             foilCommon: sosFoilCommonPool.length ? sosFoilCommonPool : defaultCommon
+        };
+    } else if (setKey === 'mtgtmt') {
+        const defaultRare = dataset.pools.rare;
+        const defaultUncommon = dataset.pools.uncommon;
+        const defaultCommon = dataset.pools.common;
+
+        dataset.collectorPools = {
+            foilBoosterFun: tmtFoilBoosterFunPool.length ? tmtFoilBoosterFunPool : dataset.pools.hits,
+            foilJapaneseShowcase: tmtFoilJapaneseShowcasePool.length ? tmtFoilJapaneseShowcasePool : dataset.pools.hits,
+            foilSewerFrame: tmtFoilSewerFramePool.length ? tmtFoilSewerFramePool : defaultRare,
+            sourceMaterial: tmtSourceMaterialPool.length ? tmtSourceMaterialPool : defaultRare,
+            commanderRare: tmtCommanderRarePool.length ? tmtCommanderRarePool : defaultRare,
+            foilRare: tmtFoilRarePool.length ? tmtFoilRarePool : defaultRare,
+            nonfoilExtended: tmtNonfoilExtendedPool.length ? tmtNonfoilExtendedPool : defaultRare,
+            foilLand: tmtFoilLandPool.length ? tmtFoilLandPool : defaultCommon,
+            foilUncommon: tmtFoilUncommonPool.length ? tmtFoilUncommonPool : defaultUncommon,
+            foilCommon: tmtFoilCommonPool.length ? tmtFoilCommonPool : defaultCommon
+        };
+    } else if (setKey === 'mtgecl') {
+        const defaultRare = dataset.pools.rare;
+        const defaultUncommon = dataset.pools.uncommon;
+        const defaultCommon = dataset.pools.common;
+
+        dataset.collectorPools = {
+            foilSerializedBearers: eclFoilSerializedBearersPool.length ? eclFoilSerializedBearersPool : dataset.pools.hits,
+            foilFableFrame: eclFoilFableFramePool.length ? eclFoilFableFramePool : dataset.pools.hits,
+            foilSpecialGuests: eclFoilSpecialGuestsPool.length ? eclFoilSpecialGuestsPool : dataset.pools.hits,
+            foilReversibleShockLand: eclFoilReversibleShockLandPool.length ? eclFoilReversibleShockLandPool : dataset.pools.hits,
+            extendedArtRare: eclExtendedArtRarePool.length ? eclExtendedArtRarePool : defaultRare,
+            foilRare: eclFoilRarePool.length ? eclFoilRarePool : defaultRare,
+            foilUncommon: eclFoilUncommonPool.length ? eclFoilUncommonPool : defaultUncommon,
+            foilLand: eclFoilLandPool.length ? eclFoilLandPool : defaultCommon,
+            foilCommon: eclFoilCommonPool.length ? eclFoilCommonPool : defaultCommon
         };
     }
 

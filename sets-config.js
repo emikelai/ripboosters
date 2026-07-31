@@ -174,6 +174,36 @@ export const SETS_REGISTRY = [
         seoDesc: 'Rip 2011 MTG Innistrad booster packs online. Hunt for Liliana of the Veil, Snapcaster Mage, and double-faced Werewolf cards.'
     },
     {
+        key: 'mtgecl',
+        name: 'Lorwyn Eclipsed',
+        category: 'Magic: The Gathering',
+        year: '2026',
+        publisher: 'Wizards of the Coast',
+        totalCards: 749,
+        themeColor: '#1e3d59',
+        coverImage: 'card_images/mtg_sets/mtg_ecl_collectorboosterwrapper.jpg',
+        isMtg: true,
+        aboutTitle: 'About Lorwyn Eclipsed Collector Boosters',
+        aboutText: 'Return to the fairytale land of Lorwyn-Shadowmoor! Collector Boosters feature exclusive Fable Frames, Reversible Shock Lands, Special Guests woodcut cards, and Rebecca Guay illustrated Serialized Bitterbloom Bearer cards.',
+        seoTitle: 'Lorwyn Eclipsed Collector Booster Pack Simulator - Rip Boosters',
+        seoDesc: 'Open Lorwyn Eclipsed Magic: The Gathering Collector Boosters. Collect Fable Frames, Reversible Shock Lands, and Rebecca Guay Serialized Bitterbloom Bearer.'
+    },
+    {
+        key: 'mtgtmt',
+        name: 'Teenage Mutant Ninja Turtles',
+        category: 'Magic: The Gathering',
+        year: '2026',
+        publisher: 'Wizards of the Coast',
+        totalCards: 637,
+        themeColor: '#1e8449',
+        coverImage: 'card_images/mtg_sets/mtg_tmt_collectorboosterwrapper.jpg',
+        isMtg: true,
+        aboutTitle: 'About Teenage Mutant Ninja Turtles Collector Boosters',
+        aboutText: 'Cowabunga! Tap into Turtle Power with Universes Beyond: TMNT. Collector Boosters feature Sewer Frames, Source Material retro comic covers, Kevin Eastman Gold Foil Signatures, and Japanese Showcase treatments.',
+        seoTitle: 'Teenage Mutant Ninja Turtles Collector Booster Simulator - Rip Boosters',
+        seoDesc: 'Rip TMNT Magic: The Gathering Collector Boosters online. Hunt for Kevin Eastman Gold Foil Signatures, Sewer Frames, and Source Material comic covers.'
+    },
+    {
         key: 'mtgsos',
         name: 'Secrets of Strixhaven',
         category: 'Magic: The Gathering',
