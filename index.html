@@ -196,7 +196,7 @@
         const setAboutTitle = document.getElementById('setAboutTitle');
         const setAboutText = document.getElementById('setAboutText');
 
-        // MULTI-WRAPPER ART ARRAYS FOR IN-SET PACK RANDOMIZATION (WITH CORRECT MM1993 SILVER SURFER & IRON MAN FILES)
+        // MULTI-WRAPPER ART ARRAYS FOR IN-SET PACK RANDOMIZATION
         const WRAPPERS_MAP = {
             motu1984: [
                 'card_images/motu_1984/motu1984_packwrapper1.jpg',
@@ -782,8 +782,10 @@
                     slot.id = `col-base-${matchKey}`;
                     
                     if (isCollected) {
-                        slot.innerHTML = `<img src="${getImgPath(card.n, 'front', false, card.v || '')}">`;
-                        slot.onclick = () => showLightbox(getImgPath(card.n, 'front', false, card.v || ''), getImgPath(card.n, 'back', false, card.v || ''));
+                        const frontImg = card.frontImg || getImgPath(card.n, 'front', false, card.v || '');
+                        const backImg = card.backImg || getImgPath(card.n, 'back', false, card.v || '');
+                        slot.innerHTML = `<img src="${frontImg}">`;
+                        slot.onclick = () => showLightbox(frontImg, backImg);
                     } else {
                         slot.innerHTML = `<span class="col-num">#${String(card.n).padStart(3, '0')}${card.v || ''}</span><span class="col-name">${card.name}</span>`;
                     }
@@ -874,8 +876,10 @@
                         slot.id = `col-insert-${card.n}`;
                         
                         if (isCollected) {
-                            slot.innerHTML = `<img src="${getImgPath(card.n, 'front', false)}">`;
-                            slot.onclick = () => showLightbox(getImgPath(card.n, 'front', false), getImgPath(card.n, 'back', false));
+                            const frontImg = card.frontImg || getImgPath(card.n, 'front', false);
+                            const backImg = card.backImg || getImgPath(card.n, 'back', false);
+                            slot.innerHTML = `<img src="${frontImg}">`;
+                            slot.onclick = () => showLightbox(frontImg, backImg);
                         } else {
                             slot.innerHTML = `<span class="col-num">HIT</span><span class="col-name">${card.name}</span>`;
                         }
@@ -886,7 +890,6 @@
                     explicitInserts.forEach(card => {
                         const slot = document.createElement('div');
                         const trackKey = (setKey === 'xmen1992' || setKey === 'motu1984' || setKey === 'mu1990' || setKey === 'mm1992' || setKey === 'mm1993') ? card.id : String(card.n);
-                        
                         const isCollected = savedData.spectra.map(String).includes(trackKey);
                         slot.className = `col-slot ${isCollected ? 'filled' : 'no-image'}`;
                         slot.id = `col-insert-${card.id || card.n}`;
@@ -960,19 +963,19 @@
                                     }
                                 };
 
-                                appendTmtSlot(cPools.foilBoosterFun, '1 Foil Booster Fun Rare/Mythic / Gold Signature Chase', 'rare', 1, true);
+                                appendTmtSlot(cPools.foilBoosterFun, '1 Foil Booster Fun Rare / Mythic / Gold Signature Chase', 'rare', 1, true);
                                 appendTmtSlot(cPools.foilJapaneseShowcase, '1 Foil Japanese Showcase Card', 'rare', 1, true);
                                 appendTmtSlot(cPools.sourceMaterial, '1 Non-Foil or Foil Source Material Cover', 'rare', 1, true);
                                 appendTmtSlot(cPools.foilSewerFrame, '1 Traditional Foil Sewer Frame Card', 'rare', 1, true);
-                                appendTmtSlot(cPools.commanderRare, '1 Non-Foil TMNT Commander Rare/Mythic', 'rare', 1, false);
-                                appendTmtSlot(cPools.foilRare, '1 Traditional Foil Main Set Rare/Mythic', 'rare', 1, true);
+                                appendTmtSlot(cPools.commanderRare, '1 Non-Foil TMNT Commander Rare / Mythic', 'rare', 1, false);
+                                appendTmtSlot(cPools.foilRare, '1 Traditional Foil Main Set Rare / Mythic', 'rare', 1, true);
                                 appendTmtSlot(cPools.nonfoilExtended, '1 Non-Foil Extended Art / Booster Fun Rare', 'rare', 1, false);
                                 appendTmtSlot(cPools.foilLand, '1 Traditional Foil Rooftop Basic Land', 'common', 1, false);
                                 appendTmtSlot(cPools.foilUncommon, 'Traditional Foil Uncommon', 'uncommon', 3, false);
                                 appendTmtSlot(cPools.foilCommon, 'Traditional Foil Common', 'common', 4, false);
 
                             } else if (setKey === 'mtgecl') {
-                                // Lorwyn Eclipsed Collector Booster Breakdown (15 Cards, Full WotC Slot Labels)
+                                // Lorwyn Eclipsed Collector Booster Breakdown (16 Cards Total)
                                 const cPools = activeSetData.collectorPools || {};
 
                                 const appendEclSlot = (poolArray, labelText, rarityType, count = 1, isHitSlot = false) => {
@@ -993,15 +996,23 @@
                                     }
                                 };
 
-                                appendEclSlot(cPools.foilSerializedBearers, '1 Serialized Bitterbloom Bearer / Foil Mythic Chase', 'rare', 1, true);
-                                appendEclSlot(cPools.foilFableFrame, '1 Traditional Foil Fable Frame Rare/Mythic', 'rare', 1, true);
-                                appendEclSlot(cPools.foilSpecialGuests, '1 Traditional Foil Woodcut Special Guests', 'rare', 1, true);
-                                appendEclSlot(cPools.foilReversibleShockLand, '1 Borderless Reversible Shock Land', 'rare', 1, true);
-                                appendEclSlot(cPools.extendedArtRare, '1 Extended Art Rare/Mythic', 'rare', 1, false);
-                                appendEclSlot(cPools.foilRare, '1 Traditional Foil Main Set Rare/Mythic', 'rare', 1, true);
-                                appendEclSlot(cPools.foilLand, '1 Traditional Foil Lorwyn/Shadowmoor Full-Art Land', 'common', 1, false);
-                                appendEclSlot(cPools.foilUncommon, 'Traditional Foil Uncommon', 'uncommon', 3, false);
+                                appendEclSlot(cPools.foilBoosterFun, '1 Foil Booster Fun Rare / Mythic / Showcase', 'rare', 1, true);
+                                appendEclSlot(cPools.nonfoilBoosterFun, 'Non-Foil Booster Fun Rare / Mythic', 'rare', 2, true);
+                                appendEclSlot(cPools.commanderRare, '1 Non-Foil Lorwyn Eclipsed Commander Rare / Mythic', 'rare', 1, false);
+                                appendEclSlot(cPools.foilRare, '1 Traditional Foil Main Set Rare / Mythic', 'rare', 1, true);
+                                appendEclSlot(cPools.foilLand, '1 Traditional Foil Full-Art Land', 'common', 1, false);
+                                appendEclSlot(cPools.foilUncommon, 'Traditional Foil Uncommon', 'uncommon', 4, false);
                                 appendEclSlot(cPools.foilCommon, 'Traditional Foil Common', 'common', 5, false);
+
+                                // Slot 16: 1 Art Card (35%) or Traditional Foil Double-Sided Token (65%)
+                                const isToken = Math.random() < 0.65;
+                                if (isToken) {
+                                    appendEclSlot(cPools.tokens, '1 Traditional Foil Double-Sided Token', 'common', 1, false);
+                                } else {
+                                    const isSigned = Math.random() < 0.05;
+                                    const artLabel = isSigned ? '1 Gold-Stamped Signature Art Card' : '1 Art Card';
+                                    appendEclSlot(cPools.artCards, artLabel, 'common', 1, false);
+                                }
 
                             } else if (setKey === 'mtgsos') {
                                 // Secrets of Strixhaven Collector Booster Breakdown (15 Cards, Full WotC Slot Labels)
@@ -1026,10 +1037,10 @@
                                 };
 
                                 appendSosSlot(cPools.foilBoosterFun, '1 Foil Booster Fun / Serialized Chase', 'rare', 1, true);
-                                appendSosSlot(cPools.rareMythicArchive, '1 Rare/Mythic Mystical Archive', 'rare', 1, true);
-                                appendSosSlot(cPools.nonfoilBoosterFun, '1 Non-Foil Booster Fun Rare/Mythic', 'rare', 1, true);
+                                appendSosSlot(cPools.rareMythicArchive, '1 Rare / Mythic Mystical Archive', 'rare', 1, true);
+                                appendSosSlot(cPools.nonfoilBoosterFun, '1 Non-Foil Booster Fun Rare / Mythic', 'rare', 1, true);
                                 appendSosSlot(cPools.commanderRare, '1 Non-Foil Secrets of Strixhaven Commander R/M', 'rare', 1, false);
-                                appendSosSlot(cPools.foilRare, '1 Traditional Foil Main Set Rare/Mythic', 'rare', 1, true);
+                                appendSosSlot(cPools.foilRare, '1 Traditional Foil Main Set Rare / Mythic', 'rare', 1, true);
                                 appendSosSlot(cPools.jpArchive, '1 Japanese Mystical Archive (Silver Scroll / Foil)', 'rare', 1, true);
                                 appendSosSlot(cPools.uncommonArchive, 'Uncommon Mystical Archive', 'uncommon', 2, false);
                                 appendSosSlot(cPools.foilLand, '1 Traditional Foil Spellcraft Land', 'common', 1, false);
@@ -1058,11 +1069,11 @@
                                     }
                                 };
 
-                                appendMshSlot(cPools.foilBoosterFun, '1 Foil Booster Fun Rare/Mythic', 'rare', 1, true);
-                                appendMshSlot(cPools.nonfoilBoosterFun, '1 Non-foil Booster Fun Rare/Mythic', 'rare', 1, true);
+                                appendMshSlot(cPools.foilBoosterFun, '1 Foil Booster Fun Rare / Mythic', 'rare', 1, true);
+                                appendMshSlot(cPools.nonfoilBoosterFun, '1 Non-foil Booster Fun Rare / Mythic', 'rare', 1, true);
                                 appendMshSlot(cPools.sourceMaterial, '1 Non-foil or Foil Source Material', 'rare', 1, true);
                                 appendMshSlot(cPools.commanderBoosterFun, '1 Non-foil Commander Booster Fun', 'rare', 1, false);
-                                appendMshSlot(cPools.foilRare, '1 Foil Rare/Mythic', 'rare', 1, true);
+                                appendMshSlot(cPools.foilRare, '1 Foil Rare / Mythic', 'rare', 1, true);
                                 appendMshSlot(cPools.foilScene, '1 Foil Common/Uncommon Scene Card', 'uncommon', 1, false);
                                 appendMshSlot(cPools.foilUncommonMsc, '1 Foil Uncommon MSC', 'uncommon', 1, false);
                                 appendMshSlot(cPools.foilUncommon, 'Foil Uncommon', 'uncommon', 2, false);
@@ -1181,8 +1192,13 @@
 
                 const cardDiv = document.createElement('div'); cardDiv.className = 'card';
                 cardDiv.style.animationDelay = currentDelay + 'ms';
-                cardDiv.innerHTML = `<img src="${getImgPath(card.n, 'front', isInsert, card.variant || card.v || '')}">`;
-                cardDiv.onclick = () => showLightbox(getImgPath(card.n, 'front', isInsert, card.variant || card.v || ''), getImgPath(card.n, 'back', isInsert, card.variant || card.v || ''));
+
+                const frontImg = card.frontImg || getImgPath(card.n, 'front', isInsert, card.variant || card.v || '');
+                const backImg = card.backImg || getImgPath(card.n, 'back', isInsert, card.variant || card.v || '');
+
+                cardDiv.innerHTML = `<img src="${frontImg}">`;
+                cardDiv.onclick = () => showLightbox(frontImg, backImg);
+
                 setTimeout(() => { cardDiv.classList.add('revealed'); }, currentDelay + 20);
                 const hint = document.createElement('div'); hint.className = 'flip-hint'; hint.textContent = 'click to view';
                 slot.appendChild(cardDiv); slot.appendChild(hint); return slot;
@@ -1196,8 +1212,10 @@
                     if (slot && slot.classList.contains('no-image')) {
                         const card = activeSetData.baseCards.find(c => (setKey === 'gpk1' ? `${c.n}${c.v}` : String(c.n)) == k);
                         if (card) {
-                            slot.className = 'col-slot filled'; slot.innerHTML = `<img src="${getImgPath(card.n, 'front', false, card.v || '')}">`;
-                            slot.onclick = () => showLightbox(getImgPath(card.n, 'front', false, card.v || ''), getImgPath(card.n, 'back', false, card.v || ''));
+                            const frontImg = card.frontImg || getImgPath(card.n, 'front', false, card.v || '');
+                            const backImg = card.backImg || getImgPath(card.n, 'back', false, card.v || '');
+                            slot.className = 'col-slot filled'; slot.innerHTML = `<img src="${frontImg}">`;
+                            slot.onclick = () => showLightbox(frontImg, backImg);
                         }
                     }
 
@@ -1218,9 +1236,11 @@
                         const isCollected = savedData.base.map(String).includes(String(card.n)) || savedData.spectra.map(String).includes(String(card.n));
                         const slot = document.getElementById(`col-insert-${card.n}`);
                         if (slot && isCollected && slot.classList.contains('no-image')) {
+                            const frontImg = card.frontImg || getImgPath(card.n, 'front', false);
+                            const backImg = card.backImg || getImgPath(card.n, 'back', false);
                             slot.className = 'col-slot filled';
-                            slot.innerHTML = `<img src="${getImgPath(card.n, 'front', false)}">`;
-                            slot.onclick = () => showLightbox(getImgPath(card.n, 'front', false), getImgPath(card.n, 'back', false));
+                            slot.innerHTML = `<img src="${frontImg}">`;
+                            slot.onclick = () => showLightbox(frontImg, backImg);
                         }
                     });
                 } else {
@@ -1255,9 +1275,17 @@
             }
 
             function showLightbox(front, back) {
-                document.getElementById('lightbox-front').src = front;
+                const frontImg = document.getElementById('lightbox-front');
                 const backImg = document.getElementById('lightbox-back');
-                backImg.src = back; backImg.onerror = () => { backImg.src = front; };
+                
+                if (frontImg) frontImg.src = front;
+                
+                if (backImg) {
+                    backImg.onerror = null; // Clear previous handlers
+                    backImg.src = back;
+                    backImg.style.display = 'block';
+                }
+                
                 document.getElementById('lightbox').classList.add('open');
             }
         }

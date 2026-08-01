@@ -77,10 +77,10 @@ export async function ensureSetData(setKey) {
     if (!config) throw new Error(`Unknown MTG Set Key: ${setKey}`);
 
     let searchQuery = `e%3A${config.code}&unique=prints`;
-    if (setKey === 'mtgmsh') searchQuery = `(e%3Amsh+OR+e%3Amsc+OR+e%3Amar)&unique=prints`;
-    if (setKey === 'mtgsos') searchQuery = `(e%3Asos+OR+e%3Asoa+OR+e%3Asoc+OR+e%3Aspg)&unique=prints`;
-    if (setKey === 'mtgtmt') searchQuery = `(e%3Atmt+OR+e%3Atmc+OR+e%3Apza+OR+e%3Aspg)&unique=prints`;
-    if (setKey === 'mtgecl') searchQuery = `(e%3Aecl+OR+e%3Aecc+OR+e%3Aspg)&unique=prints`;
+    if (setKey === 'mtgmsh') searchQuery = `(e%3Amsh+OR+e%3Amsc+OR+e%3Amar)+unique=prints`;
+    if (setKey === 'mtgsos') searchQuery = `(e%3Asos+OR+e%3Asoa+OR+e%3Asoc+OR+e%3Aspg)+unique=prints`;
+    if (setKey === 'mtgtmt') searchQuery = `(e%3Atmt+OR+e%3Atmc+OR+e%3Apza+OR+e%3Aspg)+unique=prints`;
+    if (setKey === 'mtgecl') searchQuery = `(e%3Aecl+OR+e%3Aecc+OR+e%3Aspg+OR+e%3Aaecl+OR+e%3Atecl)+unique=prints`;
 
     let url = `https://api.scryfall.com/cards/search?q=${searchQuery}`;
     let allCards = [];
@@ -150,28 +150,43 @@ export async function ensureSetData(setKey) {
     const tmtFoilCommonPool = [];
 
     // ECL Collector Pools
-    const eclFoilSerializedBearersPool = [];
-    const eclFoilFableFramePool = [];
-    const eclFoilSpecialGuestsPool = [];
-    const eclFoilReversibleShockLandPool = [];
-    const eclExtendedArtRarePool = [];
+    const eclFoilBoosterFunPool = [];
+    const eclNonfoilBoosterFunPool = [];
+    const eclCommanderRarePool = [];
     const eclFoilRarePool = [];
     const eclFoilUncommonPool = [];
     const eclFoilLandPool = [];
     const eclFoilCommonPool = [];
+    const eclTokenPool = [];
+    const eclArtCardPool = [];
 
     let count = 1;
     allCards.forEach(card => {
         let frontImage = "card_images/card_back.jpg";
         let backImage = null;
 
-        if (card.image_uris && card.image_uris.normal) {
-            frontImage = card.image_uris.normal;
-        } else if (card.card_faces && card.card_faces[0] && card.card_faces[0].image_uris) {
-            frontImage = card.card_faces[0].image_uris.normal;
-            if (card.card_faces[1] && card.card_faces[1].image_uris) {
+        // MULTI-FACED CARDS / DOUBLE-SIDED TOKENS (CHECK card_faces FIRST)
+        if (card.card_faces && card.card_faces.length > 1) {
+            if (card.card_faces[0].image_uris && card.card_faces[0].image_uris.normal) {
+                frontImage = card.card_faces[0].image_uris.normal;
+            }
+            if (card.card_faces[1].image_uris && card.card_faces[1].image_uris.normal) {
                 backImage = card.card_faces[1].image_uris.normal;
             }
+        } 
+        
+        // SINGLE FACED CARDS
+        if (!frontImage || frontImage === "card_images/card_back.jpg") {
+            if (card.image_uris && card.image_uris.normal) {
+                frontImage = card.image_uris.normal;
+            } else if (card.card_faces && card.card_faces[0] && card.card_faces[0].image_uris) {
+                frontImage = card.card_faces[0].image_uris.normal;
+            }
+        }
+
+        // IF BACK IMAGE IS STILL MISSING, USE STANDARD MTG CARD BACK AS FALLBACK
+        if (!backImage) {
+            backImage = "card_images/mtg_sets/Magic_the_Gathering_Card_Back.jpg";
         }
 
         const cardObj = {
@@ -294,17 +309,23 @@ export async function ensureSetData(setKey) {
             const setLower = cardObj.setCode;
             const typeLower = cardObj.typeLine.toLowerCase();
 
-            if (setLower === 'spg') {
-                eclFoilSpecialGuestsPool.push(cardObj);
-            } else if (cardObj.name.includes('Bitterbloom Bearer') || cardObj.collectorNumber.includes('SER')) {
-                eclFoilSerializedBearersPool.push(cardObj);
-            } else if (typeLower.includes('shock land') || (typeLower.includes('land') && cardObj.borderColor === 'borderless')) {
-                eclFoilReversibleShockLandPool.push(cardObj);
-            } else if (cardObj.collectorNumber.includes('FABLE') || cardObj.borderColor === 'borderless') {
-                eclFoilFableFramePool.push(cardObj);
-            } else if (cardObj.collectorNumber.includes('EXT') || (card.rarity === 'rare' && cardObj.borderColor === 'extended')) {
-                eclExtendedArtRarePool.push(cardObj);
-            } else if (typeLower.includes('land')) {
+            if (setLower === 'tecl' || typeLower.includes('token')) {
+                eclTokenPool.push(cardObj);
+            } else if (setLower === 'aecl' || typeLower.includes('art card')) {
+                eclArtCardPool.push(cardObj);
+            } else if (setLower === 'spg' || cardObj.collectorNumber.includes('FABLE') || cardObj.collectorNumber.includes('SER') || typeLower.includes('shock land')) {
+                eclFoilBoosterFunPool.push(cardObj);
+                eclNonfoilBoosterFunPool.push(cardObj);
+            } else if (setLower === 'ecc') {
+                eclCommanderRarePool.push(cardObj);
+            } else if (cardObj.borderColor === 'borderless' || cardObj.borderColor === 'extended' || cardObj.collectorNumber.includes('EXT') || isHit) {
+                if (card.rarity === 'rare' || card.rarity === 'mythic') {
+                    eclFoilBoosterFunPool.push(cardObj);
+                    eclNonfoilBoosterFunPool.push(cardObj);
+                } else {
+                    eclFoilUncommonPool.push(cardObj);
+                }
+            } else if (typeLower.includes('basic land') || typeLower.includes('land')) {
                 eclFoilLandPool.push(cardObj);
             } else if (card.rarity === 'rare' || card.rarity === 'mythic') {
                 eclFoilRarePool.push(cardObj);
@@ -317,6 +338,16 @@ export async function ensureSetData(setKey) {
 
         count++;
     });
+
+    // PAIR DOUBLE-SIDED TOKENS IF THEY DO NOT HAVE card_faces
+    if (setKey === 'mtgecl' && eclTokenPool.length > 1) {
+        for (let t = 0; t < eclTokenPool.length; t++) {
+            if (eclTokenPool[t].backImg === "card_images/mtg_sets/Magic_the_Gathering_Card_Back.jpg") {
+                const partnerIdx = (t + 1) % eclTokenPool.length;
+                eclTokenPool[t].backImg = eclTokenPool[partnerIdx].frontImg;
+            }
+        }
+    }
 
     const dataset = {
         maxCount: baseCards.length,
@@ -388,15 +419,15 @@ export async function ensureSetData(setKey) {
         const defaultCommon = dataset.pools.common;
 
         dataset.collectorPools = {
-            foilSerializedBearers: eclFoilSerializedBearersPool.length ? eclFoilSerializedBearersPool : dataset.pools.hits,
-            foilFableFrame: eclFoilFableFramePool.length ? eclFoilFableFramePool : dataset.pools.hits,
-            foilSpecialGuests: eclFoilSpecialGuestsPool.length ? eclFoilSpecialGuestsPool : dataset.pools.hits,
-            foilReversibleShockLand: eclFoilReversibleShockLandPool.length ? eclFoilReversibleShockLandPool : dataset.pools.hits,
-            extendedArtRare: eclExtendedArtRarePool.length ? eclExtendedArtRarePool : defaultRare,
+            foilBoosterFun: eclFoilBoosterFunPool.length ? eclFoilBoosterFunPool : dataset.pools.hits,
+            nonfoilBoosterFun: eclNonfoilBoosterFunPool.length ? eclNonfoilBoosterFunPool : defaultRare,
+            commanderRare: eclCommanderRarePool.length ? eclCommanderRarePool : defaultRare,
             foilRare: eclFoilRarePool.length ? eclFoilRarePool : defaultRare,
-            foilUncommon: eclFoilUncommonPool.length ? eclFoilUncommonPool : defaultUncommon,
             foilLand: eclFoilLandPool.length ? eclFoilLandPool : defaultCommon,
-            foilCommon: eclFoilCommonPool.length ? eclFoilCommonPool : defaultCommon
+            foilUncommon: eclFoilUncommonPool.length ? eclFoilUncommonPool : defaultUncommon,
+            foilCommon: eclFoilCommonPool.length ? eclFoilCommonPool : defaultCommon,
+            tokens: eclTokenPool.length ? eclTokenPool : defaultCommon,
+            artCards: eclArtCardPool.length ? eclArtCardPool : defaultCommon
         };
     }
 
