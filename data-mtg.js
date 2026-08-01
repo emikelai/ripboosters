@@ -79,7 +79,7 @@ export async function ensureSetData(setKey) {
     let searchQuery = `e%3A${config.code}&unique=prints`;
     if (setKey === 'mtgmsh') searchQuery = `(e%3Amsh+OR+e%3Amsc+OR+e%3Amar)+unique=prints`;
     if (setKey === 'mtgsos') searchQuery = `(e%3Asos+OR+e%3Asoa+OR+e%3Asoc+OR+e%3Aspg)+unique=prints`;
-    if (setKey === 'mtgtmt') searchQuery = `(e%3Atmt+OR+e%3Atmc+OR+e%3Apza+OR+e%3Aspg)+unique=prints`;
+    if (setKey === 'mtgtmt') searchQuery = `(e%3Atmt+OR+e%3Atmc+OR+e%3Apza+OR+e%3Aspg+OR+e%3Attmt+OR+e%3Aatmt)+unique=prints`;
     if (setKey === 'mtgecl') searchQuery = `(e%3Aecl+OR+e%3Aecc+OR+e%3Aspg+OR+e%3Aaecl+OR+e%3Atecl)+unique=prints`;
 
     let url = `https://api.scryfall.com/cards/search?q=${searchQuery}`;
@@ -148,6 +148,10 @@ export async function ensureSetData(setKey) {
     const tmtFoilLandPool = [];
     const tmtFoilUncommonPool = [];
     const tmtFoilCommonPool = [];
+    const tmtFoilScenePool = [];
+    const tmtFoilDualLandPool = [];
+    const tmtTokenPool = [];
+    const tmtArtCardPool = [];
 
     // ECL Collector Pools
     const eclFoilBoosterFunPool = [];
@@ -280,7 +284,11 @@ export async function ensureSetData(setKey) {
             const setLower = cardObj.setCode;
             const typeLower = cardObj.typeLine.toLowerCase();
 
-            if (setLower === 'pza' || cardObj.collectorNumber.startsWith('PZA')) {
+            if (setLower === 'ttmt' || typeLower.includes('token')) {
+                tmtTokenPool.push(cardObj);
+            } else if (setLower === 'atmt' || typeLower.includes('art card')) {
+                tmtArtCardPool.push(cardObj);
+            } else if (setLower === 'pza' || cardObj.collectorNumber.startsWith('PZA')) {
                 tmtSourceMaterialPool.push(cardObj);
             } else if (setLower === 'tmc') {
                 if (card.rarity === 'rare' || card.rarity === 'mythic') tmtCommanderRarePool.push(cardObj);
@@ -289,7 +297,9 @@ export async function ensureSetData(setKey) {
                 tmtFoilJapaneseShowcasePool.push(cardObj);
             } else if (cardObj.collectorNumber.includes('SWR') || cardObj.typeLine.includes('Sewer')) {
                 tmtFoilSewerFramePool.push(cardObj);
-            } else if (typeLower.includes('basic land') || typeLower.includes('rooftop')) {
+            } else if (typeLower.includes('scene')) {
+                tmtFoilScenePool.push(cardObj);
+            } else if (typeLower.includes('basic land') || typeLower.includes('rooftop') || typeLower.includes('pizza')) {
                 tmtFoilLandPool.push(cardObj);
             } else if (cardObj.borderColor === 'borderless' || isHit) {
                 if (card.rarity === 'rare' || card.rarity === 'mythic') {
@@ -302,6 +312,8 @@ export async function ensureSetData(setKey) {
                 tmtFoilRarePool.push(cardObj);
             } else if (card.rarity === 'uncommon') {
                 tmtFoilUncommonPool.push(cardObj);
+            } else if (typeLower.includes('land')) {
+                tmtFoilDualLandPool.push(cardObj);
             } else {
                 tmtFoilCommonPool.push(cardObj);
             }
@@ -345,6 +357,14 @@ export async function ensureSetData(setKey) {
             if (eclTokenPool[t].backImg === "card_images/mtg_sets/Magic_the_Gathering_Card_Back.jpg") {
                 const partnerIdx = (t + 1) % eclTokenPool.length;
                 eclTokenPool[t].backImg = eclTokenPool[partnerIdx].frontImg;
+            }
+        }
+    }
+    if (setKey === 'mtgtmt' && tmtTokenPool.length > 1) {
+        for (let t = 0; t < tmtTokenPool.length; t++) {
+            if (tmtTokenPool[t].backImg === "card_images/mtg_sets/Magic_the_Gathering_Card_Back.jpg") {
+                const partnerIdx = (t + 1) % tmtTokenPool.length;
+                tmtTokenPool[t].backImg = tmtTokenPool[partnerIdx].frontImg;
             }
         }
     }
@@ -411,7 +431,11 @@ export async function ensureSetData(setKey) {
             nonfoilExtended: tmtNonfoilExtendedPool.length ? tmtNonfoilExtendedPool : defaultRare,
             foilLand: tmtFoilLandPool.length ? tmtFoilLandPool : defaultCommon,
             foilUncommon: tmtFoilUncommonPool.length ? tmtFoilUncommonPool : defaultUncommon,
-            foilCommon: tmtFoilCommonPool.length ? tmtFoilCommonPool : defaultCommon
+            foilCommon: tmtFoilCommonPool.length ? tmtFoilCommonPool : defaultCommon,
+            foilScene: tmtFoilScenePool.length ? tmtFoilScenePool : defaultUncommon,
+            foilDualLand: tmtFoilDualLandPool.length ? tmtFoilDualLandPool : defaultCommon,
+            tokens: tmtTokenPool.length ? tmtTokenPool : defaultCommon,
+            artCards: tmtArtCardPool.length ? tmtArtCardPool : defaultCommon
         };
     } else if (setKey === 'mtgecl') {
         const defaultRare = dataset.pools.rare;
