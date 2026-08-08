@@ -230,10 +230,10 @@ export async function ensureSetData(setKey) {
         return config;
     }
 
-    let searchQuery = `e%3A${config.code}&unique=prints`;
-    if (setKey === 'mtgmsh') searchQuery = `(e%3Amsh+OR+e%3Amsc+OR+e%3Amar)+unique=prints`;
-    if (setKey === 'mtgsos') searchQuery = `(e%3Asos+OR+e%3Asoa+OR+e%3Asoc+OR+e%3Aspg)+unique=prints`;
-    if (setKey === 'mtgtmt') searchQuery = `(e%3Atmt+OR+e%3Atmc+OR+e%3Apza+OR+e%3Aspg+OR+e%3Attmt+OR+e%3Aatmt)+unique=prints`;
+    let searchQuery = `set:${config.code} unique:prints`;
+    if (setKey === 'mtgmsh') searchQuery = `(set:msh OR set:msc OR set:mar) unique:prints`;
+    if (setKey === 'mtgsos') searchQuery = `(set:sos OR set:soa OR set:soc OR set:spg) unique:prints`;
+    if (setKey === 'mtgtmt') searchQuery = `(set:tmt OR set:tmc OR set:pza OR set:spg OR set:ttmt OR set:atmt) unique:prints`;
 
     let allCards = await fetchScryfallQuery(searchQuery);
 
