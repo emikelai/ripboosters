@@ -179,7 +179,7 @@ export const SETS_REGISTRY = [
         category: 'Magic: The Gathering',
         year: '2026',
         publisher: 'Wizards of the Coast',
-        totalCards: 591,
+        totalCards: 498,
         themeColor: '#1e3d59',
         coverImage: 'card_images/mtg_sets/mtg_ecl_collectorboosterwrapper.jpg',
         isMtg: true,

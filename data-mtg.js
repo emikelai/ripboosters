@@ -24,7 +24,7 @@ export const MTG_CONFIGS = {
         code: 'ecl',
         year: 2026,
         isCollectorBooster: true,
-        maxCount: 591,
+        maxCount: 498,
         coverImage: 'card_images/mtg_sets/mtg_ecl_collectorboosterwrapper.jpg',
         themeColor: '#1e3d59',
         hitCardNames: ["Bitterbloom Bearer"]
@@ -170,7 +170,7 @@ export async function ensureSetData(setKey) {
         const collectorPools = {};
         const baseCards = [];
         const hitsSet = new Set();
-        let cardCounter = 1;
+        const seenCardIds = new Set();
 
         const hitPoolKeys = new Set([
             'foilFableMythic',
@@ -188,9 +188,13 @@ export async function ensureSetData(setKey) {
             const processedPool = [];
 
             for (const card of rawCards) {
-                const cardObj = processScryfallCard(card, cardCounter++);
+                const cardObj = processScryfallCard(card, 0);
                 processedPool.push(cardObj);
-                baseCards.push(cardObj);
+
+                if (!seenCardIds.has(card.id)) {
+                    seenCardIds.add(card.id);
+                    baseCards.push(cardObj);
+                }
 
                 if (hitPoolKeys.has(poolKey)) {
                     hitsSet.add(cardObj);
@@ -208,13 +212,28 @@ export async function ensureSetData(setKey) {
             }
         }
 
+        // Sort baseCards: Main set cards first, Tokens second, Art Cards last
+        baseCards.sort((a, b) => {
+            const getOrder = (card) => {
+                if (card.setCode === 'tecl') return 2; // Tokens
+                if (card.setCode === 'aecl') return 3; // Art Cards
+                return 1; // Main Set
+            };
+            return getOrder(a) - getOrder(b);
+        });
+
+        // Re-assign clean sequential numbers (1..N)
+        baseCards.forEach((card, idx) => {
+            card.n = idx + 1;
+        });
+
         const hitPool = Array.from(hitsSet);
         const rarePool = collectorPools.foilRare.concat(collectorPools.foilMythic);
         const uncommonPool = collectorPools.foilUncommon;
         const commonPool = collectorPools.foilCommon;
 
         const dataset = {
-            maxCount: 591,
+            maxCount: baseCards.length,
             baseCards: baseCards,
             pools: {
                 rare: rarePool.length ? rarePool : baseCards,
