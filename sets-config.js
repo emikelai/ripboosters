@@ -229,14 +229,14 @@ export const SETS_REGISTRY = [
     },
 
     // ---------------------------------------------------------------------------
-    // RETRO & POP CULTURE SETS (Unchanged)
+    // MARVEL TRADING CARDS
     // ---------------------------------------------------------------------------
     {
         key: 'mm1992',
         name: 'Marvel Masterpieces 1992',
         year: '1992',
         publisher: 'SkyBox / Impel',
-        category: 'Retro & Pop Culture',
+        category: 'Marvel Trading Cards',
         totalCards: 105,
         coverImage: 'card_images/marvel_masterpieces_1992/mm1992_packimage1_wolverine.jpg',
         themeColor: '#df9845',
@@ -253,7 +253,7 @@ export const SETS_REGISTRY = [
         name: 'Marvel Masterpieces 1993',
         year: '1993',
         publisher: 'SkyBox',
-        category: 'Retro & Pop Culture',
+        category: 'Marvel Trading Cards',
         totalCards: 98,
         coverImage: 'card_images/marvel_masterpieces_1993/mm1993_packimage1_silversurfer.jpg',
         themeColor: '#1a6a1a',
@@ -270,7 +270,7 @@ export const SETS_REGISTRY = [
         name: 'Marvel Universe 1990',
         year: '1990',
         publisher: 'Impel',
-        category: 'Retro & Pop Culture',
+        category: 'Marvel Trading Cards',
         totalCards: 167,
         coverImage: 'card_images/marvel_impel_1990/marvel_impel_1990_packimage1_capam.jpg',
         themeColor: '#1a3a8a',
@@ -287,7 +287,7 @@ export const SETS_REGISTRY = [
         name: 'The Uncanny X-Men 1992',
         year: '1992',
         publisher: 'Impel',
-        category: 'Retro & Pop Culture',
+        category: 'Marvel Trading Cards',
         totalCards: 105,
         coverImage: 'card_images/xmen_impel_1992/uncanny_xmen_1992_packimage1_darkblue.jpg',
         themeColor: '#b8860b',
@@ -299,12 +299,16 @@ export const SETS_REGISTRY = [
         seoTitle: 'Uncanny X-Men 1992 Impel Pack Opening Simulator - Rip Boosters',
         seoDesc: 'Open 1992 Impel Uncanny X-Men booster packs online. Collect Jim Lee artwork, assemble the 3x3 puzzle mural, and pull Gold Holograms.'
     },
+
+    // ---------------------------------------------------------------------------
+    // RETRO 80S
+    // ---------------------------------------------------------------------------
     {
         key: 'motu1984',
         name: 'Masters of the Universe 1984',
         year: '1984',
         publisher: 'Topps',
-        category: 'Retro & Pop Culture',
+        category: 'Retro 80s',
         totalCards: 110,
         coverImage: 'card_images/motu_1984/motu1984_packwrapper1.jpg',
         themeColor: '#d87b28',
@@ -321,7 +325,7 @@ export const SETS_REGISTRY = [
         name: 'Garbage Pail Kids Series 1',
         year: '1985',
         publisher: 'Topps',
-        category: 'Retro & Pop Culture',
+        category: 'Retro 80s',
         totalCards: 82,
         coverImage: 'card_images/gpk_series1/gpk_series1_pack_wrapper.jpg',
         themeColor: '#8b0000',
