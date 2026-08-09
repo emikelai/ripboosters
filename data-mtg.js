@@ -239,15 +239,13 @@ export async function ensureSetData(setKey) {
             ]);
         } else if (setKey === 'mtghob') {
             hitPoolKeys = new Set([
-                'smaugHeadliner',
+                'surgeFoilClassicArtist',
                 'surgeFoilDragonHoardRare',
                 'surgeFoilDragonHoardMythic',
                 'surgeFoilBookCoverRare',
                 'surgeFoilBookCoverMythic',
-                'foilDragonHoardMythic',
-                'foilBookCoverRare',
-                'foilBookCoverMythic',
-                'foilDwarvishLanguage'
+                'foilDwarvishLanguage',
+                'smaugHeadliner'
             ]);
         }
 

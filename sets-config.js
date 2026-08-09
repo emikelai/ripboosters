@@ -244,9 +244,9 @@ export const SETS_REGISTRY = [
         coverImage: 'card_images/mtg_sets/mtg_hob_collectorboosterwrapper.jpg',
         isMtg: true,
         aboutTitle: 'About The Hobbit Collector Boosters',
-        aboutText: 'Journey through Middle-earth and Erebor! Collector Boosters feature exclusive Gleaming Gold Smaug the Magnificent, Surge Foil Dragon Hoard cards, Surge Foil Book Cover cards, Foil Dragon Hoard Mythics, Foil Book Covers, and Foil Dwarvish Language cards.',
+        aboutText: 'Journey through Middle-earth and Erebor! Collector Boosters feature exclusive Gleaming Gold Smaug the Magnificent, Surge Foil Classic Artist cards, Surge Foil Dragon Hoards, Surge Foil Book Covers, and Foil Dwarvish Language cards.',
         seoTitle: 'The Hobbit Collector Booster Pack Simulator - Rip Boosters',
-        seoDesc: 'Open The Hobbit Magic: The Gathering Collector Boosters. Collect Gleaming Gold Smaug, Surge Foil Dragon Hoards, Surge Foil Book Covers, and Foil Dwarvish Language cards.'
+        seoDesc: 'Open The Hobbit Magic: The Gathering Collector Boosters. Collect Gleaming Gold Smaug, Surge Foil Classic Artist cards, Surge Foil Dragon Hoards, Surge Foil Book Covers, and Foil Dwarvish Language cards.'
     },
 
     // -------------------------------------------------------------------------
