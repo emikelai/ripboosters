@@ -24,7 +24,7 @@ export const MTG_CONFIGS = {
         code: 'ecl',
         year: 2026,
         isCollectorBooster: true,
-        maxCount: 595,
+        maxCount: 591,
         coverImage: 'card_images/mtg_sets/mtg_ecl_collectorboosterwrapper.jpg',
         themeColor: '#1e3d59',
         hitCardNames: ["Bitterbloom Bearer"]
@@ -214,7 +214,7 @@ export async function ensureSetData(setKey) {
         const commonPool = collectorPools.foilCommon;
 
         const dataset = {
-            maxCount: baseCards.length,
+            maxCount: 591,
             baseCards: baseCards,
             pools: {
                 rare: rarePool.length ? rarePool : baseCards,
