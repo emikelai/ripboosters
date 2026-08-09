@@ -64,7 +64,7 @@ export const MTG_CONFIGS = {
     },
     mtghob: {
         setKey: 'mtghob',
-        name: 'The Hobbit',
+        name: 'The Hobbit (Collector Booster)',
         code: 'hob',
         year: 2026,
         isCollectorBooster: true,
@@ -102,6 +102,46 @@ const ECL_SLOT_QUERIES = {
     serializedBitterbloom: "set:ecl is:serialized is:foil",
     foilToken: "set:tecl is:foil",
     artCard: "set:aecl"
+};
+
+const HOB_SLOT_QUERIES = {
+    foilCommon: "set:hob r:c is:foil -type:basic -(type:land AND ci=2) -(cn=200 OR cn=209)",
+    foilCommonDualLand: "set:hob r:c is:foil -type:basic type:land ci=2",
+    foilCommonScene: "set:hob r:c is:foil -type:basic -(type:land AND ci=2) (cn=200 OR cn=209)",
+    foilUncommon: "set:hob r:uc is:foil -type:basic -(type:land AND ci=2)",
+    foilUncommonScene: "set:hob r:uc is:foil -type:basic -(type:land AND ci=2) (cn=199 OR cn=202 OR cn=203 OR cn=206)",
+    foilDragonHoardUncommon: "set:hob r:uc is:foil -type:basic -(type:land AND ci=2) cn>=214 cn<=238",
+    surgeFoilDragonHoardUncommon: "set:hob r:uc is:surge is:foil",
+    foilLand: "e:hob cn>=194 cn<=198",
+    foilRare: "set:hob r:r is:foil",
+    foilMythic: "set:hob r:m is:foil",
+    hobSceneRare: "e:hob (cn=199 OR cn=201 OR cn=204 OR cn=205 OR cn=207 OR cn=210 OR cn=211 OR cn=212 OR cn=213)",
+    hocSceneRare: "e:hoc cn>=1 cn<=12",
+    dragonHoardRare: "set:hob r:r is:nonfoil -type:basic -(type:land AND ci=2) cn>=214 cn<=238",
+    dragonHoardMythic: "set:hob r:m is:nonfoil -type:basic -(type:land AND ci=2) cn>=214 cn<=238",
+    bookCoverRare: "e:hob cn>=239 cn<=248 r:r",
+    bookCoverMythic: "e:hob cn>=239 cn<=248 r:m",
+    classicArtist: "e:hoc cn>=13 cn<=52",
+    dwarvishLanguage: "e:hoc cn>=93 cn<=97",
+    extendedHobRare: "e:hob cn>=285 cn<=312 r:r is:nonfoil",
+    extendedHobMythic: "e:hob cn>=285 cn<=312 r:m is:nonfoil",
+    extendedHocMythic: "e:hoc cn>=98 cn<=106",
+    foilHobSceneRare: "e:hob is:foil (cn=199 OR cn=201 OR cn=204 OR cn=205 OR cn=207 OR cn=210 OR cn=211 OR cn=212 OR cn=213)",
+    foilDragonHoardRare: "set:hob r:r is:foil -type:basic -(type:land AND ci=2) cn>=214 cn<=238",
+    foilDragonHoardMythic: "set:hob r:m is:foil -type:basic -(type:land AND ci=2) cn>=214 cn<=238",
+    surgeFoilDragonHoardRare: "e:hob cn>=250 cn<=274 is:surge r:r",
+    surgeFoilDragonHoardMythic: "e:hob cn>=250 cn<=274 is:surge r:m",
+    foilBookCoverRare: "e:hob cn>=239 cn<=248 is:foil r:r",
+    foilBookCoverMythic: "e:hob cn>=239 cn<=248 is:foil r:m",
+    surgeFoilBookCoverRare: "e:hob cn>=275 cn<=284 r:r",
+    surgeFoilBookCoverMythic: "e:hob cn>=275 cn<=284 r:m",
+    surgeFoilClassicArtist: "e:hoc cn>=53 cn<=92",
+    foilDwarvishLanguage: "e:hoc cn>=93 cn<=97 is:foil",
+    foilExtendedHobRare: "e:hob cn>=285 cn<=312 r:r is:foil",
+    foilExtendedHobMythic: "e:hob cn>=285 cn<=312 r:m is:foil",
+    smaugHeadliner: "e:hob cn>=249 cn<=249",
+    foilToken: "set:thob is:foil",
+    artCard: "set:ahob"
 };
 
 const cache = {};
@@ -177,13 +217,15 @@ export async function ensureSetData(setKey) {
     const config = MTG_CONFIGS[setKey];
     if (!config) throw new Error(`Unknown MTG Set Key: ${setKey}`);
 
-    if (setKey === 'mtgecl') {
+    if (setKey === 'mtgecl' || setKey === 'mtghob') {
         const collectorPools = {};
         const baseCards = [];
         const hitsSet = new Set();
         const seenCardIds = new Set();
 
-        const hitPoolKeys = new Set([
+        const queryMap = setKey === 'mtgecl' ? ECL_SLOT_QUERIES : HOB_SLOT_QUERIES;
+
+        const hitPoolKeys = setKey === 'mtgecl' ? new Set([
             'foilFableMythic',
             'foilBorderlessRare',
             'foilBorderlessMythic',
@@ -192,9 +234,20 @@ export async function ensureSetData(setKey) {
             'japanShowcaseFoil',
             'japanShowcaseFracture',
             'serializedBitterbloom'
+        ]) : new Set([
+            'foilHobSceneRare',
+            'foilDragonHoardMythic',
+            'surgeFoilDragonHoardRare',
+            'surgeFoilDragonHoardMythic',
+            'foilBookCoverMythic',
+            'surgeFoilBookCoverRare',
+            'surgeFoilBookCoverMythic',
+            'surgeFoilClassicArtist',
+            'foilDwarvishLanguage',
+            'smaugHeadliner'
         ]);
 
-        for (const [poolKey, queryStr] of Object.entries(ECL_SLOT_QUERIES)) {
+        for (const [poolKey, queryStr] of Object.entries(queryMap)) {
             const rawCards = await fetchScryfallQuery(queryStr);
             const processedPool = [];
 
@@ -223,25 +276,23 @@ export async function ensureSetData(setKey) {
             }
         }
 
-        // Sort baseCards: Main set cards first, Tokens second, Art Cards last
         baseCards.sort((a, b) => {
             const getOrder = (card) => {
-                if (card.setCode === 'tecl') return 2; // Tokens
-                if (card.setCode === 'aecl') return 3; // Art Cards
-                return 1; // Main Set
+                if (card.setCode.startsWith('t')) return 2;
+                if (card.setCode.startsWith('a')) return 3;
+                return 1;
             };
             return getOrder(a) - getOrder(b);
         });
 
-        // Re-assign clean sequential numbers (1..N)
         baseCards.forEach((card, idx) => {
             card.n = idx + 1;
         });
 
         const hitPool = Array.from(hitsSet);
-        const rarePool = collectorPools.foilRare.concat(collectorPools.foilMythic);
-        const uncommonPool = collectorPools.foilUncommon;
-        const commonPool = collectorPools.foilCommon;
+        const rarePool = (collectorPools.foilRare || []).concat(collectorPools.foilMythic || []);
+        const uncommonPool = collectorPools.foilUncommon || [];
+        const commonPool = collectorPools.foilCommon || [];
 
         const dataset = {
             maxCount: baseCards.length,
@@ -264,7 +315,6 @@ export async function ensureSetData(setKey) {
     if (setKey === 'mtgmsh') searchQuery = `(set:msh OR set:msc OR set:mar) unique:prints`;
     if (setKey === 'mtgsos') searchQuery = `(set:sos OR set:soa OR set:soc OR set:spg) unique:prints`;
     if (setKey === 'mtgtmt') searchQuery = `(set:tmt OR set:tmc OR set:pza OR set:spg OR set:ttmt OR set:atmt) unique:prints`;
-    if (setKey === 'mtghob') searchQuery = `(set:hob OR set:hoc) unique:prints`;
 
     let allCards = await fetchScryfallQuery(searchQuery);
 
