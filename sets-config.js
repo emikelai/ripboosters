@@ -233,6 +233,21 @@ export const SETS_REGISTRY = [
         seoTitle: 'Marvel Super Heroes Collector Booster Simulator - Rip Boosters',
         seoDesc: 'Open Marvel Super Heroes Magic: The Gathering Collector Boosters. Collect serialized cards, borderless comic art, and source material inserts.'
     },
+    {
+        key: 'mtghob',
+        name: 'The Hobbit',
+        category: 'Magic: The Gathering',
+        year: '2026',
+        publisher: 'Wizards of the Coast',
+        totalCards: 321,
+        themeColor: '#1b4f72',
+        coverImage: 'card_images/mtg_sets/mtg_hob_collectorboosterwrapper.jpg',
+        isMtg: true,
+        aboutTitle: 'About The Hobbit Collector Boosters',
+        aboutText: 'Journey through Middle-earth and Erebor! Collector Boosters feature exclusive Dragon Hoard frames, Book Cover showcase cards, Dwarven language cards, and Smaug the Magnificent.',
+        seoTitle: 'The Hobbit Collector Booster Pack Simulator - Rip Boosters',
+        seoDesc: 'Open The Hobbit Magic: The Gathering Collector Boosters. Collect Dragon Hoard frames, Book Cover showcases, and Bilbo Baggins.'
+    },
 
     // -------------------------------------------------------------------------
     // MARVEL TRADING CARDS

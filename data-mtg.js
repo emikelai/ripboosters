@@ -61,6 +61,17 @@ export const MTG_CONFIGS = {
         coverImage: 'card_images/mtg_sets/mtg_msh_collectorboosterwrapper.jpg',
         themeColor: '#e63946',
         hitCardNames: ["Spider-Man", "Wolverine", "Captain America", "Iron Man", "Thanos", "Venom", "Deadpool", "The Mind Stone"]
+    },
+    mtghob: {
+        setKey: 'mtghob',
+        name: 'The Hobbit',
+        code: 'hob',
+        year: 2026,
+        isCollectorBooster: true,
+        maxCount: 321,
+        coverImage: 'card_images/mtg_sets/mtg_hob_collectorboosterwrapper.jpg',
+        themeColor: '#1b4f72',
+        hitCardNames: ["Bilbo Baggins", "Thorin Oakenshield", "Smaug the Magnificent", "Gollum", "Gandalf"]
     }
 };
 
@@ -158,7 +169,7 @@ function processScryfallCard(card, count) {
 
 export async function ensureSetData(setKey) {
     if (cache[setKey] && cache[setKey].baseCards) {
-        if ((setKey !== 'mtgmsh' && setKey !== 'mtgsos' && setKey !== 'mtgtmt' && setKey !== 'mtgecl') || cache[setKey].collectorPools) {
+        if ((setKey !== 'mtgmsh' && setKey !== 'mtgsos' && setKey !== 'mtgtmt' && setKey !== 'mtgecl' && setKey !== 'mtghob') || cache[setKey].collectorPools) {
             return cache[setKey];
         }
     }
@@ -253,6 +264,7 @@ export async function ensureSetData(setKey) {
     if (setKey === 'mtgmsh') searchQuery = `(set:msh OR set:msc OR set:mar) unique:prints`;
     if (setKey === 'mtgsos') searchQuery = `(set:sos OR set:soa OR set:soc OR set:spg) unique:prints`;
     if (setKey === 'mtgtmt') searchQuery = `(set:tmt OR set:tmc OR set:pza OR set:spg OR set:ttmt OR set:atmt) unique:prints`;
+    if (setKey === 'mtghob') searchQuery = `(set:hob OR set:hoc) unique:prints`;
 
     let allCards = await fetchScryfallQuery(searchQuery);
 
