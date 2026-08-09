@@ -896,6 +896,30 @@
                             };
                             return getRank(a) - getRank(b);
                         });
+                    } else if (setKey === 'mtgecl') {
+                        const cPools = activeSetData.collectorPools || {};
+                        const poolRarityOrder = [
+                            cPools.serializedBitterbloom,
+                            cPools.japanShowcaseFracture,
+                            cPools.foilBorderlessMythic,
+                            cPools.foilReversibleShock,
+                            cPools.foilBorderlessRare,
+                            cPools.foilFableMythic,
+                            cPools.japanShowcaseFoil,
+                            cPools.foilSpecialGuests
+                        ];
+
+                        sortedHits.sort((a, b) => {
+                            const getRank = (card) => {
+                                for (let r = 0; r < poolRarityOrder.length; r++) {
+                                    if (poolRarityOrder[r] && poolRarityOrder[r].some(c => (c.id && c.id === card.id) || c.n === card.n)) {
+                                        return r;
+                                    }
+                                }
+                                return 99;
+                            };
+                            return getRank(a) - getRank(b);
+                        });
                     }
 
                     sortedHits.forEach(card => {
@@ -912,7 +936,11 @@
                             slot.innerHTML = `<img src="${frontImg}">`;
                             slot.onclick = () => showLightbox(frontImg, backImg);
                         } else {
-                            slot.innerHTML = `<span class="col-num">HIT</span><span class="col-name">${card.name}</span>`;
+                            let displayName = card.name;
+                            if (setKey === 'mtgecl' && (card.id === '371891' || card.name === 'Bitterbloom Bearer')) {
+                                displayName = 'Serialized Bitterbloom Bearer';
+                            }
+                            slot.innerHTML = `<span class="col-num">HIT</span><span class="col-name">${displayName}</span>`;
                         }
                         gridInsert.appendChild(slot);
                     });
