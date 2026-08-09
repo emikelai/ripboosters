@@ -225,27 +225,31 @@ export async function ensureSetData(setKey) {
 
         const queryMap = setKey === 'mtgecl' ? ECL_SLOT_QUERIES : HOB_SLOT_QUERIES;
 
-        const hitPoolKeys = setKey === 'mtgecl' ? new Set([
-            'foilFableMythic',
-            'foilBorderlessRare',
-            'foilBorderlessMythic',
-            'foilReversibleShock',
-            'foilSpecialGuests',
-            'japanShowcaseFoil',
-            'japanShowcaseFracture',
-            'serializedBitterbloom'
-        ]) : new Set([
-            'foilHobSceneRare',
-            'foilDragonHoardMythic',
-            'surgeFoilDragonHoardRare',
-            'surgeFoilDragonHoardMythic',
-            'foilBookCoverMythic',
-            'surgeFoilBookCoverRare',
-            'surgeFoilBookCoverMythic',
-            'surgeFoilClassicArtist',
-            'foilDwarvishLanguage',
-            'smaugHeadliner'
-        ]);
+        let hitPoolKeys;
+        if (setKey === 'mtgecl') {
+            hitPoolKeys = new Set([
+                'foilFableMythic',
+                'foilBorderlessRare',
+                'foilBorderlessMythic',
+                'foilReversibleShock',
+                'foilSpecialGuests',
+                'japanShowcaseFoil',
+                'japanShowcaseFracture',
+                'serializedBitterbloom'
+            ]);
+        } else if (setKey === 'mtghob') {
+            hitPoolKeys = new Set([
+                'smaugHeadliner',
+                'surgeFoilDragonHoardRare',
+                'surgeFoilDragonHoardMythic',
+                'surgeFoilBookCoverRare',
+                'surgeFoilBookCoverMythic',
+                'foilDragonHoardMythic',
+                'foilBookCoverRare',
+                'foilBookCoverMythic',
+                'foilDwarvishLanguage'
+            ]);
+        }
 
         for (const [poolKey, queryStr] of Object.entries(queryMap)) {
             const rawCards = await fetchScryfallQuery(queryStr);
@@ -260,7 +264,7 @@ export async function ensureSetData(setKey) {
                     baseCards.push(cardObj);
                 }
 
-                if (hitPoolKeys.has(poolKey)) {
+                if (hitPoolKeys && hitPoolKeys.has(poolKey)) {
                     hitsSet.add(cardObj);
                 }
             }

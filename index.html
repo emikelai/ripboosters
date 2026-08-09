@@ -587,7 +587,7 @@
                 else if (setKey === "mtgtmt") showcaseSubText = "Kevin Eastman Signatures & Sewer Frames";
                 else if (setKey === "mtgsos") showcaseSubText = "Japanese Mystical Archive & Serialized Emeritus";
                 else if (setKey === "mtgmsh") showcaseSubText = "Avenger Mythics & Comic Panel Showcases";
-                else if (setKey === "mtghob") showcaseSubText = "Smaug the Magnificent & Dragon Hoard Frames";
+                else if (setKey === "mtghob") showcaseSubText = "Gleaming Gold Smaug the Magnificent &middot; Surge Foil Dragon Hoard Rare & Mythic &middot; Surge Foil Book Cover Rare & Mythic &middot; Foil Dragon Hoard Mythic &middot; Foil Book Cover Rare & Mythic &middot; Foil Dwarvish Language";
 
                 const subMarkup = showcaseSubText ? `<p class="collection-sub" style="color:#b08d24;">${showcaseSubText}</p>` : ``;
 
@@ -968,24 +968,53 @@
                                 // Slot 1: 1x Foil Booster Fun Rare / Mythic / Serialized Chase
                                 const rollFoilBF = Math.random() * 100;
                                 let poolFoilBF = cPools.foilExtendedHobRare;
-                                let isHitSlot6 = true;
+                                let isHitSlot1 = false;
 
-                                if (rollFoilBF < 33.8) poolFoilBF = cPools.foilExtendedHobRare;
-                                else if (rollFoilBF < 33.8 + 14.3) poolFoilBF = cPools.foilDragonHoardRare;
-                                else if (rollFoilBF < 33.8 + 14.3 + 11.9) poolFoilBF = cPools.surgeFoilClassicArtist;
-                                else if (rollFoilBF < 33.8 + 14.3 + 11.9 + 11.0) poolFoilBF = cPools.foilHobSceneRare;
-                                else if (rollFoilBF < 33.8 + 14.3 + 11.9 + 11.0 + 6.5) poolFoilBF = cPools.surgeFoilDragonHoardRare;
-                                else if (rollFoilBF < 33.8 + 14.3 + 11.9 + 11.0 + 6.5 + 4.9) poolFoilBF = cPools.foilDragonHoardMythic;
-                                else if (rollFoilBF < 33.8 + 14.3 + 11.9 + 11.0 + 6.5 + 4.9 + 4.6) poolFoilBF = cPools.foilBookCoverRare;
-                                else if (rollFoilBF < 33.8 + 14.3 + 11.9 + 11.0 + 6.5 + 4.9 + 4.6 + 3.6) poolFoilBF = cPools.foilBookCoverMythic;
-                                else if (rollFoilBF < 33.8 + 14.3 + 11.9 + 11.0 + 6.5 + 4.9 + 4.6 + 3.6 + 2.4) poolFoilBF = cPools.surgeFoilDragonHoardMythic;
-                                else if (rollFoilBF < 33.8 + 14.3 + 11.9 + 11.0 + 6.5 + 4.9 + 4.6 + 3.6 + 2.4 + 2.4) poolFoilBF = cPools.surgeFoilBookCoverRare;
-                                else if (rollFoilBF < 33.8 + 14.3 + 11.9 + 11.0 + 6.5 + 4.9 + 4.6 + 3.6 + 2.4 + 2.4 + 1.8) poolFoilBF = cPools.surgeFoilBookCoverMythic;
-                                else if (rollFoilBF < 33.8 + 14.3 + 11.9 + 11.0 + 6.5 + 4.9 + 4.6 + 3.6 + 2.4 + 2.4 + 1.8 + 1.6) poolFoilBF = cPools.foilDwarvishLanguage;
-                                else if (rollFoilBF < 33.8 + 14.3 + 11.9 + 11.0 + 6.5 + 4.9 + 4.6 + 3.6 + 2.4 + 2.4 + 1.8 + 1.6 + 1.3) poolFoilBF = cPools.foilExtendedHobMythic;
-                                else poolFoilBF = cPools.smaugHeadliner;
+                                if (rollFoilBF < 33.8) {
+                                    poolFoilBF = cPools.foilExtendedHobRare;
+                                    isHitSlot1 = false;
+                                } else if (rollFoilBF < 33.8 + 14.3) {
+                                    poolFoilBF = cPools.foilDragonHoardRare;
+                                    isHitSlot1 = false;
+                                } else if (rollFoilBF < 33.8 + 14.3 + 11.9) {
+                                    poolFoilBF = cPools.surgeFoilClassicArtist;
+                                    isHitSlot1 = false;
+                                } else if (rollFoilBF < 33.8 + 14.3 + 11.9 + 11.0) {
+                                    poolFoilBF = cPools.foilHobSceneRare;
+                                    isHitSlot1 = false;
+                                } else if (rollFoilBF < 33.8 + 14.3 + 11.9 + 11.0 + 6.5) {
+                                    poolFoilBF = cPools.surgeFoilDragonHoardRare;
+                                    isHitSlot1 = true;
+                                } else if (rollFoilBF < 33.8 + 14.3 + 11.9 + 11.0 + 6.5 + 4.9) {
+                                    poolFoilBF = cPools.foilDragonHoardMythic;
+                                    isHitSlot1 = true;
+                                } else if (rollFoilBF < 33.8 + 14.3 + 11.9 + 11.0 + 6.5 + 4.9 + 4.6) {
+                                    poolFoilBF = cPools.foilBookCoverRare;
+                                    isHitSlot1 = true;
+                                } else if (rollFoilBF < 33.8 + 14.3 + 11.9 + 11.0 + 6.5 + 4.9 + 4.6 + 3.6) {
+                                    poolFoilBF = cPools.foilBookCoverMythic;
+                                    isHitSlot1 = true;
+                                } else if (rollFoilBF < 33.8 + 14.3 + 11.9 + 11.0 + 6.5 + 4.9 + 4.6 + 3.6 + 2.4) {
+                                    poolFoilBF = cPools.surgeFoilDragonHoardMythic;
+                                    isHitSlot1 = true;
+                                } else if (rollFoilBF < 33.8 + 14.3 + 11.9 + 11.0 + 6.5 + 4.9 + 4.6 + 3.6 + 2.4 + 2.4) {
+                                    poolFoilBF = cPools.surgeFoilBookCoverRare;
+                                    isHitSlot1 = true;
+                                } else if (rollFoilBF < 33.8 + 14.3 + 11.9 + 11.0 + 6.5 + 4.9 + 4.6 + 3.6 + 2.4 + 2.4 + 1.8) {
+                                    poolFoilBF = cPools.surgeFoilBookCoverMythic;
+                                    isHitSlot1 = true;
+                                } else if (rollFoilBF < 33.8 + 14.3 + 11.9 + 11.0 + 6.5 + 4.9 + 4.6 + 3.6 + 2.4 + 2.4 + 1.8 + 1.6) {
+                                    poolFoilBF = cPools.foilDwarvishLanguage;
+                                    isHitSlot1 = true;
+                                } else if (rollFoilBF < 33.8 + 14.3 + 11.9 + 11.0 + 6.5 + 4.9 + 4.6 + 3.6 + 2.4 + 2.4 + 1.8 + 1.6 + 1.3) {
+                                    poolFoilBF = cPools.foilExtendedHobMythic;
+                                    isHitSlot1 = false;
+                                } else {
+                                    poolFoilBF = cPools.smaugHeadliner;
+                                    isHitSlot1 = true;
+                                }
 
-                                appendCardSlot(poolFoilBF, '1 Foil Booster Fun card', 'rare', 1, isHitSlot6);
+                                appendCardSlot(poolFoilBF, '1 Foil Booster Fun Card', 'rare', 1, isHitSlot1);
 
                                 // Slot 2: 2x Non-Foil Booster Fun Cards
                                 for (let i = 0; i < 2; i++) {
@@ -1002,18 +1031,18 @@
                                     else if (roll < 30.9 + 14.2 + 13.1 + 11.9 + 10.1 + 5.3 + 4.5 + 4.2 + 3.3) pool = cPools.bookCoverMythic;
                                     else if (roll < 30.9 + 14.2 + 13.1 + 11.9 + 10.1 + 5.3 + 4.5 + 4.2 + 3.3 + 1.5) pool = cPools.dwarvishLanguage;
                                     else pool = cPools.extendedHobMythic;
-                                    appendCardSlot(pool, `Non-foil Booster Fun card #${i + 1}`, 'rare', 1, true);
+                                    appendCardSlot(pool, `Non-Foil Booster Fun Card #${i + 1}`, 'rare', 1, false);
                                 }
 
                                 // Slot 3: 2x Traditional Foil Rare or Mythic
                                 for (let i = 0; i < 2; i++) {
                                     const roll = Math.random() * 100;
                                     const pool = roll < 12.4 ? cPools.foilMythic : cPools.foilRare;
-                                    appendCardSlot(pool, `Traditional foil rare or mythic rare card #${i + 1}`, 'rare', 1, true);
+                                    appendCardSlot(pool, `Traditional Foil Rare or Mythic Rare Card #${i + 1}`, 'rare', 1, false);
                                 }
 
                                 // Slot 4: 1x Traditional Foil Basic Land
-                                appendCardSlot(cPools.foilLand, '1 Traditional foil Middle-earth journey basic land', 'common', 1, false);
+                                appendCardSlot(cPools.foilLand, '1 Traditional Foil Middle-earth Journey Basic Land', 'common', 1, false);
 
                                 // Slot 5: 4x Traditional Foil Uncommon
                                 for (let i = 0; i < 4; i++) {
@@ -1025,7 +1054,7 @@
                                     } else if (roll < 9.2 + 6.2) {
                                         pool = cPools.foilUncommonScene;
                                     }
-                                    appendCardSlot(pool, `Foil uncommon card #${i + 1}`, 'uncommon', 1, false);
+                                    appendCardSlot(pool, `Traditional Foil Uncommon Card #${i + 1}`, 'uncommon', 1, false);
                                 }
 
                                 // Slot 6: 5x Traditional Foil Common
@@ -1034,16 +1063,16 @@
                                     let pool = cPools.foilCommon;
                                     if (roll < 7.5) pool = cPools.foilCommonDualLand;
                                     else if (roll < 7.5 + 3.0) pool = cPools.foilCommonScene;
-                                    appendCardSlot(pool, `Traditional foil common card #${i + 1}`, 'common', 1, false);
+                                    appendCardSlot(pool, `Traditional Foil Common Card #${i + 1}`, 'common', 1, false);
                                 }
 
                                 // Slot 7: 1x Art card or traditional foil double-sided token
                                 const rollToken = Math.random() * 100;
                                 if (rollToken < 65.0) {
-                                    appendCardSlot(cPools.foilToken, '1 Traditional foil double-sided token', 'common', 1, false);
+                                    appendCardSlot(cPools.foilToken, '1 Traditional Foil Double-Sided Token', 'common', 1, false);
                                 } else {
                                     const isSigned = Math.random() < (1 / 7);
-                                    const label = isSigned ? '1 Gold stamped signature art card' : '1 Art card';
+                                    const label = isSigned ? '1 Gold Stamped Signature Art Card' : '1 Art Card';
                                     appendCardSlot(cPools.artCard, label, 'common', 1, false);
                                 }
 
