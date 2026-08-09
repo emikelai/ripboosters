@@ -779,7 +779,7 @@
                     const slot = document.createElement('div');
                     const matchKey = setKey === 'gpk1' ? `${card.n}${card.v}` : String(card.n);
                     
-                    const isCollected = savedData.base.map(String).includes(matchKey) || savedData.spectra.map(String).includes(matchKey);
+                    const isCollected = savedData.base.map(String).includes(matchKey);
                     slot.className = `col-slot ${isCollected ? 'filled' : 'no-image'}`;
                     slot.id = `col-base-${matchKey}`;
                     
@@ -888,7 +888,7 @@
                         sortedHits.sort((a, b) => {
                             const getRank = (card) => {
                                 for (let r = 0; r < poolRarityOrder.length; r++) {
-                                    if (poolRarityOrder[r] && poolRarityOrder[r].some(c => c.id === card.id || c.n === card.n)) {
+                                    if (poolRarityOrder[r] && poolRarityOrder[r].some(c => (c.id && c.id === card.id) || c.n === card.n)) {
                                         return r;
                                     }
                                 }
@@ -900,9 +900,11 @@
 
                     sortedHits.forEach(card => {
                         const slot = document.createElement('div');
-                        const isCollected = savedData.base.map(String).includes(String(card.n)) || savedData.spectra.map(String).includes(String(card.n));
+                        const hitKey = String(card.id || card.n);
+                        const isCollected = savedData.spectra.map(String).includes(hitKey);
+                        
                         slot.className = `col-slot ${isCollected ? 'filled' : 'no-image'}`;
-                        slot.id = `col-insert-${card.n}`;
+                        slot.id = `col-insert-${card.id || card.n}`;
                         
                         if (isCollected) {
                             const frontImg = card.frontImg || getImgPath(card.n, 'front', false);
@@ -976,11 +978,13 @@
                                 
                                 for (let i = 0; i < count; i++) {
                                     const pickedCard = sourcePool[Math.floor(Math.random() * sourcePool.length)];
-                                    const strKey = String(pickedCard.n);
+                                    
                                     if (isHitSlot) {
-                                        if (!savedData.spectra.map(String).includes(strKey)) savedData.spectra.push(strKey);
+                                        const hitKey = String(pickedCard.id || pickedCard.n);
+                                        if (!savedData.spectra.map(String).includes(hitKey)) savedData.spectra.push(hitKey);
                                     } else {
-                                        if (!savedData.base.map(String).includes(strKey)) savedData.base.push(strKey);
+                                        const baseKey = String(pickedCard.n);
+                                        if (!savedData.base.map(String).includes(baseKey)) savedData.base.push(baseKey);
                                     }
                                     const slotLabel = count > 1 ? `${labelText} #${i + 1}` : labelText;
                                     mainContainer.appendChild(createPackCardElement(pickedCard, isHitSlot, delay, slotLabel, rarityType));
@@ -999,28 +1003,22 @@
 
                                 if (rollFoilBF < 33.8) {
                                     poolFoilBF = cPools.foilExtendedHobRare;
-                                    isHitSlot1 = false;
                                 } else if (rollFoilBF < 33.8 + 14.3) {
                                     poolFoilBF = cPools.foilDragonHoardRare;
-                                    isHitSlot1 = false;
                                 } else if (rollFoilBF < 33.8 + 14.3 + 11.9) {
                                     poolFoilBF = cPools.surgeFoilClassicArtist;
                                     isHitSlot1 = true;
                                 } else if (rollFoilBF < 33.8 + 14.3 + 11.9 + 11.0) {
                                     poolFoilBF = cPools.foilHobSceneRare;
-                                    isHitSlot1 = false;
                                 } else if (rollFoilBF < 33.8 + 14.3 + 11.9 + 11.0 + 6.5) {
                                     poolFoilBF = cPools.surgeFoilDragonHoardRare;
                                     isHitSlot1 = true;
                                 } else if (rollFoilBF < 33.8 + 14.3 + 11.9 + 11.0 + 6.5 + 4.9) {
                                     poolFoilBF = cPools.foilDragonHoardMythic;
-                                    isHitSlot1 = false;
                                 } else if (rollFoilBF < 33.8 + 14.3 + 11.9 + 11.0 + 6.5 + 4.9 + 4.6) {
                                     poolFoilBF = cPools.foilBookCoverRare;
-                                    isHitSlot1 = false;
                                 } else if (rollFoilBF < 33.8 + 14.3 + 11.9 + 11.0 + 6.5 + 4.9 + 4.6 + 3.6) {
                                     poolFoilBF = cPools.foilBookCoverMythic;
-                                    isHitSlot1 = false;
                                 } else if (rollFoilBF < 33.8 + 14.3 + 11.9 + 11.0 + 6.5 + 4.9 + 4.6 + 3.6 + 2.4) {
                                     poolFoilBF = cPools.surgeFoilDragonHoardMythic;
                                     isHitSlot1 = true;
@@ -1035,7 +1033,6 @@
                                     isHitSlot1 = true;
                                 } else if (rollFoilBF < 33.8 + 14.3 + 11.9 + 11.0 + 6.5 + 4.9 + 4.6 + 3.6 + 2.4 + 2.4 + 1.8 + 1.6 + 1.3) {
                                     poolFoilBF = cPools.foilExtendedHobMythic;
-                                    isHitSlot1 = false;
                                 } else {
                                     poolFoilBF = cPools.smaugHeadliner;
                                     isHitSlot1 = true;
@@ -1375,9 +1372,7 @@
             }
 
             function refreshGridSlots() {
-                const unifiedCollectionSet = new Set([...savedData.base.map(String), ...savedData.spectra.map(String)]);
-                
-                unifiedCollectionSet.forEach(k => {
+                savedData.base.forEach(k => {
                     const slot = document.getElementById(`col-base-${k}`);
                     if (slot && slot.classList.contains('no-image')) {
                         const card = activeSetData.baseCards.find(c => (setKey === 'gpk1' ? `${c.n}${c.v}` : String(c.n)) == k);
@@ -1403,8 +1398,9 @@
 
                 if (isMtg) {
                     activeSetData.pools.hits.forEach(card => {
-                        const isCollected = savedData.base.map(String).includes(String(card.n)) || savedData.spectra.map(String).includes(String(card.n));
-                        const slot = document.getElementById(`col-insert-${card.n}`);
+                        const hitKey = String(card.id || card.n);
+                        const isCollected = savedData.spectra.map(String).includes(hitKey);
+                        const slot = document.getElementById(`col-insert-${card.id || card.n}`);
                         if (slot && isCollected && slot.classList.contains('no-image')) {
                             const frontImg = card.frontImg || getImgPath(card.n, 'front', false);
                             const backImg = card.backImg || getImgPath(card.n, 'back', false);
