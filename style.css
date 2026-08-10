@@ -538,6 +538,22 @@ body.set-active-bg::before { opacity: 0.38; }
     margin: 1rem auto 0 auto;
 }
 
+.hob-scene-2x3-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    max-width: 540px;
+    margin: 1rem auto 0 auto;
+    gap: 0.15rem;
+}
+
+.hob-scene-3x3-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    max-width: 540px;
+    margin: 1rem auto 0 auto;
+    gap: 0.15rem;
+}
+
 /* RARITY RAILS & SPECTRA */
 .mtg-row, .spectra-row { margin-bottom: 1.5rem; padding: 0; background: none; border: none; }
 .mtg-row-label, .spectra-label { font-size: 0.65rem; letter-spacing: 0.16em; text-transform: uppercase; margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem; font-weight: 600; }
@@ -701,5 +717,5 @@ body.set-active-bg::before { opacity: 0.38; }
     .pack-row { gap: 1rem; }
     .pack-counter { padding-left: 1rem; }
     .counter-num { font-size: 1.8rem; }
-    .puzzle-3x3-grid { max-width: 95vw; }
+    .puzzle-3x3-grid, .hob-scene-2x3-grid, .hob-scene-3x3-grid { max-width: 95vw; }
 }

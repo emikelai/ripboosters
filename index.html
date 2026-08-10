@@ -24,7 +24,7 @@
             y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
         })(window, document, "clarity", "script", "xnrcy05uod");
     </script>
-    
+
     <!-- CANONICAL URL -->
     <link rel="canonical" href="https://www.ripboosters.com/" />
 
@@ -594,6 +594,35 @@
 
                 const subMarkup = showcaseSubText ? `<p class="collection-sub" style="color:#b08d24;">${showcaseSubText}</p>` : ``;
 
+                let hobSceneGridsHTML = '';
+                if (setKey === 'mtghob') {
+                    hobSceneGridsHTML = `
+                        <div class="collection-header" style="margin-top: 2.5rem;">
+                            <div>
+                                <h2 class="collection-title">Fight with the Great Goblin</h2>
+                                <p class="collection-sub" style="color: #b08d24;">2x3 Scene Cards (#199 - #204)</p>
+                            </div>
+                        </div>
+                        <div class="puzzle-3x3-grid hob-scene-2x3-grid" id="hobScene1Grid"></div>
+
+                        <div class="collection-header" style="margin-top: 2.5rem;">
+                            <div>
+                                <h2 class="collection-title">The Five Armies Clash!</h2>
+                                <p class="collection-sub" style="color: #b08d24;">3x3 Scene Cards (#205 - #213)</p>
+                            </div>
+                        </div>
+                        <div class="puzzle-3x3-grid hob-scene-3x3-grid" id="hobScene2Grid"></div>
+
+                        <div class="collection-header" style="margin-top: 2.5rem;">
+                            <div>
+                                <h2 class="collection-title">Crack the Plates</h2>
+                                <p class="collection-sub" style="color: #b08d24;">2x3 Scene Cards (HOC #1 - #6)</p>
+                            </div>
+                        </div>
+                        <div class="puzzle-3x3-grid hob-scene-2x3-grid" id="hobScene3Grid"></div>
+                    `;
+                }
+
                 collectionHeaderHTML = `
                     <div class="collection-header">
                         <div>
@@ -603,7 +632,9 @@
                     </div>
                     <div class="collection-grid" id="spectraGrid"></div>
                     
-                    <div class="collection-header" style="margin-top: 2rem;">
+                    ${hobSceneGridsHTML}
+
+                    <div class="collection-header" style="margin-top: 2.5rem;">
                         <div>
                             <h2 class="collection-title">Collection Checklist</h2>
                             <p class="collection-sub">${config.name} Complete Set</p>
@@ -768,6 +799,50 @@
             const gridPuzzle = document.getElementById('puzzleGrid');
             const gridMotuRedPuzzle = document.getElementById('motuRedPuzzleGrid');
             const gridMotuBluePuzzle = document.getElementById('motuBluePuzzleGrid');
+
+            const gridHobScene1 = document.getElementById('hobScene1Grid');
+            const gridHobScene2 = document.getElementById('hobScene2Grid');
+            const gridHobScene3 = document.getElementById('hobScene3Grid');
+
+            if (setKey === 'mtghob') {
+                const renderHobScene = (container, filterFn) => {
+                    if (!container) return;
+                    container.innerHTML = '';
+                    
+                    const sceneCards = activeSetData.baseCards
+                        .filter(filterFn)
+                        .sort((a, b) => parseInt(a.collectorNumber || a.n, 10) - parseInt(b.collectorNumber || b.n, 10));
+
+                    sceneCards.forEach(card => {
+                        const slot = document.createElement('div');
+                        const cardKey = String(card.id || card.n);
+                        const isCollected = savedData.base.map(String).includes(String(card.n)) || savedData.spectra.map(String).includes(cardKey);
+                        
+                        slot.className = `col-slot ${isCollected ? 'filled' : 'no-image'}`;
+                        slot.id = `col-hob-scene-${card.setCode || 'hob'}-${card.collectorNumber || card.n}`;
+
+                        if (isCollected) {
+                            const frontImg = card.frontImg || getImgPath(card.n, 'front', false);
+                            const backImg = card.backImg || getImgPath(card.n, 'back', false);
+                            slot.innerHTML = `<img src="${frontImg}">`;
+                            slot.onclick = () => showLightbox(frontImg, backImg);
+                        } else {
+                            const codePrefix = card.setCode ? `${card.setCode.toUpperCase()} ` : '';
+                            slot.innerHTML = `<span class="col-num">#${codePrefix}${card.collectorNumber || card.n}</span><span class="col-name">${card.name}</span>`;
+                        }
+                        container.appendChild(slot);
+                    });
+                };
+
+                // Scene 1: Fight with the Great Goblin (cards 199, 200, 201 | 202, 203, 204)
+                renderHobScene(gridHobScene1, c => (c.setCode === 'hob' || !c.setCode) && parseInt(c.collectorNumber || c.n, 10) >= 199 && parseInt(c.collectorNumber || c.n, 10) <= 204);
+
+                // Scene 2: The Five Armies Clash! (cards 205, 206, 207 | 208, 209, 210 | 211, 212, 213)
+                renderHobScene(gridHobScene2, c => (c.setCode === 'hob' || !c.setCode) && parseInt(c.collectorNumber || c.n, 10) >= 205 && parseInt(c.collectorNumber || c.n, 10) <= 213);
+
+                // Scene 3: Crack the Plates (HOC cards 1, 2, 3 | 4, 5, 6)
+                renderHobScene(gridHobScene3, c => c.setCode === 'hoc' && parseInt(c.collectorNumber || c.n, 10) >= 1 && parseInt(c.collectorNumber || c.n, 10) <= 6);
+            }
 
             if (gridBase) {
                 let loopPool = activeSetData.baseCards;
@@ -1426,6 +1501,28 @@
                         }
                     }
                 });
+
+                if (setKey === 'mtghob') {
+                    activeSetData.baseCards.forEach(card => {
+                        const cn = parseInt(card.collectorNumber || card.n, 10);
+                        const isHobScene1 = (card.setCode === 'hob' || !card.setCode) && cn >= 199 && cn <= 204;
+                        const isHobScene2 = (card.setCode === 'hob' || !card.setCode) && cn >= 205 && cn <= 213;
+                        const isHocScene3 = card.setCode === 'hoc' && cn >= 1 && cn <= 6;
+
+                        if (isHobScene1 || isHobScene2 || isHocScene3) {
+                            const slot = document.getElementById(`col-hob-scene-${card.setCode || 'hob'}-${card.collectorNumber || card.n}`);
+                            const isCollected = savedData.base.map(String).includes(String(card.n));
+                            
+                            if (slot && isCollected && slot.classList.contains('no-image')) {
+                                const frontImg = card.frontImg || getImgPath(card.n, 'front', false);
+                                const backImg = card.backImg || getImgPath(card.n, 'back', false);
+                                slot.className = 'col-slot filled';
+                                slot.innerHTML = `<img src="${frontImg}">`;
+                                slot.onclick = () => showLightbox(frontImg, backImg);
+                            }
+                        }
+                    });
+                }
 
                 if (isMtg) {
                     activeSetData.pools.hits.forEach(card => {

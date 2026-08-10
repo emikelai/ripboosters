@@ -105,9 +105,9 @@ const ECL_SLOT_QUERIES = {
 };
 
 const HOB_SLOT_QUERIES = {
-    foilCommon: "set:hob r:c is:foil -type:basic -(type:land AND ci=2) -(cn=200 OR cn=209)",
+    foilCommon: "set:hob r:c is:foil -type:basic -(type:land AND ci=2)",
     foilCommonDualLand: "set:hob r:c is:foil -type:basic type:land ci=2",
-    foilCommonScene: "set:hob r:c is:foil -type:basic -(type:land AND ci=2) (cn=200 OR cn=209)",
+    foilCommonScene: "set:hob (cn=200 OR cn=209)",
     foilUncommon: "set:hob r:uc is:foil -type:basic -(type:land AND ci=2)",
     foilUncommonScene: "set:hob r:uc is:foil -type:basic -(type:land AND ci=2) (cn=199 OR cn=202 OR cn=203 OR cn=206)",
     foilDragonHoardUncommon: "set:hob r:uc is:foil -type:basic -(type:land AND ci=2) cn>=214 cn<=238",
@@ -115,7 +115,7 @@ const HOB_SLOT_QUERIES = {
     foilLand: "e:hob cn>=194 cn<=198",
     foilRare: "set:hob r:r is:foil",
     foilMythic: "set:hob r:m is:foil",
-    hobSceneRare: "e:hob (cn=199 OR cn=201 OR cn=204 OR cn=205 OR cn=207 OR cn=210 OR cn=211 OR cn=212 OR cn=213)",
+    hobSceneRare: "e:hob (cn=201 OR cn=204 OR cn=205 OR cn=207 OR cn=208 OR cn=210 OR cn=211 OR cn=212 OR cn=213)",
     hocSceneRare: "e:hoc cn>=1 cn<=12",
     dragonHoardRare: "set:hob r:r is:nonfoil -type:basic -(type:land AND ci=2) cn>=214 cn<=238",
     dragonHoardMythic: "set:hob r:m is:nonfoil -type:basic -(type:land AND ci=2) cn>=214 cn<=238",
@@ -249,11 +249,17 @@ export async function ensureSetData(setKey) {
             ]);
         }
 
-        for (const [poolKey, queryStr] of Object.entries(queryMap)) {
-            const rawCards = await fetchScryfallQuery(queryStr);
+        const entries = Object.entries(queryMap);
+        const queryResults = await Promise.all(
+            entries.map(([poolKey, queryStr]) => 
+                fetchScryfallQuery(queryStr).then(cards => ({ poolKey, cards }))
+            )
+        );
+
+        for (const { poolKey, cards } of queryResults) {
             const processedPool = [];
 
-            for (const card of rawCards) {
+            for (const card of cards) {
                 const cardObj = processScryfallCard(card, 0);
                 processedPool.push(cardObj);
 
