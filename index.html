@@ -1362,12 +1362,14 @@
 
                             } else {
                                 const pickedRare = activeSetData.pools.rare[Math.floor(Math.random() * activeSetData.pools.rare.length)];
-                                const isHit = activeSetData.pools.hits.some(h => h.n === pickedRare.n);
-                                const strRareKey = String(pickedRare.n);
+                                const isHit = activeSetData.pools.hits.some(h => (h.id && h.id === pickedRare.id) || h.n === pickedRare.n);
+                                const hitKey = String(pickedRare.id || pickedRare.n);
+                                const baseKey = String(pickedRare.n);
+
                                 if (isHit) {
-                                    if (!savedData.spectra.map(String).includes(strRareKey)) savedData.spectra.push(strRareKey);
+                                    if (!savedData.spectra.map(String).includes(hitKey)) savedData.spectra.push(hitKey);
                                 } else {
-                                    if (!savedData.base.map(String).includes(strRareKey)) savedData.base.push(strRareKey);
+                                    if (!savedData.base.map(String).includes(baseKey)) savedData.base.push(baseKey);
                                 }
                                 mainContainer.appendChild(createPackCardElement(pickedRare, isHit, delay, 'Rare / Mythic', 'rare'));
                                 delay += step;
