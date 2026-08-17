@@ -613,16 +613,16 @@ export function renderECLSubcategoryChecklist(containerEl, savedBaseIds, baseCar
             name: "Slot 1: Foil Booster Fun Rare / Mythic",
             totalCards: 128,
             getCards: () => [
-                ...(pools.foilExtendedRare || []),
-                ...(pools.foilFableRare || []),
-                ...(pools.foilSpecialGuests || []),
+                ...(pools.serializedBitterbloom || []),
+                ...(pools.japanShowcaseFracture || []),
                 ...(pools.japanShowcaseFoil || []),
-                ...(pools.foilFableMythic || []),
-                ...(pools.foilBorderlessRare || []),
+                ...(pools.foilSpecialGuests || []),
                 ...(pools.foilReversibleShock || []),
                 ...(pools.foilBorderlessMythic || []),
-                ...(pools.japanShowcaseFracture || []),
-                ...(pools.serializedBitterbloom || [])
+                ...(pools.foilBorderlessRare || []),
+                ...(pools.foilFableMythic || []),
+                ...(pools.foilFableRare || []),
+                ...(pools.foilExtendedRare || [])
             ]
         },
         {
@@ -630,12 +630,12 @@ export function renderECLSubcategoryChecklist(containerEl, savedBaseIds, baseCar
             name: "Slot 2: Non-Foil Booster Fun Rare / Mythic",
             totalCards: 87,
             getCards: () => [
-                ...(pools.extendedRare || []),
-                ...(pools.fableRare || []),
+                ...(pools.reversibleShock || []),
+                ...(pools.borderlessMythic || []),
                 ...(pools.borderlessRare || []),
                 ...(pools.fableMythic || []),
-                ...(pools.borderlessMythic || []),
-                ...(pools.reversibleShock || [])
+                ...(pools.fableRare || []),
+                ...(pools.extendedRare || [])
             ]
         },
         {
@@ -643,8 +643,8 @@ export function renderECLSubcategoryChecklist(containerEl, savedBaseIds, baseCar
             name: "Slot 3: Non-Foil Commander (ECC) Rare/Mythic",
             totalCards: 24,
             getCards: () => [
-                ...(pools.eccRareExtended || []),
-                ...(pools.eccMythicBorderless || [])
+                ...(pools.eccMythicBorderless || []),
+                ...(pools.eccRareExtended || [])
             ]
         },
         {
@@ -652,8 +652,8 @@ export function renderECLSubcategoryChecklist(containerEl, savedBaseIds, baseCar
             name: "Slot 4: Traditional Foil Rare/Mythic",
             totalCards: 93,
             getCards: () => [
-                ...(pools.foilRare || []),
-                ...(pools.foilMythic || [])
+                ...(pools.foilMythic || []),
+                ...(pools.foilRare || [])
             ]
         },
         {
@@ -667,8 +667,8 @@ export function renderECLSubcategoryChecklist(containerEl, savedBaseIds, baseCar
             name: "Slot 6: Traditional Foil Uncommon",
             totalCards: 110,
             getCards: () => [
-                ...(pools.foilUncommon || []),
-                ...(pools.uncommonFable || [])
+                ...(pools.uncommonFable || []),
+                ...(pools.foilUncommon || [])
             ]
         },
         {
@@ -703,14 +703,40 @@ export function renderECLSubcategoryChecklist(containerEl, savedBaseIds, baseCar
     };
 
     const getCardRarityWeight = (card) => {
-        if (card.isSerialized) return rarityRank.serialized;
-        if (card.isFractureFoil) return rarityRank.fracture;
-        if (card.isJapanShowcase) return rarityRank.japan_showcase;
-        if (card.isSpecialGuest) return rarityRank.special_guest;
+        const cardName = (card.name || '').toLowerCase();
+        
+        // 1. Serialized Bitterbloom Bearer (Strict Priority #1)
+        if (card.isSerialized || card.id === 'serializedBitterbloom' || cardName.includes('serialized') || (cardName.includes('bitterbloom bearer') && card.isFoil && !cardName.includes('nonfoil'))) {
+            return rarityRank.serialized;
+        }
+
+        // 2. Japan Showcase Fracture Foil
+        if (card.isFractureFoil || card.id === 'japanShowcaseFracture') {
+            return rarityRank.fracture;
+        }
+
+        // 3. Japan Showcase Foil
+        if (card.isJapanShowcase || card.id === 'japanShowcaseFoil') {
+            return rarityRank.japan_showcase;
+        }
+
+        // 4. Special Guests
+        if (card.isSpecialGuest || card.setCode === 'spg') {
+            return rarityRank.special_guest;
+        }
+
+        // 5. Mythics
         if (card.rarity === "mythic") return rarityRank.mythic;
+
+        // 6. Rares
         if (card.rarity === "rare") return rarityRank.rare;
+
+        // 7. Uncommons
         if (card.rarity === "uncommon") return rarityRank.uncommon;
+
+        // 8. Commons
         if (card.rarity === "common") return rarityRank.common;
+
         return 12;
     };
 
@@ -745,6 +771,14 @@ export function renderECLSubcategoryChecklist(containerEl, savedBaseIds, baseCar
             const isPulled = savedBaseIds.includes(String(card.n));
             const safeName = card.name.replace(/"/g, '&quot;');
             const backImg = card.backImg || "card_images/mtg_sets/Magic_the_Gathering_Card_Back.jpg";
+            const displayNum = card.collectorNumber || card.n;
+
+            const cardNameLower = (card.name || '').toLowerCase();
+            const isSerializedBitterbloom = card.isSerialized || card.id === 'serializedBitterbloom' || cardNameLower.includes('serialized') || (cardNameLower.includes('bitterbloom bearer') && card.isFoil && !cardNameLower.includes('nonfoil'));
+            const displayName = (isSerializedBitterbloom && !cardNameLower.includes('serialized'))
+                ? `Serialized ${card.name}`
+                : card.name;
+
             html += `
                 <div class="col-slot ${isPulled ? 'filled' : 'no-image'}" 
                      data-card-id="${card.id}" 
@@ -754,7 +788,7 @@ export function renderECLSubcategoryChecklist(containerEl, savedBaseIds, baseCar
                      id="col-base-${card.n}">
                     ${isPulled 
                         ? `<img src="${card.frontImg}">`
-                        : `<span class="col-num">#${card.n}</span><span class="col-name">${card.name}</span>`
+                        : `<span class="col-num">#${displayNum}</span><span class="col-name">${displayName}</span>`
                     }
                 </div>
             `;
