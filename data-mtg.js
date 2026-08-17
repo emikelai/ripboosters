@@ -192,6 +192,16 @@ function processScryfallCard(card, count) {
         backImage = "card_images/mtg_sets/Magic_the_Gathering_Card_Back.jpg";
     }
 
+    const isFoil = card.foil === true || (card.finishes && card.finishes.includes('foil'));
+    const isFractureFoil = card.finishes && card.finishes.includes('fracturefoil');
+    const isSerialized = card.serialized === true;
+    const isJapanShowcase = card.promo_types && card.promo_types.includes('japanshowcase');
+    const isSpecialGuest = card.set === 'spg';
+    const isExtendedArt = card.frame_effects && card.frame_effects.includes('extendedart');
+    const isFableFrame = card.frame_effects && card.frame_effects.includes('showcase');
+    const isBorderless = card.border_color === 'borderless';
+    const isReversibleShockLand = card.keywords && card.keywords.includes('Shock Land') && card.type_line && card.type_line.includes('Land');
+
     return {
         n: count,
         id: card.id,
@@ -203,7 +213,16 @@ function processScryfallCard(card, count) {
         frontImg: frontImage,
         backImg: backImage,
         lang: card.lang || 'en',
-        collectorNumber: card.collector_number || ''
+        collectorNumber: card.collector_number || '',
+        isFoil,
+        isFractureFoil,
+        isSerialized,
+        isJapanShowcase,
+        isSpecialGuest,
+        isExtendedArt,
+        isFableFrame,
+        isBorderless,
+        isReversibleShockLand
     };
 }
 
@@ -578,4 +597,190 @@ export async function ensureSetData(setKey) {
     Object.assign(config, dataset);
     cache[setKey] = config;
     return config;
+}
+
+/**
+ * Renders the Lorwyn Eclipsed (ECL) Collection Checklist broken down by 8 sub-category slots.
+ * Maps card pools directly from ECL_SLOT_QUERIES and attaches window.showLightbox click handlers.
+ */
+export function renderECLSubcategoryChecklist(containerEl, savedBaseIds, baseCards, config) {
+    const setConfig = config || MTG_CONFIGS.mtgecl || {};
+    const pools = setConfig.collectorPools || {};
+
+    const subCategorySlots = [
+        {
+            id: "slot-1",
+            name: "Slot 1: Foil Booster Fun Rare / Mythic",
+            totalCards: 128,
+            getCards: () => [
+                ...(pools.foilExtendedRare || []),
+                ...(pools.foilFableRare || []),
+                ...(pools.foilSpecialGuests || []),
+                ...(pools.japanShowcaseFoil || []),
+                ...(pools.foilFableMythic || []),
+                ...(pools.foilBorderlessRare || []),
+                ...(pools.foilReversibleShock || []),
+                ...(pools.foilBorderlessMythic || []),
+                ...(pools.japanShowcaseFracture || []),
+                ...(pools.serializedBitterbloom || [])
+            ]
+        },
+        {
+            id: "slot-2",
+            name: "Slot 2: Non-Foil Booster Fun Rare / Mythic",
+            totalCards: 87,
+            getCards: () => [
+                ...(pools.extendedRare || []),
+                ...(pools.fableRare || []),
+                ...(pools.borderlessRare || []),
+                ...(pools.fableMythic || []),
+                ...(pools.borderlessMythic || []),
+                ...(pools.reversibleShock || [])
+            ]
+        },
+        {
+            id: "slot-3",
+            name: "Slot 3: Non-Foil Commander (ECC) Rare/Mythic",
+            totalCards: 24,
+            getCards: () => [
+                ...(pools.eccRareExtended || []),
+                ...(pools.eccMythicBorderless || [])
+            ]
+        },
+        {
+            id: "slot-4",
+            name: "Slot 4: Traditional Foil Rare/Mythic",
+            totalCards: 93,
+            getCards: () => [
+                ...(pools.foilRare || []),
+                ...(pools.foilMythic || [])
+            ]
+        },
+        {
+            id: "slot-5",
+            name: "Slot 5: Foil Full-Art Basic Land",
+            totalCards: 5,
+            getCards: () => pools.foilLand || []
+        },
+        {
+            id: "slot-6",
+            name: "Slot 6: Traditional Foil Uncommon",
+            totalCards: 110,
+            getCards: () => [
+                ...(pools.foilUncommon || []),
+                ...(pools.uncommonFable || [])
+            ]
+        },
+        {
+            id: "slot-7",
+            name: "Slot 7: Traditional Foil Common",
+            totalCards: 81,
+            getCards: () => pools.foilCommon || []
+        },
+        {
+            id: "slot-8",
+            name: "Slot 8: Art Card or Token",
+            totalCards: 67,
+            getCards: () => [
+                ...(pools.foilToken || []),
+                ...(pools.artCard || [])
+            ]
+        }
+    ];
+
+    const rarityRank = {
+        serialized: 1,
+        fracture: 2,
+        japan_showcase: 3,
+        special_guest: 4,
+        mythic: 5,
+        rare: 6,
+        uncommon: 7,
+        common: 8,
+        land: 9,
+        token: 10,
+        art: 11
+    };
+
+    const getCardRarityWeight = (card) => {
+        if (card.isSerialized) return rarityRank.serialized;
+        if (card.isFractureFoil) return rarityRank.fracture;
+        if (card.isJapanShowcase) return rarityRank.japan_showcase;
+        if (card.isSpecialGuest) return rarityRank.special_guest;
+        if (card.rarity === "mythic") return rarityRank.mythic;
+        if (card.rarity === "rare") return rarityRank.rare;
+        if (card.rarity === "uncommon") return rarityRank.uncommon;
+        if (card.rarity === "common") return rarityRank.common;
+        return 12;
+    };
+
+    let html = `<div class="checklist-subcategories-container">`;
+
+    subCategorySlots.forEach((slot) => {
+        const rawCards = slot.getCards();
+
+        const slotCards = [];
+        const seenIds = new Set();
+        for (const card of rawCards) {
+            if (!seenIds.has(card.id)) {
+                seenIds.add(card.id);
+                slotCards.push(card);
+            }
+        }
+
+        slotCards.sort((a, b) => getCardRarityWeight(a) - getCardRarityWeight(b));
+
+        const collectedInSlot = slotCards.filter((c) => savedBaseIds.includes(String(c.n))).length;
+
+        html += `
+            <div class="checklist-subcategory-group" id="${slot.id}" style="margin-bottom: 2rem;">
+                <div class="subcategory-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem;">
+                    <h4 style="font-size: 1rem; color: var(--accent-gold); margin: 0;">${slot.name}</h4>
+                    <span class="subcategory-count" style="font-size: 0.85rem; color: var(--text-sub);">${collectedInSlot} / ${slot.totalCards}</span>
+                </div>
+                <div class="subcategory-cards-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(68px, 1fr)); gap: 0.5rem;">
+        `;
+
+        slotCards.forEach((card) => {
+            const isPulled = savedBaseIds.includes(String(card.n));
+            const safeName = card.name.replace(/"/g, '&quot;');
+            const backImg = card.backImg || "card_images/mtg_sets/Magic_the_Gathering_Card_Back.jpg";
+            html += `
+                <div class="col-slot ${isPulled ? 'filled' : 'no-image'}" 
+                     data-card-id="${card.id}" 
+                     data-front-img="${card.frontImg}" 
+                     data-back-img="${backImg}" 
+                     data-card-name="${safeName}" 
+                     id="col-base-${card.n}">
+                    ${isPulled 
+                        ? `<img src="${card.frontImg}">`
+                        : `<span class="col-num">#${card.n}</span><span class="col-name">${card.name}</span>`
+                    }
+                </div>
+            `;
+        });
+
+        html += `
+                </div>
+            </div>
+        `;
+    });
+
+    html += `</div>`;
+    containerEl.innerHTML = html;
+
+    // Attach lightbox click handlers to all generated card slots
+    const slots = containerEl.querySelectorAll('.col-slot');
+    slots.forEach((slot) => {
+        slot.addEventListener('click', () => {
+            const isPulled = slot.classList.contains('filled');
+            if (isPulled) {
+                const frontImg = slot.getAttribute('data-front-img');
+                const backImg = slot.getAttribute('data-back-img');
+                if (typeof window.showLightbox === 'function') {
+                    window.showLightbox(frontImg, backImg);
+                }
+            }
+        });
+    });
 }

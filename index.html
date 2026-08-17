@@ -267,7 +267,7 @@
 
     <script type="module">
         import { SETS_REGISTRY, STATIC_ROUTES } from './sets-config.js';
-        import { MTG_CONFIGS, ensureSetData } from './data-mtg.js';
+        import { MTG_CONFIGS, ensureSetData, renderECLSubcategoryChecklist } from './data-mtg.js';
 
         const DATA_MAP = {};
 
@@ -518,17 +518,14 @@
 
             updateSpaHeadMetadata(setKey);
 
-            // Toggle visible set drop rates in static archive based on active set route
             const archiveSection = document.getElementById('set-descriptions-archive');
             if (archiveSection) {
                 const allGuides = archiveSection.querySelectorAll('.static-set-guide');
                 
                 if (!setKey) {
-                    // Dashboard view: keep pull rate details hidden
                     archiveSection.style.display = 'none';
                     allGuides.forEach(g => g.style.display = 'none');
                 } else {
-                    // Inside a set portal: show ONLY the current set's drop rate list
                     let hasMatch = false;
                     allGuides.forEach(g => {
                         if (g.id === `archive-guide-${setKey}`) {
@@ -769,6 +766,7 @@
                         </div>
                         <span class="collection-count" id="collectionCount">0/${config.maxCount}</span>
                     </div>
+                    <div id="eclSubcategoriesContainer"></div>
                     <div class="collection-grid" id="collectionGrid"></div>`;
                 
                 if (setKey === 'rav' || setKey === 'isd') {
@@ -919,7 +917,10 @@
                 ]).size;
                 
                 const maxCount = (setConfig ? setConfig.totalCards : 105);
-                document.getElementById('collectionCount').textContent = `${Math.min(uniqueCollected, maxCount)} / ${maxCount}`;
+                const collectionCountEl = document.getElementById('collectionCount');
+                if (collectionCountEl) {
+                    collectionCountEl.textContent = `${Math.min(uniqueCollected, maxCount)} / ${maxCount}`;
+                }
             };
 
             const gridBase = document.getElementById('collectionGrid');
@@ -931,8 +932,12 @@
             const gridHobScene1 = document.getElementById('hobScene1Grid');
             const gridHobScene2 = document.getElementById('hobScene2Grid');
             const gridHobScene3 = document.getElementById('hobScene3Grid');
+            const containerECLSub = document.getElementById('eclSubcategoriesContainer');
 
-            if (setKey === 'mtghob') {
+            if (setKey === 'mtgecl' && containerECLSub) {
+                gridBase.style.display = 'none';
+                renderECLSubcategoryChecklist(containerECLSub, savedData.base, activeSetData.baseCards);
+            } else if (setKey === 'mtghob') {
                 const renderHobScene = (container, filterFn) => {
                     if (!container) return;
                     container.innerHTML = '';
@@ -962,17 +967,12 @@
                     });
                 };
 
-                // Scene 1: Fight with the Great Goblin (cards 199, 200, 201 | 202, 203, 204)
                 renderHobScene(gridHobScene1, c => (c.setCode === 'hob' || !c.setCode) && parseInt(c.collectorNumber || c.n, 10) >= 199 && parseInt(c.collectorNumber || c.n, 10) <= 204);
-
-                // Scene 2: The Five Armies Clash! (cards 205, 206, 207 | 208, 209, 210 | 211, 212, 213)
                 renderHobScene(gridHobScene2, c => (c.setCode === 'hob' || !c.setCode) && parseInt(c.collectorNumber || c.n, 10) >= 205 && parseInt(c.collectorNumber || c.n, 10) <= 213);
-
-                // Scene 3: Crack the Plates (HOC cards 1, 2, 3 | 4, 5, 6)
                 renderHobScene(gridHobScene3, c => c.setCode === 'hoc' && parseInt(c.collectorNumber || c.n, 10) >= 1 && parseInt(c.collectorNumber || c.n, 10) <= 6);
             }
 
-            if (gridBase) {
+            if (gridBase && setKey !== 'mtgecl') {
                 let loopPool = activeSetData.baseCards;
                 if (setKey === 'mu1990') {
                     loopPool = loopPool.filter(card => parseInt(String(card.n).trim().replace(/^\D+/g, ''), 10) <= 162);
@@ -1227,10 +1227,8 @@
                             };
 
                             if (setKey === 'mtghob') {
-                                // The Hobbit Collector Booster Breakdown
                                 const cPools = activeSetData.collectorPools || {};
 
-                                // Slot 1: 1x Foil Booster Fun Card
                                 const rollFoilBF = Math.random() * 100;
                                 let poolFoilBF = cPools.foilExtendedHobRare;
                                 let isHitSlot1 = false;
@@ -1274,7 +1272,6 @@
 
                                 appendCardSlot(poolFoilBF, '1 Foil Booster Fun Card', 'rare', 1, isHitSlot1);
 
-                                // Slot 2: 2x Non-Foil Booster Fun Cards
                                 for (let i = 0; i < 2; i++) {
                                     const roll = Math.random() * 100;
                                     let pool = cPools.extendedHobRare;
@@ -1292,17 +1289,14 @@
                                     appendCardSlot(pool, `Non-Foil Booster Fun Card #${i + 1}`, 'rare', 1, false);
                                 }
 
-                                // Slot 3: 2x Traditional Foil Rare or Mythic
                                 for (let i = 0; i < 2; i++) {
                                     const roll = Math.random() * 100;
                                     const pool = roll < 12.4 ? cPools.foilMythic : cPools.foilRare;
                                     appendCardSlot(pool, `Traditional Foil Rare or Mythic Rare Card #${i + 1}`, 'rare', 1, false);
                                 }
 
-                                // Slot 4: 1x Traditional Foil Basic Land
                                 appendCardSlot(cPools.foilLand, '1 Traditional Foil Middle-earth Journey Basic Land', 'common', 1, false);
 
-                                // Slot 5: 4x Traditional Foil Uncommon
                                 for (let i = 0; i < 4; i++) {
                                     const roll = Math.random() * 100;
                                     let pool = cPools.foilUncommon;
@@ -1315,7 +1309,6 @@
                                     appendCardSlot(pool, `Traditional Foil Uncommon Card #${i + 1}`, 'uncommon', 1, false);
                                 }
 
-                                // Slot 6: 5x Traditional Foil Common
                                 for (let i = 0; i < 5; i++) {
                                     const roll = Math.random() * 100;
                                     let pool = cPools.foilCommon;
@@ -1324,7 +1317,6 @@
                                     appendCardSlot(pool, `Traditional Foil Common Card #${i + 1}`, 'common', 1, false);
                                 }
 
-                                // Slot 7: 1x Art card or traditional foil double-sided token
                                 const rollToken = Math.random() * 100;
                                 if (rollToken < 65.0) {
                                     appendCardSlot(cPools.foilToken, '1 Traditional Foil Double-Sided Token', 'common', 1, false);
@@ -1335,7 +1327,6 @@
                                 }
 
                             } else if (setKey === 'mtgtmt') {
-                                // TMNT Collector Booster Breakdown
                                 const cPools = activeSetData.collectorPools || {};
 
                                 appendCardSlot(cPools.foilBoosterFun, '1 Foil Booster Fun rare or mythic rare card', 'rare', 1, true);
@@ -1375,7 +1366,6 @@
                                 }
 
                             } else if (setKey === 'mtgecl') {
-                                // Lorwyn Eclipsed Collector Booster Breakdown
                                 const cPools = activeSetData.collectorPools || {};
 
                                 const foilRoll = Math.random() * 100;
@@ -1608,29 +1598,33 @@
             }
 
             function refreshGridSlots() {
-                savedData.base.forEach(k => {
-                    const slot = document.getElementById(`col-base-${k}`);
-                    if (slot && slot.classList.contains('no-image')) {
-                        const card = activeSetData.baseCards.find(c => (setKey === 'gpk1' ? `${c.n}${c.v}` : String(c.n)) == k);
-                        if (card) {
-                            const frontImg = card.frontImg || getImgPath(card.n, 'front', false, card.v || '');
-                            const backImg = card.backImg || getImgPath(card.n, 'back', false, card.v || '');
-                            slot.className = 'col-slot filled'; slot.innerHTML = `<img src="${frontImg}">`;
-                            slot.onclick = () => showLightbox(frontImg, backImg);
-                        }
-                    }
-
-                    if (setKey === 'xmen1992') {
-                        const pSlot = document.getElementById(`col-puzzle-${k}`);
-                        if (pSlot && pSlot.classList.contains('no-image')) {
-                            const pCard = activeSetData.baseCards.find(c => String(c.n) == k);
-                            if (pCard) {
-                                pSlot.className = 'col-slot filled'; pSlot.innerHTML = `<img src="${getImgPath(pCard.n, 'front', false)}">`;
-                                pSlot.onclick = () => showLightbox(getImgPath(pCard.n, 'front', false), getImgPath(pCard.n, 'back', false));
+                if (setKey === 'mtgecl' && containerECLSub) {
+                    renderECLSubcategoryChecklist(containerECLSub, savedData.base, activeSetData.baseCards);
+                } else {
+                    savedData.base.forEach(k => {
+                        const slot = document.getElementById(`col-base-${k}`);
+                        if (slot && slot.classList.contains('no-image')) {
+                            const card = activeSetData.baseCards.find(c => (setKey === 'gpk1' ? `${c.n}${c.v}` : String(c.n)) == k);
+                            if (card) {
+                                const frontImg = card.frontImg || getImgPath(card.n, 'front', false, card.v || '');
+                                const backImg = card.backImg || getImgPath(card.n, 'back', false, card.v || '');
+                                slot.className = 'col-slot filled'; slot.innerHTML = `<img src="${frontImg}">`;
+                                slot.onclick = () => showLightbox(frontImg, backImg);
                             }
                         }
-                    }
-                });
+
+                        if (setKey === 'xmen1992') {
+                            const pSlot = document.getElementById(`col-puzzle-${k}`);
+                            if (pSlot && pSlot.classList.contains('no-image')) {
+                                const pCard = activeSetData.baseCards.find(c => String(c.n) == k);
+                                if (pCard) {
+                                    pSlot.className = 'col-slot filled'; pSlot.innerHTML = `<img src="${getImgPath(pCard.n, 'front', false)}">`;
+                                    pSlot.onclick = () => showLightbox(getImgPath(pCard.n, 'front', false), getImgPath(pCard.n, 'back', false));
+                                }
+                            }
+                        }
+                    });
+                }
 
                 if (setKey === 'mtghob') {
                     activeSetData.baseCards.forEach(card => {
@@ -1712,6 +1706,9 @@
                 
                 document.getElementById('lightbox').classList.add('open');
             }
+
+            // Expose showLightbox globally for modules (e.g., renderECLSubcategoryChecklist)
+            window.showLightbox = showLightbox;
         }
 
         function updateDashboardProgressTracks() {
