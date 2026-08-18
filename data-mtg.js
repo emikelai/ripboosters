@@ -607,6 +607,12 @@ export function renderECLSubcategoryChecklist(containerEl, savedBaseIds, baseCar
     const setConfig = config || MTG_CONFIGS.mtgecl || {};
     const pools = setConfig.collectorPools || {};
 
+    // Helper to identify serialized cards
+    const isSerializedCard = (card) => {
+        const name = (card.name || '').toLowerCase();
+        return card.isSerialized || card.id === 'serializedBitterbloom' || name.includes('serialized') || (name.includes('bitterbloom bearer') && card.isFoil && !name.includes('nonfoil'));
+    };
+
     const subCategorySlots = [
         {
             id: "slot-1",
@@ -651,8 +657,9 @@ export function renderECLSubcategoryChecklist(containerEl, savedBaseIds, baseCar
             id: "slot-4",
             name: "Slot 4: Traditional Foil Rare/Mythic",
             totalCards: 93,
+            // Filter out Serialized cards so they remain EXCLUSIVELY in Slot 1
             getCards: () => [
-                ...(pools.foilMythic || []),
+                ...(pools.foilMythic || []).filter(c => !isSerializedCard(c)),
                 ...(pools.foilRare || [])
             ]
         },
@@ -703,40 +710,14 @@ export function renderECLSubcategoryChecklist(containerEl, savedBaseIds, baseCar
     };
 
     const getCardRarityWeight = (card) => {
-        const cardName = (card.name || '').toLowerCase();
-        
-        // 1. Serialized Bitterbloom Bearer (Strict Priority #1)
-        if (card.isSerialized || card.id === 'serializedBitterbloom' || cardName.includes('serialized') || (cardName.includes('bitterbloom bearer') && card.isFoil && !cardName.includes('nonfoil'))) {
-            return rarityRank.serialized;
-        }
-
-        // 2. Japan Showcase Fracture Foil
-        if (card.isFractureFoil || card.id === 'japanShowcaseFracture') {
-            return rarityRank.fracture;
-        }
-
-        // 3. Japan Showcase Foil
-        if (card.isJapanShowcase || card.id === 'japanShowcaseFoil') {
-            return rarityRank.japan_showcase;
-        }
-
-        // 4. Special Guests
-        if (card.isSpecialGuest || card.setCode === 'spg') {
-            return rarityRank.special_guest;
-        }
-
-        // 5. Mythics
+        if (isSerializedCard(card)) return rarityRank.serialized;
+        if (card.isFractureFoil || card.id === 'japanShowcaseFracture') return rarityRank.fracture;
+        if (card.isJapanShowcase || card.id === 'japanShowcaseFoil') return rarityRank.japan_showcase;
+        if (card.isSpecialGuest || card.setCode === 'spg') return rarityRank.special_guest;
         if (card.rarity === "mythic") return rarityRank.mythic;
-
-        // 6. Rares
         if (card.rarity === "rare") return rarityRank.rare;
-
-        // 7. Uncommons
         if (card.rarity === "uncommon") return rarityRank.uncommon;
-
-        // 8. Commons
         if (card.rarity === "common") return rarityRank.common;
-
         return 12;
     };
 
@@ -774,10 +755,15 @@ export function renderECLSubcategoryChecklist(containerEl, savedBaseIds, baseCar
             const displayNum = card.collectorNumber || card.n;
 
             const cardNameLower = (card.name || '').toLowerCase();
-            const isSerializedBitterbloom = card.isSerialized || card.id === 'serializedBitterbloom' || cardNameLower.includes('serialized') || (cardNameLower.includes('bitterbloom bearer') && card.isFoil && !cardNameLower.includes('nonfoil'));
-            const displayName = (isSerializedBitterbloom && !cardNameLower.includes('serialized'))
-                ? `Serialized ${card.name}`
-                : card.name;
+            const isSerialized = isSerializedCard(card);
+            const isArtCard = card.setCode === 'aecl' || card.typeLine.toLowerCase().includes('art card');
+
+            let displayName = card.name;
+            if (isSerialized && slot.id === "slot-1" && !cardNameLower.includes('serialized')) {
+                displayName = `Serialized ${card.name}`;
+            } else if (isArtCard && !cardNameLower.includes('art card')) {
+                displayName = `${card.name} (Art Card)`;
+            }
 
             html += `
                 <div class="col-slot ${isPulled ? 'filled' : 'no-image'}" 
@@ -803,7 +789,6 @@ export function renderECLSubcategoryChecklist(containerEl, savedBaseIds, baseCar
     html += `</div>`;
     containerEl.innerHTML = html;
 
-    // Attach lightbox click handlers to all generated card slots
     const slots = containerEl.querySelectorAll('.col-slot');
     slots.forEach((slot) => {
         slot.addEventListener('click', () => {
