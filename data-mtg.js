@@ -205,6 +205,7 @@ function processScryfallCard(card, count) {
     return {
         n: count,
         id: card.id,
+        rawId: card.id,
         name: card.name,
         rarity: card.rarity,
         setCode: card.set ? card.set.toLowerCase() : '',
@@ -240,7 +241,7 @@ export async function ensureSetData(setKey) {
         const collectorPools = {};
         const baseCards = [];
         const hitsSet = new Set();
-        const seenCardIds = new Set();
+        const cardObjMap = new Map();
 
         const queryMap = setKey === 'mtgecl' ? ECL_SLOT_QUERIES : HOB_SLOT_QUERIES;
 
@@ -271,21 +272,31 @@ export async function ensureSetData(setKey) {
         const entries = Object.entries(queryMap);
         const queryResults = await Promise.all(
             entries.map(([poolKey, queryStr]) => 
-                fetchScryfallQuery(queryStr).then(cards => ({ poolKey, cards }))
+                fetchScryfallQuery(queryStr).then(cards => ({ poolKey, queryStr, cards }))
             )
         );
 
-        for (const { poolKey, cards } of queryResults) {
+        for (const { poolKey, queryStr, cards } of queryResults) {
             const processedPool = [];
 
-            for (const card of cards) {
-                const cardObj = processScryfallCard(card, 0);
-                processedPool.push(cardObj);
+            const isFoilQuery = queryStr.includes('is:foil') || queryStr.includes('is:fracturefoil') || queryStr.includes('is:serialized') || queryStr.includes('is:surge');
 
-                if (!seenCardIds.has(card.id)) {
-                    seenCardIds.add(card.id);
+            for (const card of cards) {
+                const compositeId = isFoilQuery ? `${card.id}_f` : `${card.id}_nf`;
+
+                let cardObj = cardObjMap.get(compositeId);
+                if (!cardObj) {
+                    cardObj = processScryfallCard(card, 0);
+                    cardObj.id = compositeId; 
+                    cardObj.rawId = card.id;
+                    cardObj.isFoil = isFoilQuery;
+                    if (queryStr.includes('is:serialized')) cardObj.isSerialized = true;
+
+                    cardObjMap.set(compositeId, cardObj);
                     baseCards.push(cardObj);
                 }
+                
+                processedPool.push(cardObj);
 
                 if (hitPoolKeys && hitPoolKeys.has(poolKey)) {
                     hitsSet.add(cardObj);
@@ -531,7 +542,7 @@ export async function ensureSetData(setKey) {
             rare: rarePool.length ? rarePool : baseCards,
             uncommon: uncommonPool.length ? uncommonPool : baseCards,
             common: commonPool.length ? commonPool : baseCards,
-            hits: hitPool.length ? hitPool : (rarePool.length ? rarePool : baseCards)
+            hits: hitPool.length ? hitPool : rarePool
         }
     };
 
@@ -599,15 +610,18 @@ export async function ensureSetData(setKey) {
     return config;
 }
 
-/**
- * Renders the Lorwyn Eclipsed (ECL) Collection Checklist broken down by 8 sub-category slots.
- * Maps card pools directly from ECL_SLOT_QUERIES and attaches window.showLightbox click handlers.
- */
 export function renderECLSubcategoryChecklist(containerEl, savedBaseIds, baseCards, config) {
     const setConfig = config || MTG_CONFIGS.mtgecl || {};
     const pools = setConfig.collectorPools || {};
 
-    // Helper to identify serialized cards
+    let allSavedIds = new Set(savedBaseIds.map(String));
+    try {
+        const lsData = JSON.parse(localStorage.getItem('mtgecl')) || {};
+        if (Array.isArray(lsData.spectra)) {
+            lsData.spectra.forEach(id => allSavedIds.add(String(id)));
+        }
+    } catch(e) {}
+
     const isSerializedCard = (card) => {
         const name = (card.name || '').toLowerCase();
         return card.isSerialized || card.id === 'serializedBitterbloom' || name.includes('serialized') || (name.includes('bitterbloom bearer') && card.isFoil && !name.includes('nonfoil'));
@@ -629,7 +643,7 @@ export function renderECLSubcategoryChecklist(containerEl, savedBaseIds, baseCar
                 ...(pools.foilFableMythic || []),
                 ...(pools.foilFableRare || []),
                 ...(pools.foilExtendedRare || [])
-            ]
+            ].filter(c => c.isFoil)
         },
         {
             id: "slot-2",
@@ -642,7 +656,7 @@ export function renderECLSubcategoryChecklist(containerEl, savedBaseIds, baseCar
                 ...(pools.fableMythic || []),
                 ...(pools.fableRare || []),
                 ...(pools.extendedRare || [])
-            ]
+            ].filter(c => !c.isFoil)
         },
         {
             id: "slot-3",
@@ -657,7 +671,6 @@ export function renderECLSubcategoryChecklist(containerEl, savedBaseIds, baseCar
             id: "slot-4",
             name: "Slot 4: Traditional Foil Rare/Mythic",
             totalCards: 93,
-            // Filter out Serialized cards so they remain EXCLUSIVELY in Slot 1
             getCards: () => [
                 ...(pools.foilMythic || []).filter(c => !isSerializedCard(c)),
                 ...(pools.foilRare || [])
@@ -721,6 +734,17 @@ export function renderECLSubcategoryChecklist(containerEl, savedBaseIds, baseCar
         return 12;
     };
 
+    // Helper function to check if card has been pulled
+    const isCardCollected = (card) => {
+        const cid = String(card.id);
+        const rawId = card.rawId ? String(card.rawId) : cid;
+        const num = String(card.n);
+
+        return allSavedIds.has(cid) || 
+               allSavedIds.has(rawId) || 
+               allSavedIds.has(num);
+    };
+
     let html = `<div class="checklist-subcategories-container">`;
 
     subCategorySlots.forEach((slot) => {
@@ -737,7 +761,7 @@ export function renderECLSubcategoryChecklist(containerEl, savedBaseIds, baseCar
 
         slotCards.sort((a, b) => getCardRarityWeight(a) - getCardRarityWeight(b));
 
-        const collectedInSlot = slotCards.filter((c) => savedBaseIds.includes(String(c.n))).length;
+        const collectedInSlot = slotCards.filter(isCardCollected).length;
 
         html += `
             <div class="checklist-subcategory-group" id="${slot.id}" style="margin-bottom: 2rem;">
@@ -749,7 +773,7 @@ export function renderECLSubcategoryChecklist(containerEl, savedBaseIds, baseCar
         `;
 
         slotCards.forEach((card) => {
-            const isPulled = savedBaseIds.includes(String(card.n));
+            const isPulled = isCardCollected(card);
             const safeName = card.name.replace(/"/g, '&quot;');
             const backImg = card.backImg || "card_images/mtg_sets/Magic_the_Gathering_Card_Back.jpg";
             const displayNum = card.collectorNumber || card.n;
