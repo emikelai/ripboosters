@@ -1,0 +1,63 @@
+// sets/mtg/mtg-hob.js
+
+export const HOB_CONFIG = {
+    setKey: 'mtghob',
+    name: 'The Hobbit (Collector Booster)',
+    code: 'hob',
+    year: 2026,
+    isCollectorBooster: true,
+    maxCount: 321,
+    coverImage: 'card_images/mtg_sets/mtg_hob_collectorboosterwrapper.jpg',
+    themeColor: '#1b4f72',
+    hitCardNames: ["Bilbo Baggins", "Thorin Oakenshield", "Smaug the Magnificent", "Gollum", "Gandalf"],
+
+    hitPoolKeys: new Set([
+        'surgeFoilClassicArtist',
+        'surgeFoilDragonHoardRare',
+        'surgeFoilDragonHoardMythic',
+        'surgeFoilBookCoverRare',
+        'surgeFoilBookCoverMythic',
+        'foilDwarvishLanguage',
+        'smaugHeadliner'
+    ]),
+
+    slotQueries: {
+        foilCommon: "set:hob r:c is:foil -type:basic -(type:land AND ci=2)",
+        foilCommonDualLand: "set:hob r:c is:foil -type:basic type:land ci=2",
+        foilCommonScene: "set:hob (cn=200 OR cn=209)",
+        foilUncommon: "set:hob r:uc is:foil -type:basic -(type:land AND ci=2)",
+        foilUncommonScene: "set:hob r:uc is:foil -type:basic -(type:land AND ci=2) (cn=199 OR cn=202 OR cn=203 OR cn=206)",
+        foilDragonHoardUncommon: "set:hob r:uc is:foil -type:basic -(type:land AND ci=2) cn>=214 cn<=238",
+        surgeFoilDragonHoardUncommon: "set:hob r:uc is:surge is:foil",
+        foilLand: "e:hob cn>=194 cn<=198",
+        foilRare: "set:hob r:r is:foil",
+        foilMythic: "set:hob r:m is:foil",
+        hobSceneRare: "e:hob (cn=201 OR cn=204 OR cn=205 OR cn=207 OR cn=208 OR cn=210 OR cn=211 OR cn=212 OR cn=213)",
+        hocSceneRare: "e:hoc cn>=1 cn<=12",
+        dragonHoardRare: "set:hob r:r is:nonfoil -type:basic -(type:land AND ci=2) cn>=214 cn<=238",
+        dragonHoardMythic: "set:hob r:m is:nonfoil -type:basic -(type:land AND ci=2) cn>=214 cn<=238",
+        bookCoverRare: "e:hob cn>=239 cn<=248 r:r",
+        bookCoverMythic: "e:hob cn>=239 cn<=248 r:m",
+        classicArtist: "e:hoc cn>=13 cn<=52",
+        dwarvishLanguage: "e:hoc cn>=93 cn<=97",
+        extendedHobRare: "e:hob cn>=285 cn<=312 r:r is:nonfoil",
+        extendedHobMythic: "e:hob cn>=285 cn<=312 r:m is:nonfoil",
+        extendedHocMythic: "e:hoc cn>=98 cn<=106",
+        foilHobSceneRare: "e:hob is:foil (cn=199 OR cn=201 OR cn=204 OR cn=205 OR cn=207 OR cn=210 OR cn=211 OR cn=212 OR cn=213)",
+        foilDragonHoardRare: "set:hob r:r is:foil -type:basic -(type:land AND ci=2) cn>=214 cn<=238",
+        foilDragonHoardMythic: "set:hob r:m is:foil -type:basic -(type:land AND ci=2) cn>=214 cn<=238",
+        surgeFoilDragonHoardRare: "e:hob cn>=250 cn<=274 is:surge r:r",
+        surgeFoilDragonHoardMythic: "e:hob cn>=250 cn<=274 is:surge r:m",
+        foilBookCoverRare: "e:hob cn>=239 cn<=248 is:foil r:r",
+        foilBookCoverMythic: "e:hob cn>=239 cn<=248 is:foil r:m",
+        surgeFoilBookCoverRare: "e:hob cn>=275 cn<=284 r:r",
+        surgeFoilBookCoverMythic: "e:hob cn>=275 cn<=284 r:m",
+        surgeFoilClassicArtist: "e:hoc cn>=53 cn<=92",
+        foilDwarvishLanguage: "e:hoc cn>=93 cn<=97 is:foil",
+        foilExtendedHobRare: "e:hob cn>=285 cn<=312 r:r is:foil",
+        foilExtendedHobMythic: "e:hob cn>=285 cn<=312 r:m is:foil",
+        smaugHeadliner: "e:hob cn>=249 cn<=249",
+        foilToken: "set:thob is:foil",
+        artCard: "set:ahob"
+    }
+};
