@@ -82,7 +82,7 @@ export function renderECLSubcategoryChecklist(containerEl, savedBaseIds, baseCar
                 ...(pools.foilFableMythic || []),
                 ...(pools.foilFableRare || []),
                 ...(pools.foilExtendedRare || [])
-            ]
+            ].filter(card => card && String(card.id).endsWith('_f'))
         },
         {
             id: "slot-2",
@@ -95,7 +95,7 @@ export function renderECLSubcategoryChecklist(containerEl, savedBaseIds, baseCar
                 ...(pools.fableMythic || []),
                 ...(pools.fableRare || []),
                 ...(pools.extendedRare || [])
-            ]
+            ].filter(card => card && String(card.id).endsWith('_nf'))
         },
         {
             id: "slot-3",
@@ -104,7 +104,7 @@ export function renderECLSubcategoryChecklist(containerEl, savedBaseIds, baseCar
             getCards: () => [
                 ...(pools.eccMythicBorderless || []),
                 ...(pools.eccRareExtended || [])
-            ]
+            ].filter(card => card && String(card.id).endsWith('_nf'))
         },
         {
             id: "slot-4",
@@ -113,13 +113,13 @@ export function renderECLSubcategoryChecklist(containerEl, savedBaseIds, baseCar
             getCards: () => [
                 ...(pools.foilMythic || []),
                 ...(pools.foilRare || [])
-            ]
+            ].filter(card => card && String(card.id).endsWith('_f'))
         },
         {
             id: "slot-5",
             name: "Slot 5: Foil Full-Art Basic Land",
             totalCards: 5,
-            getCards: () => pools.foilLand || []
+            getCards: () => (pools.foilLand || []).filter(card => card && String(card.id).endsWith('_f'))
         },
         {
             id: "slot-6",
@@ -128,13 +128,13 @@ export function renderECLSubcategoryChecklist(containerEl, savedBaseIds, baseCar
             getCards: () => [
                 ...(pools.uncommonFable || []),
                 ...(pools.foilUncommon || [])
-            ]
+            ].filter(card => card && String(card.id).endsWith('_f'))
         },
         {
             id: "slot-7",
             name: "Slot 7: Traditional Foil Common",
             totalCards: 81,
-            getCards: () => pools.foilCommon || []
+            getCards: () => (pools.foilCommon || []).filter(card => card && String(card.id).endsWith('_f'))
         },
         {
             id: "slot-8",
@@ -147,14 +147,10 @@ export function renderECLSubcategoryChecklist(containerEl, savedBaseIds, baseCar
         }
     ];
 
+    // STRICT COMPOSITE MATCH: Compares exact composite ID ending in _f or _nf against LocalStorage
     const isCardCollected = (card) => {
         const cid = String(card.id || '');
-        const rawId = card.rawId ? String(card.rawId) : '';
-        const num = card.n ? String(card.n) : '';
-
-        return allSavedIds.has(cid) || 
-               (rawId && allSavedIds.has(rawId)) || 
-               (num && allSavedIds.has(num));
+        return cid ? allSavedIds.has(cid) : false;
     };
 
     let html = `<div class="checklist-subcategories-container">`;

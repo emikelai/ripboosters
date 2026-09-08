@@ -796,7 +796,8 @@ function initializePackOpenerScript(setKey) {
                         
                         for (let i = 0; i < count; i++) {
                             const pickedCard = sourcePool[Math.floor(Math.random() * sourcePool.length)];
-                            const cardSaveKey = String(pickedCard.id || pickedCard.rawId || pickedCard.n);
+                            // STRICT COMPOSITE ID: Always save pickedCard.id directly (ending in _f or _nf)
+                            const cardSaveKey = String(pickedCard.id);
                             
                             if (isHitSlot) {
                                 if (!savedData.spectra.map(String).includes(cardSaveKey)) savedData.spectra.push(cardSaveKey);
