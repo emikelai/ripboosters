@@ -530,7 +530,6 @@ function initializePackOpenerScript(setKey) {
             if (!container) return;
             container.innerHTML = '';
             
-            // Filter and deduplicate cards by collectorNumber
             const filteredCards = activeSetData.baseCards.filter(filterFn);
             const sceneMap = new Map();
 
@@ -548,13 +547,12 @@ function initializePackOpenerScript(setKey) {
                 const slot = document.createElement('div');
                 const rawId = String(card.rawId || card.id || card.n).replace(/_(f|nf)$/, '');
                 
-                // Check if base number or composite finishes exist in LocalStorage
                 const isCollected = savedData.base.some(savedId => {
                     const cleanSaved = String(savedId).replace(/_(f|nf)$/, '');
-                    return cleanSaved === rawId || cleanSaved === String(card.n) || cleanSaved === String(card.collectorNumber);
+                    return cleanSaved === rawId;
                 }) || savedData.spectra.some(savedId => {
                     const cleanSaved = String(savedId).replace(/_(f|nf)$/, '');
-                    return cleanSaved === rawId || cleanSaved === String(card.n) || cleanSaved === String(card.collectorNumber);
+                    return cleanSaved === rawId;
                 });
                 
                 slot.className = `col-slot ${isCollected ? 'filled' : 'no-image'}`;
@@ -821,13 +819,10 @@ function initializePackOpenerScript(setKey) {
                         for (let i = 0; i < count; i++) {
                             const rawPickedCard = sourcePool[Math.floor(Math.random() * sourcePool.length)];
                             
-                            // Clone object to prevent reference mutation bugs across pools
                             const pickedCard = { ...rawPickedCard };
                             
-                            // Extract raw Scryfall UUID (strip any legacy _f / _nf suffix)
                             const baseRawId = String(pickedCard.rawId || pickedCard.id || '').replace(/_(f|nf)$/, '');
                             
-                            // Force exact composite ID finish based strictly on the slot type
                             pickedCard.id = isFoilSlot ? `${baseRawId}_f` : `${baseRawId}_nf`;
                             pickedCard.rawId = baseRawId;
                             pickedCard.isFoil = isFoilSlot;
@@ -1253,33 +1248,25 @@ function initializePackOpenerScript(setKey) {
         }
 
         if (setKey === 'mtghob') {
-            const scene1Slots = document.querySelectorAll('[id^="col-hob-scene-hob-"]');
-            scene1Slots.forEach(slot => {
-                const parts = slot.id.split('-');
-                const cn = parts[parts.length - 1];
-                const isCollected = savedData.base.some(savedId => String(savedId).includes(cn)) || savedData.spectra.some(savedId => String(savedId).includes(cn));
-                
-                if (isCollected && slot.classList.contains('no-image')) {
-                    const card = activeSetData.baseCards.find(c => String(c.collectorNumber || c.n) === cn);
-                    if (card) {
-                        const frontImg = card.frontImg || getImgPath(card.n, 'front', false);
-                        const backImg = card.backImg || getImgPath(card.n, 'back', false);
-                        slot.className = 'col-slot filled';
-                        slot.innerHTML = `<img src="${frontImg}">`;
-                        slot.onclick = () => showLightbox(frontImg, backImg);
-                    }
-                }
-            });
+            activeSetData.baseCards.forEach(card => {
+                const cn = parseInt(card.collectorNumber || card.n, 10);
+                const isHobScene1 = (card.setCode === 'hob' || !card.setCode) && cn >= 199 && cn <= 204;
+                const isHobScene2 = (card.setCode === 'hob' || !card.setCode) && cn >= 205 && cn <= 213;
+                const isHocScene3 = card.setCode === 'hoc' && cn >= 1 && cn <= 6;
 
-            const scene3Slots = document.querySelectorAll('[id^="col-hob-scene-hoc-"]');
-            scene3Slots.forEach(slot => {
-                const parts = slot.id.split('-');
-                const cn = parts[parts.length - 1];
-                const isCollected = savedData.base.some(savedId => String(savedId).includes(cn)) || savedData.spectra.some(savedId => String(savedId).includes(cn));
-
-                if (isCollected && slot.classList.contains('no-image')) {
-                    const card = activeSetData.baseCards.find(c => c.setCode === 'hoc' && String(c.collectorNumber || c.n) === cn);
-                    if (card) {
+                if (isHobScene1 || isHobScene2 || isHocScene3) {
+                    const slot = document.getElementById(`col-hob-scene-${card.setCode || 'hob'}-${card.collectorNumber || card.n}`);
+                    const rawId = String(card.rawId || card.id || card.n).replace(/_(f|nf)$/, '');
+                    
+                    const isCollected = savedData.base.some(savedId => {
+                        const cleanSaved = String(savedId).replace(/_(f|nf)$/, '');
+                        return cleanSaved === rawId;
+                    }) || savedData.spectra.some(savedId => {
+                        const cleanSaved = String(savedId).replace(/_(f|nf)$/, '');
+                        return cleanSaved === rawId;
+                    });
+                    
+                    if (slot && isCollected && slot.classList.contains('no-image')) {
                         const frontImg = card.frontImg || getImgPath(card.n, 'front', false);
                         const backImg = card.backImg || getImgPath(card.n, 'back', false);
                         slot.className = 'col-slot filled';
