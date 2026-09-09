@@ -24,11 +24,11 @@ export const ECL_CONFIG = {
 
     slotQueries: {
         foilCommon: "set:ecl r:c is:foil -type:basic",
-        foilUncommon: "set:ecl r:u is:foil",
+        foilUncommon: "set:ecl r:u is:foil -is:showcase",
         uncommonFable: "set:ecl r:u is:foil (frame:showcase OR border:borderless OR frame:extendedart)",
         foilLand: "(type:land type:basic) set:ecl is:fullart is:foil",
         foilRare: "set:ecl rarity:r is:foil",
-        foilMythic: "set:ecl rarity:m is:foil",
+        foilMythic: "set:ecl rarity:m is:foil -is:showcase",
         eccRareExtended: "is:extended set:ecc rarity:r",
         eccMythicBorderless: "is:borderless set:ecc rarity:m",
         extendedRare: "(rarity:r OR rarity:m) set:ecl is:nonfoil is:extendedart",
@@ -109,7 +109,7 @@ export function renderECLSubcategoryChecklist(containerEl, savedBaseIds, baseCar
         {
             id: "slot-4",
             name: "Slot 4: Traditional Foil Rare/Mythic",
-            totalCards: 93,
+            totalCards: 87,
             getCards: () => [
                 ...(pools.foilMythic || []),
                 ...(pools.foilRare || [])
