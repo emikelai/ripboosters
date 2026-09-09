@@ -161,7 +161,6 @@ async function fetchSetDataModule(setKey) {
         DATA_MAP[setKey] = fetchedConfig;
         return fetchedConfig;
     } else if (setConfig.dataFile) {
-        // Resolve path relative to js/ directory (moving up to root)
         const path = setConfig.dataFile.startsWith('./') 
             ? `../${setConfig.dataFile.slice(2)}` 
             : setConfig.dataFile;
@@ -794,9 +793,22 @@ function initializePackOpenerScript(setKey) {
                         const sourcePool = (poolArray && poolArray.length) ? poolArray : activeSetData.pools.rare;
                         if (!sourcePool || !sourcePool.length) return;
                         
+                        const isFoilSlot = labelText.toLowerCase().includes('foil') && !labelText.toLowerCase().includes('non-foil');
+
                         for (let i = 0; i < count; i++) {
-                            const pickedCard = sourcePool[Math.floor(Math.random() * sourcePool.length)];
-                            // STRICT COMPOSITE ID: Always save pickedCard.id directly (ending in _f or _nf)
+                            const rawPickedCard = sourcePool[Math.floor(Math.random() * sourcePool.length)];
+                            
+                            // Clone object to prevent reference mutation bugs across pools
+                            const pickedCard = { ...rawPickedCard };
+                            
+                            // Extract raw Scryfall UUID (strip any legacy _f / _nf suffix)
+                            const baseRawId = String(pickedCard.rawId || pickedCard.id || '').replace(/_(f|nf)$/, '');
+                            
+                            // Force exact composite ID finish based strictly on the slot type
+                            pickedCard.id = isFoilSlot ? `${baseRawId}_f` : `${baseRawId}_nf`;
+                            pickedCard.rawId = baseRawId;
+                            pickedCard.isFoil = isFoilSlot;
+
                             const cardSaveKey = String(pickedCard.id);
                             
                             if (isHitSlot) {
@@ -804,6 +816,7 @@ function initializePackOpenerScript(setKey) {
                             } else {
                                 if (!savedData.base.map(String).includes(cardSaveKey)) savedData.base.push(cardSaveKey);
                             }
+                            
                             const slotLabel = count > 1 ? `${labelText} #${i + 1}` : labelText;
                             mainContainer.appendChild(createPackCardElement(pickedCard, isHitSlot, delay, slotLabel, rarityType));
                             delay += step;
