@@ -1,6 +1,6 @@
 // js/app.js
 import { SETS_REGISTRY, STATIC_ROUTES } from '../sets-config.js';
-import { MTG_CONFIGS, ensureSetData, renderECLSubcategoryChecklist } from '../data-mtg.js';
+import { MTG_CONFIGS, ensureSetData, renderECLSubcategoryChecklist, renderHOBSubcategoryChecklist } from '../data-mtg.js';
 import { initModals, openSetAboutModal, showLightbox } from './ui-modals.js';
 import { navigateToView } from './router.js';
 
@@ -267,7 +267,9 @@ function loadViewLayout(setKey) {
         const activeWrapper = getRandomPackWrapper(setKey, setConfig.coverImage);
         packCoverHTML = `<img id="packWrapperImg" src="${activeWrapper}" alt="The Uncanny X-Men 1992 pack" style="width:100%;height:100%;object-fit:cover;border-radius:6px;">`;
     } else if (setConfig && setConfig.isMtg) {
-        const config = DATA_MAP[setKey];
+        const config = DATA_MAP[setKey] || setConfig;
+        const setName = setConfig.name || (config ? config.name : 'MTG');
+        const setMaxCount = setConfig.totalCards || (config ? config.maxCount : 0);
 
         rowLabelHTML = `
             <div class="mtg-row" id="mtgMainRow" style="display:none;">
@@ -332,9 +334,9 @@ function loadViewLayout(setKey) {
             <div class="collection-header" style="margin-top: 2.5rem;">
                 <div>
                     <h2 class="collection-title">Collection Checklist</h2>
-                    <p class="collection-sub">${config.name} Complete Set</p>
+                    <p class="collection-sub">${setName} Complete Set</p>
                 </div>
-                <span class="collection-count" id="collectionCount">0/${config.maxCount}</span>
+                <span class="collection-count" id="collectionCount">0/${setMaxCount}</span>
             </div>
             <div id="eclSubcategoriesContainer"></div>
             <div class="collection-grid" id="collectionGrid"></div>`;
@@ -520,7 +522,10 @@ function initializePackOpenerScript(setKey) {
     if (setKey === 'mtgecl' && containerECLSub) {
         gridBase.style.display = 'none';
         renderECLSubcategoryChecklist(containerECLSub, savedData.base, activeSetData);
-    } else if (setKey === 'mtghob') {
+    } else if (setKey === 'mtghob' && containerECLSub) {
+        gridBase.style.display = 'none';
+        renderHOBSubcategoryChecklist(containerECLSub, savedData.base, activeSetData);
+
         const renderHobScene = (container, filterFn) => {
             if (!container) return;
             container.innerHTML = '';
@@ -555,7 +560,7 @@ function initializePackOpenerScript(setKey) {
         renderHobScene(gridHobScene3, c => c.setCode === 'hoc' && parseInt(c.collectorNumber || c.n, 10) >= 1 && parseInt(c.collectorNumber || c.n, 10) <= 6);
     }
 
-    if (gridBase && setKey !== 'mtgecl') {
+    if (gridBase && setKey !== 'mtgecl' && setKey !== 'mtghob') {
         let loopPool = activeSetData.baseCards;
         if (setKey === 'mu1990') {
             loopPool = loopPool.filter(card => parseInt(String(card.n).trim().replace(/^\D+/g, ''), 10) <= 162);
@@ -1201,6 +1206,8 @@ function initializePackOpenerScript(setKey) {
     function refreshGridSlots() {
         if (setKey === 'mtgecl' && containerECLSub) {
             renderECLSubcategoryChecklist(containerECLSub, savedData.base, activeSetData);
+        } else if (setKey === 'mtghob' && containerECLSub) {
+            renderHOBSubcategoryChecklist(containerECLSub, savedData.base, activeSetData);
         } else {
             savedData.base.forEach(k => {
                 const slot = document.getElementById(`col-base-${k}`);

@@ -1,11 +1,12 @@
 // data-mtg.js - Universal Scryfall API Fetch Engine & Collector Set Loader
 import { ECL_CONFIG, renderECLSubcategoryChecklist as renderECL } from './sets/mtg/mtg-ecl.js';
-import { HOB_CONFIG } from './sets/mtg/mtg-hob.js';
+import { HOB_CONFIG, renderHOBSubcategoryChecklist as renderHOB } from './sets/mtg/mtg-hob.js';
 import { TMT_CONFIG } from './sets/mtg/mtg-tmt.js';
 import { SOS_CONFIG } from './sets/mtg/mtg-sos.js';
 import { MSH_CONFIG } from './sets/mtg/mtg-msh.js';
 
 export const renderECLSubcategoryChecklist = renderECL;
+export const renderHOBSubcategoryChecklist = renderHOB;
 
 const ABU_POWER_AND_DUALS = [
     "Black Lotus", "Mox Sapphire", "Mox Jet", "Mox Ruby", "Mox Emerald", "Mox Pearl",
@@ -173,103 +174,42 @@ export async function ensureSetData(setKey) {
             for (let t = 0; t < collectorPools.foilToken.length; t++) {
                 if (collectorPools.foilToken[t].backImg === "card_images/mtg_sets/Magic_the_Gathering_Card_Back.jpg") {
                     const partnerIdx = (t + 1) % collectorPools.foilToken.length;
-                    collectorPools.foilToken[t].backImg = collectorPools.foilToken[partnerIdx].frontImg;
+                    if (collectorPools.foilToken[partnerIdx] && collectorPools.foilToken[partnerIdx].frontImg) {
+                        collectorPools.foilToken[t].backImg = collectorPools.foilToken[partnerIdx].frontImg;
+                    }
                 }
             }
         }
 
-        baseCards.sort((a, b) => {
-            const getOrder = (card) => {
-                if (card.setCode.startsWith('t')) return 2;
-                if (card.setCode.startsWith('a')) return 3;
-                return 1;
-            };
-            return getOrder(a) - getOrder(b);
-        });
-
-        baseCards.forEach((card, idx) => {
-            card.n = idx + 1;
-        });
-
-        const hitPool = Array.from(hitsSet);
-        const rarePool = (collectorPools.foilRare || []).concat(collectorPools.foilMythic || []);
-        const uncommonPool = collectorPools.foilUncommon || [];
-        const commonPool = collectorPools.foilCommon || [];
-
-        const dataset = {
-            maxCount: baseCards.length,
-            baseCards: baseCards,
-            pools: {
-                rare: rarePool.length ? rarePool : baseCards,
-                uncommon: uncommonPool.length ? uncommonPool : baseCards,
-                common: commonPool.length ? commonPool : baseCards,
-                hits: hitPool.length ? hitPool : rarePool
-            },
-            collectorPools: collectorPools
+        const hits = Array.from(hitsSet);
+        cache[setKey] = {
+            baseCards,
+            collectorPools,
+            pools: { hits }
         };
+        return cache[setKey];
+    } else {
+        const query = `set:${config.code}`;
+        const rawCards = await fetchScryfallQuery(query);
+        let count = 1;
+        const processedCards = rawCards.map(c => processScryfallCard(c, count++));
 
-        Object.assign(config, dataset);
-        cache[setKey] = config;
-        return config;
+        const rarePool = processedCards.filter(c => c.rarity === 'rare' || c.rarity === 'mythic');
+        const uncommonPool = processedCards.filter(c => c.rarity === 'uncommon');
+        const commonPool = processedCards.filter(c => c.rarity === 'common');
+
+        const hitsNames = config.hitCardNames || [];
+        const hitsPool = processedCards.filter(c => hitsNames.includes(c.name));
+
+        cache[setKey] = {
+            baseCards: processedCards,
+            pools: {
+                rare: rarePool.length ? rarePool : processedCards,
+                uncommon: uncommonPool.length ? uncommonPool : processedCards,
+                common: commonPool.length ? commonPool : processedCards,
+                hits: hitsPool
+            }
+        };
+        return cache[setKey];
     }
-
-    let searchQuery = config.searchQuery || `set:${config.code} unique:prints`;
-    let allCards = await fetchScryfallQuery(searchQuery);
-
-    if (allCards.length === 0) {
-        throw new Error(`Unable to load card data for set ${setKey} from Scryfall.`);
-    }
-
-    const baseCards = [];
-    const rarePool = [];
-    const uncommonPool = [];
-    const commonPool = [];
-    const hitPool = [];
-
-    let count = 1;
-    allCards.forEach(card => {
-        const cardObj = processScryfallCard(card, count);
-        baseCards.push(cardObj);
-
-        if (card.rarity === 'rare' || card.rarity === 'mythic') rarePool.push(cardObj);
-        else if (card.rarity === 'uncommon') uncommonPool.push(cardObj);
-        else commonPool.push(cardObj);
-
-        const hitList = config.hitCardNames || [];
-        const isHit = hitList.some(hitName =>
-            card.name.toLowerCase() === hitName.toLowerCase() ||
-            card.name.toLowerCase().startsWith(hitName.toLowerCase())
-        );
-
-        if (isHit || card.rarity === 'mythic') {
-            hitPool.push(cardObj);
-        }
-        count++;
-    });
-
-    const dataset = {
-        maxCount: baseCards.length,
-        baseCards: baseCards,
-        pools: {
-            rare: rarePool.length ? rarePool : baseCards,
-            uncommon: uncommonPool.length ? uncommonPool : baseCards,
-            common: commonPool.length ? commonPool : baseCards,
-            hits: hitPool.length ? hitPool : rarePool
-        }
-    };
-
-    if (setKey === 'mtgtmt') {
-        const { buildTMTCollectorPools } = await import('./sets/mtg/mtg-tmt.js');
-        dataset.collectorPools = buildTMTCollectorPools(baseCards, dataset);
-    } else if (setKey === 'mtgsos') {
-        const { buildSOSCollectorPools } = await import('./sets/mtg/mtg-sos.js');
-        dataset.collectorPools = buildSOSCollectorPools(baseCards, dataset);
-    } else if (setKey === 'mtgmsh') {
-        const { buildMSHCollectorPools } = await import('./sets/mtg/mtg-msh.js');
-        dataset.collectorPools = buildMSHCollectorPools(baseCards, dataset);
-    }
-
-    Object.assign(config, dataset);
-    cache[setKey] = config;
-    return config;
 }
