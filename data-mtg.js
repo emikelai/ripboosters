@@ -1,12 +1,13 @@
 // data-mtg.js - Universal Scryfall API Fetch Engine & Collector Set Loader
 import { ECL_CONFIG, renderECLSubcategoryChecklist as renderECL } from './sets/mtg/mtg-ecl.js';
 import { HOB_CONFIG, renderHOBSubcategoryChecklist as renderHOB } from './sets/mtg/mtg-hob.js';
+import { MSH_CONFIG, renderMSHSubcategoryChecklist as renderMSH } from './sets/mtg/mtg-msh.js';
 import { TMT_CONFIG } from './sets/mtg/mtg-tmt.js';
 import { SOS_CONFIG } from './sets/mtg/mtg-sos.js';
-import { MSH_CONFIG } from './sets/mtg/mtg-msh.js';
 
 export const renderECLSubcategoryChecklist = renderECL;
 export const renderHOBSubcategoryChecklist = renderHOB;
+export const renderMSHSubcategoryChecklist = renderMSH;
 
 const ABU_POWER_AND_DUALS = [
     "Black Lotus", "Mox Sapphire", "Mox Jet", "Mox Ruby", "Mox Emerald", "Mox Pearl",
@@ -126,7 +127,7 @@ export async function ensureSetData(setKey) {
     const config = MTG_CONFIGS[setKey];
     if (!config) throw new Error(`Unknown MTG Set Key: ${setKey}`);
 
-    if (setKey === 'mtgecl' || setKey === 'mtghob') {
+    if (setKey === 'mtgecl' || setKey === 'mtghob' || setKey === 'mtgmsh') {
         const collectorPools = {};
         const baseCards = [];
         const hitsSet = new Set();

@@ -1,6 +1,6 @@
 // js/app.js
 import { SETS_REGISTRY, STATIC_ROUTES } from '../sets-config.js';
-import { MTG_CONFIGS, ensureSetData, renderECLSubcategoryChecklist, renderHOBSubcategoryChecklist } from '../data-mtg.js';
+import { MTG_CONFIGS, ensureSetData, renderECLSubcategoryChecklist, renderHOBSubcategoryChecklist, renderMSHSubcategoryChecklist } from '../data-mtg.js';
 import { initModals, openSetAboutModal, showLightbox } from './ui-modals.js';
 import { navigateToView } from './router.js';
 
@@ -286,7 +286,7 @@ function loadViewLayout(setKey) {
         else if (setKey === "mtgecl") showcaseSubText = "Serialized Bitterbloom Bearer &middot; Japan Showcase Fracture Foil &middot; Borderless Nonland Mythic &middot; Reversible Shock Land &middot; Borderless Nonland Rare &middot; Fable Frame Mythic &middot; Japan Showcase Foil &middot; Special Guests";
         else if (setKey === "mtgtmt") showcaseSubText = "Kevin Eastman Signatures & Sewer Frames";
         else if (setKey === "mtgsos") showcaseSubText = "Japanese Mystical Archive & Serialized Emeritus";
-        else if (setKey === "mtgmsh") showcaseSubText = "Avenger Mythics & Comic Panel Showcases";
+        else if (setKey === "mtgmsh") showcaseSubText = "Cosmic Foil Mind Stone &middot; Borderless Gauntlet Mind Stone &middot; Classic Comic Foil &middot; Panel Mythic &middot; Logo Mythic &middot; Scene Mythic &middot; Extended Mythic &middot; Source Material Foil";
         else if (setKey === "mtghob") showcaseSubText = "Gleaming Gold Smaug the Magnificent &middot; Foil Dwarvish Language &middot; Surge Foil Book Cover Mythic &middot; Surge Foil Book Cover Rare &middot; Surge Foil Dragon Hoard Mythic &middot; Surge Foil Dragon Hoard Rare &middot; Surge Foil Classic Artist";
 
         const subMarkup = showcaseSubText ? `<p class="collection-sub" style="color:#b08d24;">${showcaseSubText}</p>` : ``;
@@ -574,9 +574,12 @@ function initializePackOpenerScript(setKey) {
         renderHobScene(gridHobScene1, c => (c.setCode === 'hob' || !c.setCode) && parseInt(c.collectorNumber || c.n, 10) >= 199 && parseInt(c.collectorNumber || c.n, 10) <= 204);
         renderHobScene(gridHobScene2, c => (c.setCode === 'hob' || !c.setCode) && parseInt(c.collectorNumber || c.n, 10) >= 205 && parseInt(c.collectorNumber || c.n, 10) <= 213);
         renderHobScene(gridHobScene3, c => c.setCode === 'hoc' && parseInt(c.collectorNumber || c.n, 10) >= 1 && parseInt(c.collectorNumber || c.n, 10) <= 6);
+    } else if (setKey === 'mtgmsh' && containerECLSub) {
+        gridBase.style.display = 'none';
+        renderMSHSubcategoryChecklist(containerECLSub, savedData.base, activeSetData);
     }
 
-    if (gridBase && setKey !== 'mtgecl' && setKey !== 'mtghob') {
+    if (gridBase && setKey !== 'mtgecl' && setKey !== 'mtghob' && setKey !== 'mtgmsh') {
         let loopPool = activeSetData.baseCards;
         if (setKey === 'mu1990') {
             loopPool = loopPool.filter(card => parseInt(String(card.n).trim().replace(/^\D+/g, ''), 10) <= 162);
@@ -717,6 +720,30 @@ function initializePackOpenerScript(setKey) {
                     cPools.foilFableMythic,
                     cPools.japanShowcaseFoil,
                     cPools.foilSpecialGuests
+                ];
+
+                sortedHits.sort((a, b) => {
+                    const getRank = (card) => {
+                        for (let r = 0; r < poolRarityOrder.length; r++) {
+                            if (poolRarityOrder[r] && poolRarityOrder[r].some(c => (c.id && c.id === card.id) || c.n === card.n)) {
+                                return r;
+                            }
+                        }
+                        return 99;
+                    };
+                    return getRank(a) - getRank(b);
+                });
+            } else if (setKey === 'mtgmsh') {
+                const cPools = activeSetData.collectorPools || {};
+                const poolRarityOrder = [
+                    cPools.cosmicMindStone,
+                    cPools.borderlessGauntlet,
+                    cPools.classicComicFoil,
+                    cPools.foilPanelMythic,
+                    cPools.foilLogoMythic,
+                    cPools.foilSceneMythic,
+                    cPools.foilExtendedMythic,
+                    cPools.sourceMaterialFoil
                 ];
 
                 sortedHits.sort((a, b) => {
@@ -1063,6 +1090,115 @@ function initializePackOpenerScript(setKey) {
                         const targetTokenPool = tokenRoll < 65.0 ? cPools.foilToken : cPools.artCard;
                         appendCardSlot(targetTokenPool, '1 Art Card or Foil Double-Sided Token', 'common', 1, false);
 
+                    } else if (setKey === 'mtgmsh') {
+                        const cPools = activeSetData.collectorPools || {};
+
+                        // Slot 1: 1 Foil Booster Fun Rare / Mythic
+                        const rollBF = Math.random() * 100;
+                        let poolBF = cPools.foilExtendedRare;
+                        let isHitSlot1 = false;
+
+                        if (rollBF < 31.8) poolBF = cPools.foilExtendedRare;
+                        else if (rollBF < 31.8 + 2.7) poolBF = cPools.foilExtendedMythic;
+                        else if (rollBF < 31.8 + 2.7 + 7.3) poolBF = cPools.foilSceneRare;
+                        else if (rollBF < 31.8 + 2.7 + 7.3 + 4.0) { poolBF = cPools.foilSceneMythic; isHitSlot1 = true; }
+                        else if (rollBF < 31.8 + 2.7 + 7.3 + 4.0 + 17.2) poolBF = cPools.foilLogoRare;
+                        else if (rollBF < 31.8 + 2.7 + 7.3 + 4.0 + 17.2 + 3.6) { poolBF = cPools.foilLogoMythic; isHitSlot1 = true; }
+                        else if (rollBF < 31.8 + 2.7 + 7.3 + 4.0 + 17.2 + 3.6 + 13.9) poolBF = cPools.foilPanelRare;
+                        else if (rollBF < 31.8 + 2.7 + 7.3 + 4.0 + 17.2 + 3.6 + 13.9 + 3.0) { poolBF = cPools.foilPanelMythic; isHitSlot1 = true; }
+                        else if (rollBF < 31.8 + 2.7 + 7.3 + 4.0 + 17.2 + 3.6 + 13.9 + 3.0 + 6.6) poolBF = cPools.foilBorderlessRareLand;
+                        else if (rollBF < 31.8 + 2.7 + 7.3 + 4.0 + 17.2 + 3.6 + 13.9 + 3.0 + 6.6 + 9.9) { poolBF = cPools.classicComicFoil; isHitSlot1 = true; }
+                        else if (rollBF < 31.8 + 2.7 + 7.3 + 4.0 + 17.2 + 3.6 + 13.9 + 3.0 + 6.6 + 9.9 + 0.8) { poolBF = cPools.borderlessGauntlet; isHitSlot1 = true; }
+                        else { poolBF = cPools.cosmicMindStone; isHitSlot1 = true; }
+
+                        appendCardSlot(poolBF, '1 Foil Booster Fun Rare / Mythic', 'rare', 1, isHitSlot1);
+
+                        // Slot 2: 1 Source Material Card (75% Non-foil / 25% Foil)
+                        const rollSM = Math.random() < 0.25;
+                        const poolSM = rollSM ? cPools.sourceMaterialFoil : cPools.sourceMaterialNonfoil;
+                        const labelSM = rollSM ? '1 Traditional Foil Source Material' : '1 Non-Foil Source Material';
+                        appendCardSlot(poolSM, labelSM, 'rare', 1, rollSM);
+
+                        // Slot 3: 1 Non-Foil Booster Fun Rare / Mythic
+                        const rollNBF = Math.random() * 100;
+                        let poolNBF = cPools.extendedRareNonfoil;
+                        if (rollNBF < 27.8) poolNBF = cPools.extendedRareNonfoil;
+                        else if (rollNBF < 27.8 + 2.3) poolNBF = cPools.extendedMythicNonfoil;
+                        else if (rollNBF < 27.8 + 2.3 + 6.4) poolNBF = cPools.sceneRareNonfoil;
+                        else if (rollNBF < 27.8 + 2.3 + 6.4 + 4.9) poolNBF = cPools.sceneMythicNonfoil;
+                        else if (rollNBF < 27.8 + 2.3 + 6.4 + 4.9 + 15.1) poolNBF = cPools.logoRareNonfoil;
+                        else if (rollNBF < 27.8 + 2.3 + 6.4 + 4.9 + 15.1 + 4.6) poolNBF = cPools.logoMythicNonfoil;
+                        else if (rollNBF < 27.8 + 2.3 + 6.4 + 4.9 + 15.1 + 4.6 + 12.1) poolNBF = cPools.panelRareNonfoil;
+                        else if (rollNBF < 27.8 + 2.3 + 6.4 + 4.9 + 15.1 + 4.6 + 12.1 + 2.6) poolNBF = cPools.panelMythicNonfoil;
+                        else if (rollNBF < 27.8 + 2.3 + 6.4 + 4.9 + 15.1 + 4.6 + 12.1 + 2.6 + 6.95) poolNBF = cPools.sceneBoxHeroes;
+                        else if (rollNBF < 27.8 + 2.3 + 6.4 + 4.9 + 15.1 + 4.6 + 12.1 + 2.6 + 13.9) poolNBF = cPools.sceneBoxVillains;
+                        else if (rollNBF < 27.8 + 2.3 + 6.4 + 4.9 + 15.1 + 4.6 + 12.1 + 2.6 + 13.9 + 5.8) poolNBF = cPools.borderlessRareLandNonfoil;
+                        else poolNBF = cPools.borderlessSourceMaterialNonfoil;
+
+                        appendCardSlot(poolNBF, '1 Non-Foil Booster Fun Rare / Mythic', 'rare', 1, false);
+
+                        // Slot 4: 1 Non-Foil Commander Booster Fun Card
+                        const rollCmd = Math.random() * 100;
+                        let poolCmd = cPools.mscExtendedRareNonfoil;
+                        if (rollCmd < 93.6) poolCmd = cPools.mscExtendedRareNonfoil;
+                        else if (rollCmd < 93.6 + 3.2) poolCmd = cPools.mscExtendedMythicNonfoil;
+                        else poolCmd = cPools.mscBorderlessFaceCommander;
+
+                        appendCardSlot(poolCmd, '1 Non-Foil Commander Booster Fun', 'rare', 1, false);
+
+                        // Slot 5: 1 Traditional Foil Rare or Mythic
+                        const rollFR = Math.random() * 100;
+                        let poolFR = cPools.foilMainSetRare;
+                        if (rollFR < 45.0) poolFR = cPools.foilMainSetRare;
+                        else if (rollFR < 45.0 + 9.4) poolFR = cPools.foilMainSetMythic;
+                        else if (rollFR < 45.0 + 9.4 + 1.4) poolFR = cPools.foilSceneMdfcMythic;
+                        else if (rollFR < 45.0 + 9.4 + 1.4 + 1.4) poolFR = cPools.foilLogoMdfcMythic;
+                        else if (rollFR < 45.0 + 9.4 + 1.4 + 1.4 + 33.8) poolFR = cPools.mscFoilNewRare;
+                        else if (rollFR < 45.0 + 9.4 + 1.4 + 1.4 + 33.8 + 4.1) poolFR = cPools.mscFoilNewMythic;
+                        else if (rollFR < 45.0 + 9.4 + 1.4 + 1.4 + 33.8 + 4.1 + 3.0) poolFR = cPools.mscFoilRareReprint;
+                        else poolFR = cPools.welcomeMythic;
+
+                        appendCardSlot(poolFR, '1 Traditional Foil Rare or Mythic', 'rare', 1, false);
+
+                        // Slot 6: 1 Traditional Foil Basic Land
+                        const poolLand = (Math.random() < 0.5) ? cPools.landCityChaos : cPools.landCityCalm;
+                        appendCardSlot(poolLand, '1 Traditional Foil City Land', 'common', 1, false);
+
+                        // Slot 7: 1 Traditional Foil Scene Card
+                        const poolScene = (Math.random() < 0.20) ? cPools.foilSceneCommon : cPools.foilSceneUncommon;
+                        appendCardSlot(poolScene, '1 Traditional Foil Scene Card', 'uncommon', 1, false);
+
+                        // Slot 8: 1 Traditional Foil Uncommon MSC Card
+                        const poolUncMsc = (Math.random() < 0.186) ? cPools.mscFoilUncommonReprint : cPools.mscFoilUncommonNew;
+                        appendCardSlot(poolUncMsc, '1 Traditional Foil Uncommon MSC Card', 'uncommon', 1, false);
+
+                        // Slot 9-10: 2 Traditional Foil Common MSC Cards
+                        for (let i = 0; i < 2; i++) {
+                            const poolComMsc = (Math.random() < 0.50) ? cPools.mscFoilCommonReprint : cPools.mscFoilCommonNew;
+                            appendCardSlot(poolComMsc, `Traditional Foil Common MSC Card #${i + 1}`, 'common', 1, false);
+                        }
+
+                        // Slot 11-12: 2 Traditional Foil Uncommons
+                        for (let i = 0; i < 2; i++) {
+                            appendCardSlot(cPools.foilUncommon, `Traditional Foil Uncommon #${i + 1}`, 'uncommon', 1, false);
+                        }
+
+                        // Slot 13-15: 3 Traditional Foil Commons
+                        for (let i = 0; i < 3; i++) {
+                            const poolCom = (Math.random() < 0.11) ? cPools.foilCommonDualLand : cPools.foilCommon;
+                            appendCardSlot(poolCom, `Traditional Foil Common #${i + 1}`, 'common', 1, false);
+                        }
+
+                        // Slot 16: 1 Art Card or Token
+                        const rollArtToken = Math.random() * 100;
+                        if (rollArtToken < 64.0) {
+                            appendCardSlot(cPools.foilToken, '1 Traditional Foil Double-Sided Token', 'common', 1, false);
+                        } else {
+                            const isSigned = Math.random() < (4 / 36);
+                            const label = isSigned ? '1 Gold Stamped Signature Art Card' : '1 Art Card';
+                            appendCardSlot(cPools.artCard, label, 'common', 1, false);
+                        }
+
                     } else if (setKey === 'mtgsos') {
                         const cPools = activeSetData.collectorPools || {};
 
@@ -1076,22 +1212,6 @@ function initializePackOpenerScript(setKey) {
                         appendCardSlot(cPools.foilLand, '1 Traditional Foil Spellcraft Land', 'common', 1, false);
                         appendCardSlot(cPools.foilUncommon, 'Traditional Foil Uncommon', 'uncommon', 3, false);
                         appendCardSlot(cPools.foilCommon, 'Traditional Foil Common', 'common', 4, false);
-
-                    } else if (setKey === 'mtgmsh') {
-                        const cPools = activeSetData.collectorPools || {};
-
-                        appendCardSlot(cPools.foilBoosterFun, '1 Foil Booster Fun Rare / Mythic', 'rare', 1, true);
-                        appendCardSlot(cPools.nonfoilBoosterFun, '1 Non-foil Booster Fun Rare / Mythic', 'rare', 1, true);
-                        appendCardSlot(cPools.sourceMaterial, '1 Non-foil or Foil Source Material', 'rare', 1, true);
-                        appendCardSlot(cPools.commanderBoosterFun, '1 Non-foil Commander Booster Fun', 'rare', 1, false);
-                        appendCardSlot(cPools.foilRare, '1 Foil Rare / Mythic', 'rare', 1, true);
-                        appendCardSlot(cPools.foilScene, '1 Foil Common/Uncommon Scene Card', 'uncommon', 1, false);
-                        appendCardSlot(cPools.foilUncommonMsc, '1 Foil Uncommon MSC', 'uncommon', 1, false);
-                        appendCardSlot(cPools.foilUncommon, 'Foil Uncommon', 'uncommon', 2, false);
-                        appendCardSlot(cPools.foilLand, '1 Foil Basic Land', 'common', 1, false);
-                        appendCardSlot(cPools.foilCommonMsc, 'Foil Common MSC', 'common', 2, false);
-                        appendCardSlot(cPools.foilCommon, 'Foil Common', 'common', 3, false);
-                        appendCardSlot(cPools.artToken, '1 Art Card / Foil Double-Sided Token', 'common', 1, false);
 
                     } else {
                         const pickedRare = activeSetData.pools.rare[Math.floor(Math.random() * activeSetData.pools.rare.length)];
@@ -1221,6 +1341,8 @@ function initializePackOpenerScript(setKey) {
             renderECLSubcategoryChecklist(containerECLSub, savedData.base, activeSetData);
         } else if (setKey === 'mtghob' && containerECLSub) {
             renderHOBSubcategoryChecklist(containerECLSub, savedData.base, activeSetData);
+        } else if (setKey === 'mtgmsh' && containerECLSub) {
+            renderMSHSubcategoryChecklist(containerECLSub, savedData.base, activeSetData);
         } else {
             savedData.base.forEach(k => {
                 const slot = document.getElementById(`col-base-${k}`);

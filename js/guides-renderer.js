@@ -18,16 +18,16 @@ const DROP_RATE_GUIDES = {
         items: [
             "<strong>3 Traditional Foil Commons:</strong> Main Set Commons (89%), Common Dual Lands (11%).",
             "<strong>2 Traditional Foil Uncommons:</strong> Main Set Uncommons (100%).",
-            "<strong>2 Traditional Foil Common MSC Cards:</strong> Jumpstart Reprint (50%), New-to-Magic Jumpstart (50%).",
-            "<strong>1 Traditional Foil Uncommon MSC Card:</strong> Jumpstart Reprint (18.6%), New-to-Magic Jumpstart (81.4%).",
+            "<strong>2 Traditional Foil Common MSC Cards:</strong> Reprint from Jumpstart (50%), New-to-Magic Jumpstart (50%).",
+            "<strong>1 Traditional Foil Uncommon MSC Card:</strong> Reprint from Jumpstart (18.6%), New-to-Magic Jumpstart (81.4%).",
             "<strong>1 Traditional Foil Scene Card:</strong> Common Scene (20%), Uncommon Scene (80%).",
-            "<strong>1 Traditional Foil Basic Land:</strong> City Calm Land (50%), City Chaos Land (50%).",
-            "<strong>1 Traditional Foil Rare/Mythic:</strong> Main Set Rare (45%) / Mythic (9.4%), DFC Scene Mythic (1.4%), DFC Logo Mythic (1.4%), New Jumpstart Rare (33.8%) / Mythic (4.1%), Jumpstart Reprint Rare (3%), Welcome Deck Mythic (1.9%).",
+            "<strong>1 Traditional Foil Basic Land:</strong> City Chaos Land (50%), City Calm Land (50%).",
+            "<strong>1 Traditional Foil Rare/Mythic:</strong> Main Set Rare (45%) / Mythic (9.4%), Double-Faced Scene Mythic (1.4%), Double-Faced Logo Mythic (1.4%), New Jumpstart Rare (33.8%) / Mythic (4.1%), Jumpstart Reprint Rare (3%), Welcome Deck Mythic (1.9%).",
             "<strong>1 Non-Foil Commander Booster Fun:</strong> Extended-Art Rare (93.6%), Extended-Art Mythic (3.2%), Borderless Face Commander (3.2%).",
-            "<strong>1 Non-Foil Rare/Mythic Booster Fun:</strong> Extended-Art Rare (27.8%) / Mythic (2.3%), Scene Rare (6.4%) / Mythic (4.9%), Logo Rare (15.1%) / Mythic (4.6%), Panel Rare (12.1%) / Mythic (2.6%), Scene Box Borderless (13.9%), Borderless Rare Land (5.8%), Source Material (4.5%).",
+            "<strong>1 Non-Foil Rare/Mythic Booster Fun:</strong> Extended-Art Rare (27.8%) / Mythic (2.3%), Scene Rare (6.4%) / Mythic (4.9%), Logo Rare (15.1%) / Mythic (4.6%), Panel Rare (12.1%) / Mythic (2.6%), Scene Box Borderless (13.9%), Borderless Rare Land (5.8%), Borderless Source Material (4.5%).",
             "<strong>1 Source Material Card:</strong> Non-Foil (75%), Traditional Foil (25%).",
             "<strong>1 Foil Booster Fun Rare/Mythic:</strong> Foil Extended-Art Rare (31.8%) / Mythic (2.7%), Foil Scene Rare (7.3%) / Mythic (4%), Foil Logo Rare (17.2%) / Mythic (3.6%), Foil Panel Rare (13.9%) / Mythic (3%), Foil Borderless Land (6.6%), Classic Comic Foil (9.9%), Borderless Gauntlet Mind Stone (&lt;1%), Cosmic Foil Mind Stone (Ultra Rare).",
-            "<strong>1 Art Card or Token:</strong> Foil Double-Sided Token (64%), Art Card (32%), Gold Stamped Art Card (4%)."
+            "<strong>1 Art Card or Token:</strong> Traditional Foil Token (64%), Art Card (32%), Gold Stamped Art Card (4%)."
         ]
     },
     mtgsos: {
