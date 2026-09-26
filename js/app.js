@@ -700,8 +700,16 @@ function initializePackOpenerScript(setKey) {
 
                 sortedHits.sort((a, b) => {
                     const getRank = (card) => {
+                        const cardRawId = String(card.rawId || card.id || card.n || '').replace(/_(f|nf)$/, '');
+                        const cardNum = String(card.collectorNumber || card.n || '');
+
                         for (let r = 0; r < poolRarityOrder.length; r++) {
-                            if (poolRarityOrder[r] && poolRarityOrder[r].some(c => (c.id && c.id === card.id) || c.n === card.n)) {
+                            const pool = poolRarityOrder[r];
+                            if (pool && pool.some(c => {
+                                const poolRawId = String(c.rawId || c.id || c.n || '').replace(/_(f|nf)$/, '');
+                                const poolNum = String(c.collectorNumber || c.n || '');
+                                return (cardRawId && cardRawId === poolRawId) || (cardNum && cardNum === poolNum);
+                            })) {
                                 return r;
                             }
                         }
@@ -724,8 +732,16 @@ function initializePackOpenerScript(setKey) {
 
                 sortedHits.sort((a, b) => {
                     const getRank = (card) => {
+                        const cardRawId = String(card.rawId || card.id || card.n || '').replace(/_(f|nf)$/, '');
+                        const cardNum = String(card.collectorNumber || card.n || '');
+
                         for (let r = 0; r < poolRarityOrder.length; r++) {
-                            if (poolRarityOrder[r] && poolRarityOrder[r].some(c => (c.id && c.id === card.id) || c.n === card.n)) {
+                            const pool = poolRarityOrder[r];
+                            if (pool && pool.some(c => {
+                                const poolRawId = String(c.rawId || c.id || c.n || '').replace(/_(f|nf)$/, '');
+                                const poolNum = String(c.collectorNumber || c.n || '');
+                                return (cardRawId && cardRawId === poolRawId) || (cardNum && cardNum === poolNum);
+                            })) {
                                 return r;
                             }
                         }
