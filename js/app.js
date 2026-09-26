@@ -380,10 +380,10 @@ function loadViewLayout(setKey) {
                 <div class="collection-header" style="margin-top: 2.5rem;">
                     <div>
                         <h2 class="collection-title">Avengers Balcony BBQ</h2>
-                        <p class="collection-sub" style="color: #e63946;">Horizontal Scene Cards (#328, #331, #345, #346)</p>
+                        <p class="collection-sub" style="color: #e63946;">Horizontal Scene Cards (#328, #346, #345, #350, #331)</p>
                     </div>
                 </div>
-                <div class="puzzle-3x3-grid msh-scene-1x5-grid" id="mshScene6Grid" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.5rem; max-width: 692px; margin: 0 auto;"></div>
+                <div class="puzzle-3x3-grid msh-scene-1x5-grid" id="mshScene6Grid" style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 0.5rem; max-width: 865px; margin: 0 auto;"></div>
             `;
         }
 
@@ -642,8 +642,16 @@ function initializePackOpenerScript(setKey) {
             }
         }
 
-        const sortedCards = Array.from(sceneMap.values())
-            .sort((a, b) => parseInt(a.collectorNumber || a.n, 10) - parseInt(b.collectorNumber || b.n, 10));
+        let sortedCards = [];
+        if (poolKey === 'sceneAvengersBBQ') {
+            const bbqOrder = ['328', '346', '345', '350', '331'];
+            sortedCards = bbqOrder
+                .map(num => sceneCards.find(c => String(c.collectorNumber || c.n) === num))
+                .filter(Boolean);
+        } else {
+            sortedCards = Array.from(sceneMap.values())
+                .sort((a, b) => parseInt(a.collectorNumber || a.n, 10) - parseInt(b.collectorNumber || b.n, 10));
+        }
 
         sortedCards.forEach(card => {
             const slot = document.createElement('div');
@@ -688,7 +696,7 @@ function initializePackOpenerScript(setKey) {
         gridBase.style.display = 'none';
         renderMSHSubcategoryChecklist(containerECLSub, savedData.base, activeSetData);
 
-        const bbqCollectorNumbers = ['328', '331', '345', '346'];
+        const bbqCollectorNumbers = ['328', '346', '345', '350', '331'];
         const cosmicCubeBackNumbers = ['345', '346', '350'];
 
         renderSceneGridHelper(gridMshScene3, c => c.setCode === 'msh' && parseInt(c.collectorNumber || c.n, 10) >= 314 && parseInt(c.collectorNumber || c.n, 10) <= 319, 'sceneCapVsHydra');
@@ -1690,6 +1698,7 @@ function initializePackOpenerScript(setKey) {
 
         if (setKey === 'mtgmsh') {
             const cosmicCubeBackNumbers = ['345', '346', '350'];
+
             activeSetData.baseCards.forEach(card => {
                 const cardNumStr = String(card.collectorNumber || card.n);
                 const slot = document.getElementById(`col-msh-scene-${cardNumStr}`);
