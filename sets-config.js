@@ -3,6 +3,21 @@ export const SETS_REGISTRY = [
     // MAGIC: THE GATHERING (Ordered Descending by Release Date)
     // ---------------------------------------------------------------------------
     {
+        key: 'mtgfra',
+        name: 'Reality Fracture',
+        year: 'October 2026',
+        publisher: 'Wizards of the Coast',
+        category: 'Magic: The Gathering',
+        totalCards: 450,
+        coverImage: 'card_images/mtg_sets/mtg_fra_collectorboosterwrapper.jpg',
+        themeColor: '#4a154b',
+        isMtg: true,
+        aboutTitle: 'About Reality Fracture Collector Boosters',
+        aboutText: 'Rift through dimensions with Reality Fracture Collector Boosters. Features Serialized Fracture foils, Special Guests, and Borderless Mythics.',
+        seoTitle: 'MTG Reality Fracture Collector Booster Simulator - Rip Boosters',
+        seoDesc: 'Simulate opening MTG Reality Fracture Collector Booster packs online. Chase Serialized Fracture foils and Special Guests.'
+    },
+    {
         key: 'mtghob',
         name: 'The Hobbit',
         year: 'August 2026',

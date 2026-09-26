@@ -4,10 +4,12 @@ import { HOB_CONFIG, renderHOBSubcategoryChecklist as renderHOB } from './sets/m
 import { MSH_CONFIG, renderMSHSubcategoryChecklist as renderMSH } from './sets/mtg/mtg-msh.js';
 import { TMT_CONFIG } from './sets/mtg/mtg-tmt.js';
 import { SOS_CONFIG } from './sets/mtg/mtg-sos.js';
+import { FRA_CONFIG, renderFRASubcategoryChecklist as renderFRA } from './sets/mtg/mtg-fra.js';
 
 export const renderECLSubcategoryChecklist = renderECL;
 export const renderHOBSubcategoryChecklist = renderHOB;
 export const renderMSHSubcategoryChecklist = renderMSH;
+export const renderFRASubcategoryChecklist = renderFRA;
 
 const ABU_POWER_AND_DUALS = [
     "Black Lotus", "Mox Sapphire", "Mox Jet", "Mox Ruby", "Mox Emerald", "Mox Pearl",
@@ -31,7 +33,8 @@ export const MTG_CONFIGS = {
     mtgtmt: TMT_CONFIG,
     mtgsos: SOS_CONFIG,
     mtgmsh: MSH_CONFIG,
-    mtghob: HOB_CONFIG
+    mtghob: HOB_CONFIG,
+    mtgfra: FRA_CONFIG
 };
 
 const cache = {};
@@ -119,7 +122,7 @@ function processScryfallCard(card, count) {
 
 export async function ensureSetData(setKey) {
     if (cache[setKey] && cache[setKey].baseCards) {
-        if ((setKey !== 'mtgmsh' && setKey !== 'mtgsos' && setKey !== 'mtgtmt' && setKey !== 'mtgecl' && setKey !== 'mtghob') || cache[setKey].collectorPools) {
+        if ((setKey !== 'mtgmsh' && setKey !== 'mtgsos' && setKey !== 'mtgtmt' && setKey !== 'mtgecl' && setKey !== 'mtghob' && setKey !== 'mtgfra') || cache[setKey].collectorPools) {
             return cache[setKey];
         }
     }
@@ -127,7 +130,7 @@ export async function ensureSetData(setKey) {
     const config = MTG_CONFIGS[setKey];
     if (!config) throw new Error(`Unknown MTG Set Key: ${setKey}`);
 
-    if (setKey === 'mtgecl' || setKey === 'mtghob' || setKey === 'mtgmsh') {
+    if (setKey === 'mtgecl' || setKey === 'mtghob' || setKey === 'mtgmsh' || setKey === 'mtgfra') {
         const collectorPools = {};
         const baseCards = [];
         const hitsSet = new Set();

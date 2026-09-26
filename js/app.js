@@ -1,6 +1,6 @@
 // js/app.js
 import { SETS_REGISTRY, STATIC_ROUTES } from '../sets-config.js';
-import { MTG_CONFIGS, ensureSetData, renderECLSubcategoryChecklist, renderHOBSubcategoryChecklist, renderMSHSubcategoryChecklist } from '../data-mtg.js';
+import { MTG_CONFIGS, ensureSetData, renderECLSubcategoryChecklist, renderHOBSubcategoryChecklist, renderMSHSubcategoryChecklist, renderFRASubcategoryChecklist } from '../data-mtg.js';
 import { initModals, openSetAboutModal, showLightbox } from './ui-modals.js';
 import { navigateToView } from './router.js';
 
@@ -288,6 +288,7 @@ function loadViewLayout(setKey) {
         else if (setKey === "mtgsos") showcaseSubText = "Japanese Mystical Archive & Serialized Emeritus";
         else if (setKey === "mtgmsh") showcaseSubText = "Cosmic Foil Mind Stone &middot; Borderless Gauntlet Mind Stone &middot; Classic Comic Foil &middot; Panel Mythic &middot; Logo Mythic &middot; Scene Mythic &middot; Extended Mythic &middot; Source Material Foil";
         else if (setKey === "mtghob") showcaseSubText = "Gleaming Gold Smaug the Magnificent &middot; Foil Dwarvish Language &middot; Surge Foil Book Cover Mythic &middot; Surge Foil Book Cover Rare &middot; Surge Foil Dragon Hoard Mythic &middot; Surge Foil Dragon Hoard Rare &middot; Surge Foil Classic Artist";
+        else if (setKey === "mtgfra") showcaseSubText = "Serialized Fracture Foils &middot; Foil Fracture Showcase Mythics &middot; Special Guests &middot; Borderless Mythics";
 
         const subMarkup = showcaseSubText ? `<p class="collection-sub" style="color:#b08d24;">${showcaseSubText}</p>` : ``;
 
@@ -349,6 +350,7 @@ function loadViewLayout(setKey) {
         else if (setKey === 'mtgsos') packCoverHTML = `<img id="packWrapperImg" src="card_images/mtg_sets/mtg_sos_collectorboosterwrapper.jpg" alt="Secrets of Strixhaven Collector Pack" style="width:100%;height:100%;object-fit:contain;border-radius:6px;">`;
         else if (setKey === 'mtgmsh') packCoverHTML = `<img id="packWrapperImg" src="card_images/mtg_sets/mtg_msh_collectorboosterwrapper.jpg" alt="Marvel Super Heroes Collector Pack" style="width:100%;height:100%;object-fit:contain;border-radius:6px;">`;
         else if (setKey === 'mtghob') packCoverHTML = `<img id="packWrapperImg" src="card_images/mtg_sets/mtg_hob_collectorboosterwrapper.jpg" alt="The Hobbit Collector Pack" style="width:100%;height:100%;object-fit:contain;border-radius:6px;">`;
+        else if (setKey === 'mtgfra') packCoverHTML = `<img id="packWrapperImg" src="card_images/mtg_sets/mtg_fra_collectorboosterwrapper.jpg" alt="Reality Fracture Collector Pack" style="width:100%;height:100%;object-fit:contain;border-radius:6px;">`;
         else if (setKey === 'mtg3ed') packCoverHTML = `<img id="packWrapperImg" src="card_images/mtg_sets/mtg_3ed_revised_pack_wrapper.jpg" alt="Pack" style="width:100%;height:100%;object-fit:cover;border-radius:6px;">`;
         else if (setKey === 'mtglea' || setKey === 'mtgleb') packCoverHTML = `<img id="packWrapperImg" src="card_images/mtg_sets/mtg_alpha_beta_pack_wrapper.jpg" alt="Pack" style="width:100%;height:100%;object-fit:cover;border-radius:6px;">`;
         else if (setKey === 'mtg2ed') packCoverHTML = `<img id="packWrapperImg" src="card_images/mtg_sets/mtg_unlimited_pack_wrapper.jpg" alt="Pack" style="width:100%;height:100%;object-fit:cover;border-radius:6px;">`;
@@ -577,9 +579,12 @@ function initializePackOpenerScript(setKey) {
     } else if (setKey === 'mtgmsh' && containerECLSub) {
         gridBase.style.display = 'none';
         renderMSHSubcategoryChecklist(containerECLSub, savedData.base, activeSetData);
+    } else if (setKey === 'mtgfra' && containerECLSub) {
+        gridBase.style.display = 'none';
+        renderFRASubcategoryChecklist(containerECLSub, savedData.base, activeSetData);
     }
 
-    if (gridBase && setKey !== 'mtgecl' && setKey !== 'mtghob' && setKey !== 'mtgmsh') {
+    if (gridBase && setKey !== 'mtgecl' && setKey !== 'mtghob' && setKey !== 'mtgmsh' && setKey !== 'mtgfra') {
         let loopPool = activeSetData.baseCards;
         if (setKey === 'mu1990') {
             loopPool = loopPool.filter(card => parseInt(String(card.n).trim().replace(/^\D+/g, ''), 10) <= 162);
@@ -760,6 +765,34 @@ function initializePackOpenerScript(setKey) {
                     cPools.foilSceneMythic,
                     cPools.foilExtendedMythic,
                     cPools.sourceMaterialFoil
+                ];
+
+                sortedHits.sort((a, b) => {
+                    const getRank = (card) => {
+                        const cardRawId = String(card.rawId || card.id || card.n || '').replace(/_(f|nf)$/, '');
+                        const cardNum = String(card.collectorNumber || card.n || '');
+
+                        for (let r = 0; r < poolRarityOrder.length; r++) {
+                            const pool = poolRarityOrder[r];
+                            if (pool && pool.some(c => {
+                                const poolRawId = String(c.rawId || c.id || c.n || '').replace(/_(f|nf)$/, '');
+                                const poolNum = String(c.collectorNumber || c.n || '');
+                                return (cardRawId && cardRawId === poolRawId) || (cardNum && cardNum === poolNum);
+                            })) {
+                                return r;
+                            }
+                        }
+                        return 99;
+                    };
+                    return getRank(a) - getRank(b);
+                });
+            } else if (setKey === 'mtgfra') {
+                const cPools = activeSetData.collectorPools || {};
+                const poolRarityOrder = [
+                    cPools.serializedFracture,
+                    cPools.foilFractureShowcase,
+                    cPools.foilSpecialGuests,
+                    cPools.foilBorderlessMythic
                 ];
 
                 sortedHits.sort((a, b) => {
@@ -1223,6 +1256,67 @@ function initializePackOpenerScript(setKey) {
                             appendCardSlot(cPools.artCard, label, 'common', 1, false);
                         }
 
+                    } else if (setKey === 'mtgfra') {
+                        const cPools = activeSetData.collectorPools || {};
+
+                        const rollFoilBF = Math.random() * 100;
+                        let poolFoilBF = cPools.foilExtendedRare;
+                        let isHitSlot1 = false;
+
+                        if (rollFoilBF < 30.0) {
+                            poolFoilBF = cPools.foilExtendedRare;
+                        } else if (rollFoilBF < 30.0 + 25.0) {
+                            poolFoilBF = cPools.foilShowcaseRare;
+                        } else if (rollFoilBF < 30.0 + 25.0 + 10.0) {
+                            poolFoilBF = cPools.foilShowcaseMythic;
+                        } else if (rollFoilBF < 30.0 + 25.0 + 10.0 + 15.0) {
+                            poolFoilBF = cPools.foilBorderlessRare;
+                        } else if (rollFoilBF < 30.0 + 25.0 + 10.0 + 15.0 + 10.0) {
+                            poolFoilBF = cPools.foilBorderlessMythic;
+                            isHitSlot1 = true;
+                        } else if (rollFoilBF < 30.0 + 25.0 + 10.0 + 15.0 + 10.0 + 8.0) {
+                            poolFoilBF = cPools.foilSpecialGuests;
+                            isHitSlot1 = true;
+                        } else if (rollFoilBF < 30.0 + 25.0 + 10.0 + 15.0 + 10.0 + 8.0 + 1.5) {
+                            poolFoilBF = cPools.foilFractureShowcase;
+                            isHitSlot1 = true;
+                        } else {
+                            poolFoilBF = cPools.serializedFracture;
+                            isHitSlot1 = true;
+                        }
+
+                        appendCardSlot(poolFoilBF, '1 Foil Booster Fun Rare / Mythic', 'rare', 1, isHitSlot1);
+
+                        const rollNBF = Math.random() * 100;
+                        let poolNBF = cPools.extendedRare;
+                        if (rollNBF < 40.0) poolNBF = cPools.extendedRare;
+                        else if (rollNBF < 40.0 + 30.0) poolNBF = cPools.showcaseRare;
+                        else if (rollNBF < 40.0 + 30.0 + 10.0) poolNBF = cPools.showcaseMythic;
+                        else if (rollNBF < 40.0 + 30.0 + 10.0 + 15.0) poolNBF = cPools.borderlessRare;
+                        else poolNBF = cPools.borderlessMythic;
+
+                        appendCardSlot(poolNBF, '1 Non-Foil Booster Fun Rare / Mythic', 'rare', 1, false);
+
+                        const isMythic = Math.random() < 0.15;
+                        const rarePool = isMythic ? cPools.foilMythic : cPools.foilRare;
+                        appendCardSlot(rarePool, '1 Traditional Foil Rare / Mythic', 'rare', 1, false);
+
+                        appendCardSlot(cPools.foilLand, '1 Traditional Foil Basic Land', 'common', 1, false);
+
+                        for (let i = 0; i < 4; i++) {
+                            const isShowcase = Math.random() < 0.35;
+                            const targetPool = isShowcase ? cPools.uncommonShowcase : cPools.foilUncommon;
+                            appendCardSlot(targetPool, `Traditional Foil Uncommon #${i + 1}`, 'uncommon', 1, false);
+                        }
+
+                        for (let i = 0; i < 5; i++) {
+                            appendCardSlot(cPools.foilCommon, `Traditional Foil Common #${i + 1}`, 'common', 1, false);
+                        }
+
+                        const tokenRoll = Math.random() * 100;
+                        const targetTokenPool = tokenRoll < 65.0 ? cPools.foilToken : cPools.artCard;
+                        appendCardSlot(targetTokenPool, '1 Art Card or Foil Double-Sided Token', 'common', 1, false);
+
                     } else if (setKey === 'mtgsos') {
                         const cPools = activeSetData.collectorPools || {};
 
@@ -1367,6 +1461,8 @@ function initializePackOpenerScript(setKey) {
             renderHOBSubcategoryChecklist(containerECLSub, savedData.base, activeSetData);
         } else if (setKey === 'mtgmsh' && containerECLSub) {
             renderMSHSubcategoryChecklist(containerECLSub, savedData.base, activeSetData);
+        } else if (setKey === 'mtgfra' && containerECLSub) {
+            renderFRASubcategoryChecklist(containerECLSub, savedData.base, activeSetData);
         } else {
             savedData.base.forEach(k => {
                 const slot = document.getElementById(`col-base-${k}`);

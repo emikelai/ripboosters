@@ -1,6 +1,18 @@
 // js/guides-renderer.js
 
 const DROP_RATE_GUIDES = {
+    mtgfra: {
+        title: "Collector Booster Pack Odds & Drop Rates",
+        items: [
+            "<strong>5 Traditional Foil Commons:</strong> Main Set Commons (100%).",
+            "<strong>4 Traditional Foil Uncommons:</strong> Main Set Uncommons (65%), Showcase Frame Cards (35%).",
+            "<strong>1 Traditional Foil Basic Land:</strong> Full-Art Land (100%).",
+            "<strong>1 Traditional Foil Rare/Mythic:</strong> Main Set Rare (85%), Mythic Rare (15%).",
+            "<strong>1 Non-Foil Booster Fun Rare/Mythic:</strong> Extended-Art Rare (40%), Showcase Rare (30%) / Mythic (10%), Borderless Rare (15%) / Mythic (5%).",
+            "<strong>1 Foil Booster Fun Rare/Mythic Card:</strong> Foil Extended-Art Rare (30%), Foil Showcase Rare (25%) / Mythic (10%), Foil Borderless Rare (15%) / Mythic (10%), Special Guests (8%), Fracture Showcase (&lt;2%), Serialized (&lt;1%).",
+            "<strong>1 Art Card or Token:</strong> Foil Token (65%), Art Card (35%)."
+        ]
+    },
     mtghob: {
         title: "Collector Booster Pack Odds & Drop Rates",
         items: [
