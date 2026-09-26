@@ -9,7 +9,7 @@ export const MSH_CONFIG = {
     maxCount: 512,
     coverImage: 'card_images/mtg_sets/mtg_msh_collectorboosterwrapper.jpg',
     themeColor: '#e63946',
-    hitCardNames: ["Spider-Man", "Wolverine", "Captain America", "Iron Man", "Thanos", "Venom", "Deadpool", "The Mind Stone"],
+    hitCardNames: ["The Mind Stone", "Spider-Man", "Wolverine", "Captain America", "Iron Man", "Thanos", "Venom", "Deadpool"],
     
     hitPoolKeys: new Set([
         'cosmicMindStone',
@@ -87,7 +87,7 @@ export const MSH_CONFIG = {
         foilLogoRare: "e:msh cn>=352 cn<=379 is:foil rarity:r",
         foilLogoMythic: "e:msh cn>=352 cn<=379 is:foil rarity:m -is:mdfc",
         foilPanelRare: "e:msh cn>=297 cn<=313 rarity:r is:foil",
-        foilPanelMythic: "e:msh cn>=297 cn<=313 rarity:m is:foil",
+        foilPanelMythic: "e:msh cn>=297 cn<=313 rarity:r is:foil",
         foilBorderlessRareLand: "e:msh is:foil is:borderless type:land rarity:r",
         classicComicFoil: "e:msh cn>=387 cn<=401 is:foil",
         borderlessGauntlet: "e:msh cn=386 is:foil",
