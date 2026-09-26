@@ -292,9 +292,9 @@ function loadViewLayout(setKey) {
 
         const subMarkup = showcaseSubText ? `<p class="collection-sub" style="color:#b08d24;">${showcaseSubText}</p>` : ``;
 
-        let hobSceneGridsHTML = '';
+        let sceneGridsHTML = '';
         if (setKey === 'mtghob') {
-            hobSceneGridsHTML = `
+            sceneGridsHTML = `
                 <div class="collection-header" style="margin-top: 2.5rem;">
                     <div>
                         <h2 class="collection-title">Fight with the Great Goblin</h2>
@@ -319,6 +319,72 @@ function loadViewLayout(setKey) {
                 </div>
                 <div class="puzzle-3x3-grid hob-scene-2x3-grid" id="hobScene3Grid"></div>
             `;
+        } else if (setKey === 'mtgmsh') {
+            sceneGridsHTML = `
+                <div class="collection-header" style="margin-top: 2.5rem;">
+                    <div>
+                        <h2 class="collection-title">Cap versus Hydra</h2>
+                        <p class="collection-sub" style="color: #e63946;">2x3 Scene Cards (#314 - #319)</p>
+                    </div>
+                </div>
+                <div class="puzzle-3x3-grid msh-scene-2x3-grid" id="mshScene3Grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem; max-width: 520px; margin: 0 auto;"></div>
+
+                <div class="collection-header" style="margin-top: 2.5rem;">
+                    <div>
+                        <h2 class="collection-title">Fantastic Family</h2>
+                        <p class="collection-sub" style="color: #e63946;">2x2 Scene Cards (#320 - #323)</p>
+                    </div>
+                </div>
+                <div class="puzzle-3x3-grid msh-scene-2x2-grid" id="mshScene1Grid" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.5rem; max-width: 346px; margin: 0 auto;"></div>
+
+                <div class="collection-header" style="margin-top: 2.5rem;">
+                    <div>
+                        <h2 class="collection-title">Daredevil Street Fight</h2>
+                        <p class="collection-sub" style="color: #e63946;">2x2 Scene Cards (#324 - #327)</p>
+                    </div>
+                </div>
+                <div class="puzzle-3x3-grid msh-scene-2x2-grid" id="mshScene2Grid" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.5rem; max-width: 346px; margin: 0 auto;"></div>
+
+                <div class="collection-header" style="margin-top: 2.5rem;">
+                    <div>
+                        <h2 class="collection-title">Hulks Smash</h2>
+                        <p class="collection-sub" style="color: #e63946;">2x3 Scene Cards (#328 - #333)</p>
+                    </div>
+                </div>
+                <div class="puzzle-3x3-grid msh-scene-2x3-grid" id="mshScene4Grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem; max-width: 520px; margin: 0 auto;"></div>
+
+                <div class="collection-header" style="margin-top: 2.5rem;">
+                    <div>
+                        <h2 class="collection-title">Heroes United</h2>
+                        <p class="collection-sub" style="color: #e63946;">2x3 Scene Cards (MSC #501 - #506)</p>
+                    </div>
+                </div>
+                <div class="puzzle-3x3-grid msh-scene-2x3-grid" id="mshScene7Grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem; max-width: 520px; margin: 0 auto;"></div>
+
+                <div class="collection-header" style="margin-top: 2.5rem;">
+                    <div>
+                        <h2 class="collection-title">Villains Unleashed</h2>
+                        <p class="collection-sub" style="color: #e63946;">2x3 Scene Cards (MSC #507 - #512)</p>
+                    </div>
+                </div>
+                <div class="puzzle-3x3-grid msh-scene-2x3-grid" id="mshScene8Grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem; max-width: 520px; margin: 0 auto;"></div>
+
+                <div class="collection-header" style="margin-top: 2.5rem;">
+                    <div>
+                        <h2 class="collection-title">Clash for the Cosmic Cube</h2>
+                        <p class="collection-sub" style="color: #e63946;">6x3 Interlocking Scene Mural (#334 - #351)</p>
+                    </div>
+                </div>
+                <div class="puzzle-3x3-grid msh-scene-6x3-grid" id="mshScene5Grid" style="display: grid; grid-template-columns: repeat(6, 1fr); gap: 0.5rem; max-width: 1040px; margin: 0 auto;"></div>
+
+                <div class="collection-header" style="margin-top: 2.5rem;">
+                    <div>
+                        <h2 class="collection-title">Avengers Balcony BBQ</h2>
+                        <p class="collection-sub" style="color: #e63946;">Horizontal Scene Cards (#328, #331, #345, #346)</p>
+                    </div>
+                </div>
+                <div class="puzzle-3x3-grid msh-scene-1x5-grid" id="mshScene6Grid" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.5rem; max-width: 692px; margin: 0 auto;"></div>
+            `;
         }
 
         collectionHeaderHTML = `
@@ -330,7 +396,7 @@ function loadViewLayout(setKey) {
             </div>
             <div class="collection-grid" id="spectraGrid"></div>
             
-            ${hobSceneGridsHTML}
+            ${sceneGridsHTML}
 
             <div class="collection-header" style="margin-top: 2.5rem;">
                 <div>
@@ -447,13 +513,42 @@ function initializePackOpenerScript(setKey) {
     if (!Array.isArray(savedData.spectra)) savedData.spectra = [];
     let sessionPacks = 0;
 
+    const getCardFrontImage = (card, useBackForScene = false) => {
+        if (useBackForScene) {
+            if (card.backImg) return card.backImg;
+            if (card.card_faces && card.card_faces[1]?.image_uris?.png) {
+                return card.card_faces[1].image_uris.png;
+            }
+        }
+        if (card.frontImg) return card.frontImg;
+        if (card.card_faces && card.card_faces[0]?.image_uris?.png) {
+            return card.card_faces[0].image_uris.png;
+        }
+        if (card.image_uris?.png) return card.image_uris.png;
+        return getImgPath(card.n, 'front', false);
+    };
+
+    const getCardBackImage = (card, useBackForScene = false) => {
+        if (useBackForScene) {
+            if (card.frontImg) return card.frontImg;
+            if (card.card_faces && card.card_faces[0]?.image_uris?.png) {
+                return card.card_faces[0].image_uris.png;
+            }
+        }
+        if (card.backImg) return card.backImg;
+        if (card.card_faces && card.card_faces[1]?.image_uris?.png) {
+            return card.card_faces[1].image_uris.png;
+        }
+        return getImgPath(card.n, 'back', false);
+    };
+
     const getImgPath = (n, side = 'front', isInsert = false, variant = '') => {
         const targetSide = side === 'back' ? 'back' : 'front';
 
         if (isMtg) {
             const cardObj = activeSetData.baseCards.find(c => c.n == n);
             if (targetSide === 'front') {
-                return cardObj ? cardObj.frontImg : "card_images/card_back.jpg";
+                return cardObj ? getCardFrontImage(cardObj) : "card_images/card_back.jpg";
             } else {
                 return (cardObj && cardObj.backImg) 
                     ? cardObj.backImg 
@@ -519,7 +614,65 @@ function initializePackOpenerScript(setKey) {
     const gridHobScene1 = document.getElementById('hobScene1Grid');
     const gridHobScene2 = document.getElementById('hobScene2Grid');
     const gridHobScene3 = document.getElementById('hobScene3Grid');
+
+    const gridMshScene1 = document.getElementById('mshScene1Grid');
+    const gridMshScene2 = document.getElementById('mshScene2Grid');
+    const gridMshScene3 = document.getElementById('mshScene3Grid');
+    const gridMshScene4 = document.getElementById('mshScene4Grid');
+    const gridMshScene5 = document.getElementById('mshScene5Grid');
+    const gridMshScene6 = document.getElementById('mshScene6Grid');
+    const gridMshScene7 = document.getElementById('mshScene7Grid');
+    const gridMshScene8 = document.getElementById('mshScene8Grid');
+
     const containerECLSub = document.getElementById('eclSubcategoriesContainer');
+
+    const renderSceneGridHelper = (container, filterFn, poolKey, backSceneNumbers = []) => {
+        if (!container) return;
+        container.innerHTML = '';
+        
+        const pools = activeSetData.collectorPools || {};
+        let sceneCards = pools[poolKey] ? pools[poolKey].filter(filterFn) : activeSetData.baseCards.filter(filterFn);
+        
+        const sceneMap = new Map();
+
+        for (const card of sceneCards) {
+            const cnKey = String(card.collectorNumber || card.n);
+            if (!sceneMap.has(cnKey)) {
+                sceneMap.set(cnKey, card);
+            }
+        }
+
+        const sortedCards = Array.from(sceneMap.values())
+            .sort((a, b) => parseInt(a.collectorNumber || a.n, 10) - parseInt(b.collectorNumber || b.n, 10));
+
+        sortedCards.forEach(card => {
+            const slot = document.createElement('div');
+            const rawId = String(card.rawId || card.id || card.n).replace(/_(f|nf)$/, '');
+            const cardNumStr = String(card.collectorNumber || card.n);
+            
+            const isCollected = savedData.base.some(savedId => {
+                const cleanSaved = String(savedId).replace(/_(f|nf)$/, '');
+                return cleanSaved === rawId;
+            }) || savedData.spectra.some(savedId => {
+                const cleanSaved = String(savedId).replace(/_(f|nf)$/, '');
+                return cleanSaved === rawId;
+            });
+            
+            slot.className = `col-slot ${isCollected ? 'filled' : 'no-image'}`;
+            slot.id = `col-msh-scene-${card.collectorNumber || card.n}`;
+
+            if (isCollected) {
+                const useBackForScene = backSceneNumbers.includes(cardNumStr);
+                const frontImg = getCardFrontImage(card, useBackForScene);
+                const backImg = getCardBackImage(card, useBackForScene);
+                slot.innerHTML = `<img src="${frontImg}">`;
+                slot.onclick = () => showLightbox(frontImg, backImg);
+            } else {
+                slot.innerHTML = `<span class="col-num">#${card.collectorNumber || card.n}</span><span class="col-name">${card.name}</span>`;
+            }
+            container.appendChild(slot);
+        });
+    };
 
     if (setKey === 'mtgecl' && containerECLSub) {
         gridBase.style.display = 'none';
@@ -528,57 +681,24 @@ function initializePackOpenerScript(setKey) {
         gridBase.style.display = 'none';
         renderHOBSubcategoryChecklist(containerECLSub, savedData.base, activeSetData);
 
-        const renderHobScene = (container, filterFn) => {
-            if (!container) return;
-            container.innerHTML = '';
-            
-            const filteredCards = activeSetData.baseCards.filter(filterFn);
-            const sceneMap = new Map();
-
-            for (const card of filteredCards) {
-                const cnKey = String(card.collectorNumber || card.n);
-                if (!sceneMap.has(cnKey)) {
-                    sceneMap.set(cnKey, card);
-                }
-            }
-
-            const sceneCards = Array.from(sceneMap.values())
-                .sort((a, b) => parseInt(a.collectorNumber || a.n, 10) - parseInt(b.collectorNumber || b.n, 10));
-
-            sceneCards.forEach(card => {
-                const slot = document.createElement('div');
-                const rawId = String(card.rawId || card.id || card.n).replace(/_(f|nf)$/, '');
-                
-                const isCollected = savedData.base.some(savedId => {
-                    const cleanSaved = String(savedId).replace(/_(f|nf)$/, '');
-                    return cleanSaved === rawId;
-                }) || savedData.spectra.some(savedId => {
-                    const cleanSaved = String(savedId).replace(/_(f|nf)$/, '');
-                    return cleanSaved === rawId;
-                });
-                
-                slot.className = `col-slot ${isCollected ? 'filled' : 'no-image'}`;
-                slot.id = `col-hob-scene-${card.setCode || 'hob'}-${card.collectorNumber || card.n}`;
-
-                if (isCollected) {
-                    const frontImg = card.frontImg || getImgPath(card.n, 'front', false);
-                    const backImg = card.backImg || getImgPath(card.n, 'back', false);
-                    slot.innerHTML = `<img src="${frontImg}">`;
-                    slot.onclick = () => showLightbox(frontImg, backImg);
-                } else {
-                    const codePrefix = card.setCode ? `${card.setCode.toUpperCase()} ` : '';
-                    slot.innerHTML = `<span class="col-num">#${codePrefix}${card.collectorNumber || card.n}</span><span class="col-name">${card.name}</span>`;
-                }
-                container.appendChild(slot);
-            });
-        };
-
-        renderHobScene(gridHobScene1, c => (c.setCode === 'hob' || !c.setCode) && parseInt(c.collectorNumber || c.n, 10) >= 199 && parseInt(c.collectorNumber || c.n, 10) <= 204);
-        renderHobScene(gridHobScene2, c => (c.setCode === 'hob' || !c.setCode) && parseInt(c.collectorNumber || c.n, 10) >= 205 && parseInt(c.collectorNumber || c.n, 10) <= 213);
-        renderHobScene(gridHobScene3, c => c.setCode === 'hoc' && parseInt(c.collectorNumber || c.n, 10) >= 1 && parseInt(c.collectorNumber || c.n, 10) <= 6);
+        renderSceneGridHelper(gridHobScene1, c => (c.setCode === 'hob' || !c.setCode) && parseInt(c.collectorNumber || c.n, 10) >= 199 && parseInt(c.collectorNumber || c.n, 10) <= 204, 'hobScene1');
+        renderSceneGridHelper(gridHobScene2, c => (c.setCode === 'hob' || !c.setCode) && parseInt(c.collectorNumber || c.n, 10) >= 205 && parseInt(c.collectorNumber || c.n, 10) <= 213, 'hobScene2');
+        renderSceneGridHelper(gridHobScene3, c => c.setCode === 'hoc' && parseInt(c.collectorNumber || c.n, 10) >= 1 && parseInt(c.collectorNumber || c.n, 10) <= 6, 'hobScene3');
     } else if (setKey === 'mtgmsh' && containerECLSub) {
         gridBase.style.display = 'none';
         renderMSHSubcategoryChecklist(containerECLSub, savedData.base, activeSetData);
+
+        const bbqCollectorNumbers = ['328', '331', '345', '346'];
+        const cosmicCubeBackNumbers = ['345', '346', '350'];
+
+        renderSceneGridHelper(gridMshScene3, c => c.setCode === 'msh' && parseInt(c.collectorNumber || c.n, 10) >= 314 && parseInt(c.collectorNumber || c.n, 10) <= 319, 'sceneCapVsHydra');
+        renderSceneGridHelper(gridMshScene1, c => c.setCode === 'msh' && parseInt(c.collectorNumber || c.n, 10) >= 320 && parseInt(c.collectorNumber || c.n, 10) <= 323, 'sceneFantasticFamily');
+        renderSceneGridHelper(gridMshScene2, c => c.setCode === 'msh' && parseInt(c.collectorNumber || c.n, 10) >= 324 && parseInt(c.collectorNumber || c.n, 10) <= 327, 'sceneDaredevilStreetFight');
+        renderSceneGridHelper(gridMshScene4, c => c.setCode === 'msh' && parseInt(c.collectorNumber || c.n, 10) >= 328 && parseInt(c.collectorNumber || c.n, 10) <= 333, 'sceneHulksSmash');
+        renderSceneGridHelper(gridMshScene7, c => c.setCode === 'msc' && parseInt(c.collectorNumber || c.n, 10) >= 501 && parseInt(c.collectorNumber || c.n, 10) <= 506, 'sceneBoxHeroes');
+        renderSceneGridHelper(gridMshScene8, c => c.setCode === 'msc' && parseInt(c.collectorNumber || c.n, 10) >= 507 && parseInt(c.collectorNumber || c.n, 10) <= 512, 'sceneBoxVillains');
+        renderSceneGridHelper(gridMshScene5, c => c.setCode === 'msh' && parseInt(c.collectorNumber || c.n, 10) >= 334 && parseInt(c.collectorNumber || c.n, 10) <= 351, 'sceneCosmicCube', cosmicCubeBackNumbers);
+        renderSceneGridHelper(gridMshScene6, c => c.setCode === 'msh' && bbqCollectorNumbers.includes(String(c.collectorNumber || c.n)), 'sceneAvengersBBQ');
     } else if (setKey === 'mtgfra' && containerECLSub) {
         gridBase.style.display = 'none';
         renderFRASubcategoryChecklist(containerECLSub, savedData.base, activeSetData);
@@ -827,8 +947,8 @@ function initializePackOpenerScript(setKey) {
                 slot.id = `col-insert-${card.id || card.n}`;
                 
                 if (isCollected) {
-                    const frontImg = card.frontImg || getImgPath(card.n, 'front', false);
-                    const backImg = card.backImg || getImgPath(card.n, 'back', false);
+                    const frontImg = getCardFrontImage(card);
+                    const backImg = getCardBackImage(card);
                     slot.innerHTML = `<img src="${frontImg}">`;
                     slot.onclick = () => showLightbox(frontImg, backImg);
                 } else {
@@ -1492,8 +1612,8 @@ function initializePackOpenerScript(setKey) {
         const cardDiv = document.createElement('div'); cardDiv.className = 'card';
         cardDiv.style.animationDelay = currentDelay + 'ms';
 
-        const frontImg = card.frontImg || getImgPath(card.n, 'front', isInsert, card.variant || card.v || '');
-        const backImg = card.backImg || getImgPath(card.n, 'back', isInsert, card.variant || card.v || '');
+        const frontImg = getCardFrontImage(card);
+        const backImg = getCardBackImage(card);
 
         cardDiv.innerHTML = `<img src="${frontImg}">`;
         cardDiv.onclick = () => showLightbox(frontImg, backImg);
@@ -1518,8 +1638,8 @@ function initializePackOpenerScript(setKey) {
                 if (slot && slot.classList.contains('no-image')) {
                     const card = activeSetData.baseCards.find(c => (setKey === 'gpk1' ? `${c.n}${c.v}` : String(c.n)) == k);
                     if (card) {
-                        const frontImg = card.frontImg || getImgPath(card.n, 'front', false, card.v || '');
-                        const backImg = card.backImg || getImgPath(card.n, 'back', false, card.v || '');
+                        const frontImg = getCardFrontImage(card);
+                        const backImg = getCardBackImage(card);
                         slot.className = 'col-slot filled'; slot.innerHTML = `<img src="${frontImg}">`;
                         slot.onclick = () => showLightbox(frontImg, backImg);
                     }
@@ -1558,12 +1678,38 @@ function initializePackOpenerScript(setKey) {
                     });
                     
                     if (slot && isCollected && slot.classList.contains('no-image')) {
-                        const frontImg = card.frontImg || getImgPath(card.n, 'front', false);
-                        const backImg = card.backImg || getImgPath(card.n, 'back', false);
+                        const frontImg = getCardFrontImage(card);
+                        const backImg = getCardBackImage(card);
                         slot.className = 'col-slot filled';
                         slot.innerHTML = `<img src="${frontImg}">`;
                         slot.onclick = () => showLightbox(frontImg, backImg);
                     }
+                }
+            });
+        }
+
+        if (setKey === 'mtgmsh') {
+            const cosmicCubeBackNumbers = ['345', '346', '350'];
+            activeSetData.baseCards.forEach(card => {
+                const cardNumStr = String(card.collectorNumber || card.n);
+                const slot = document.getElementById(`col-msh-scene-${cardNumStr}`);
+                const rawId = String(card.rawId || card.id || card.n).replace(/_(f|nf)$/, '');
+                
+                const isCollected = savedData.base.some(savedId => {
+                    const cleanSaved = String(savedId).replace(/_(f|nf)$/, '');
+                    return cleanSaved === rawId;
+                }) || savedData.spectra.some(savedId => {
+                    const cleanSaved = String(savedId).replace(/_(f|nf)$/, '');
+                    return cleanSaved === rawId;
+                });
+
+                if (slot && isCollected && slot.classList.contains('no-image')) {
+                    const useBackForScene = cosmicCubeBackNumbers.includes(cardNumStr);
+                    const frontImg = getCardFrontImage(card, useBackForScene);
+                    const backImg = getCardBackImage(card, useBackForScene);
+                    slot.className = 'col-slot filled';
+                    slot.innerHTML = `<img src="${frontImg}">`;
+                    slot.onclick = () => showLightbox(frontImg, backImg);
                 }
             });
         }
@@ -1574,8 +1720,8 @@ function initializePackOpenerScript(setKey) {
                 const isCollected = savedData.spectra.map(String).includes(hitKey);
                 const slot = document.getElementById(`col-insert-${card.id || card.n}`);
                 if (slot && isCollected && slot.classList.contains('no-image')) {
-                    const frontImg = card.frontImg || getImgPath(card.n, 'front', false);
-                    const backImg = card.backImg || getImgPath(card.n, 'back', false);
+                    const frontImg = getCardFrontImage(card);
+                    const backImg = getCardBackImage(card);
                     slot.className = 'col-slot filled';
                     slot.innerHTML = `<img src="${frontImg}">`;
                     slot.onclick = () => showLightbox(frontImg, backImg);
