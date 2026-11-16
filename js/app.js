@@ -1,6 +1,6 @@
 // js/app.js
 import { SETS_REGISTRY, STATIC_ROUTES } from '../sets-config.js';
-import { MTG_CONFIGS, ensureSetData, renderHOBSubcategoryChecklist, renderMSHSubcategoryChecklist, renderFRASubcategoryChecklist } from '../data-mtg.js';
+import { MTG_CONFIGS, ensureSetData, renderMSHSubcategoryChecklist, renderFRASubcategoryChecklist } from '../data-mtg.js';
 import { initModals, openSetAboutModal, showLightbox } from './ui-modals.js';
 import { navigateToView } from './router.js';
 
@@ -718,7 +718,8 @@ function initializePackOpenerScript(setKey) {
         const sceneMap = new Map();
 
         for (const card of sceneCards) {
-            const cnKey = String(card.collectorNumber || card.n);
+            const setPrefix = (card.setCode || '').toLowerCase();
+            const cnKey = `${setPrefix}-${String(card.collectorNumber || card.n)}`;
             if (!sceneMap.has(cnKey)) {
                 sceneMap.set(cnKey, card);
             }
@@ -739,6 +740,7 @@ function initializePackOpenerScript(setKey) {
             const slot = document.createElement('div');
             const rawId = String(card.rawId || card.id || card.n).replace(/_(f|nf)$/, '');
             const cardNumStr = String(card.collectorNumber || card.n);
+            const cardSet = (card.setCode || '').toLowerCase();
             
             const isCollected = savedData.base.some(savedId => {
                 const cleanSaved = String(savedId).replace(/_(f|nf)$/, '');
@@ -749,7 +751,9 @@ function initializePackOpenerScript(setKey) {
             });
             
             slot.className = `col-slot ${isCollected ? 'filled' : 'no-image'}`;
-            slot.id = `col-msh-scene-${card.collectorNumber || card.n}`;
+            slot.id = (cardSet === 'hob' || cardSet === 'hoc')
+                ? `col-hob-scene-${cardSet}-${cardNumStr}`
+                : `col-msh-scene-${cardNumStr}`;
 
             if (isCollected) {
                 const useBackForScene = backSceneNumbers.includes(cardNumStr);
@@ -758,20 +762,19 @@ function initializePackOpenerScript(setKey) {
                 slot.innerHTML = `<img src="${frontImg}">`;
                 slot.onclick = () => showLightbox(frontImg, backImg);
             } else {
-                slot.innerHTML = `<span class="col-num">#${card.collectorNumber || card.n}</span><span class="col-name">${card.name}</span>`;
+                slot.innerHTML = `<span class="col-num">#${cardNumStr}</span><span class="col-name">${card.name}</span>`;
             }
             container.appendChild(slot);
         });
     };
 
-    if (setKey === 'mtghob' && containerECLSub) {
-        gridBase.style.display = 'none';
-        renderHOBSubcategoryChecklist(containerECLSub, savedData.base, activeSetData);
-
+    if (setKey === 'mtghob') {
         renderSceneGridHelper(gridHobScene1, c => (c.setCode === 'hob' || !c.setCode) && parseInt(c.collectorNumber || c.n, 10) >= 199 && parseInt(c.collectorNumber || c.n, 10) <= 204, 'hobScene1');
         renderSceneGridHelper(gridHobScene2, c => (c.setCode === 'hob' || !c.setCode) && parseInt(c.collectorNumber || c.n, 10) >= 205 && parseInt(c.collectorNumber || c.n, 10) <= 213, 'hobScene2');
         renderSceneGridHelper(gridHobScene3, c => c.setCode === 'hoc' && parseInt(c.collectorNumber || c.n, 10) >= 1 && parseInt(c.collectorNumber || c.n, 10) <= 6, 'hobScene3');
-    } else if (setKey === 'mtgmsh' && containerECLSub) {
+    }
+
+    if (setKey === 'mtgmsh' && containerECLSub) {
         gridBase.style.display = 'none';
         renderMSHSubcategoryChecklist(containerECLSub, savedData.base, activeSetData);
 
@@ -794,7 +797,7 @@ function initializePackOpenerScript(setKey) {
         renderMasterSchemaChecklist();
     }
 
-    if (gridBase && setKey !== 'mtghob' && setKey !== 'mtgmsh' && setKey !== 'mtgfra' && !(setConfig && setConfig.isMasterSchema)) {
+    if (gridBase && setKey !== 'mtgmsh' && setKey !== 'mtgfra' && !(setConfig && setConfig.isMasterSchema)) {
         let loopPool = activeSetData.baseCards;
         if (setKey === 'mu1990') {
             loopPool = loopPool.filter(card => parseInt(String(card.n).trim().replace(/^\D+/g, ''), 10) <= 162);
@@ -911,37 +914,6 @@ function initializePackOpenerScript(setKey) {
                     if (wB !== wA) return wB - wA;
                     return (parseInt(String(a.collectorNumber || a.n).replace(/\D/g, ''), 10) || 0) -
                            (parseInt(String(b.collectorNumber || b.n).replace(/\D/g, ''), 10) || 0);
-                });
-            } else if (setKey === 'mtghob') {
-                const cPools = activeSetData.collectorPools || {};
-                const poolRarityOrder = [
-                    cPools.smaugHeadliner,
-                    cPools.foilDwarvishLanguage,
-                    cPools.surgeFoilBookCoverMythic,
-                    cPools.surgeFoilBookCoverRare,
-                    cPools.surgeFoilDragonHoardMythic,
-                    cPools.surgeFoilDragonHoardRare,
-                    cPools.surgeFoilClassicArtist
-                ];
-
-                sortedHits.sort((a, b) => {
-                    const getRank = (card) => {
-                        const cardRawId = String(card.rawId || card.id || card.n || '').replace(/_(f|nf)$/, '');
-                        const cardNum = String(card.collectorNumber || card.n || '');
-
-                        for (let r = 0; r < poolRarityOrder.length; r++) {
-                            const pool = poolRarityOrder[r];
-                            if (pool && pool.some(c => {
-                                const poolRawId = String(c.rawId || c.id || c.n || '').replace(/_(f|nf)$/, '');
-                                const poolNum = String(c.collectorNumber || c.n || '');
-                                return (cardRawId && cardRawId === poolRawId) || (cardNum && cardNum === poolNum);
-                            })) {
-                                return r;
-                            }
-                        }
-                        return 99;
-                    };
-                    return getRank(a) - getRank(b);
                 });
             } else if (setKey === 'mtgmsh') {
                 const cPools = activeSetData.collectorPools || {};
@@ -1148,106 +1120,6 @@ function initializePackOpenerScript(setKey) {
                                 appendCardSlot(pool, slotDef.title, rarityClass, 1, slotDef.isHitSlot, slotDef.isFoil);
                             }
                         });
-                    } else if (setKey === 'mtghob') {
-                        const cPools = activeSetData.collectorPools || {};
-
-                        const rollFoilBF = Math.random() * 100;
-                        let poolFoilBF = cPools.foilExtendedHobRare;
-                        let isHitSlot1 = false;
-
-                        if (rollFoilBF < 33.8) {
-                            poolFoilBF = cPools.foilExtendedHobRare;
-                        } else if (rollFoilBF < 33.8 + 14.3) {
-                            poolFoilBF = cPools.foilDragonHoardRare;
-                        } else if (rollFoilBF < 33.8 + 14.3 + 11.9) {
-                            poolFoilBF = cPools.surgeFoilClassicArtist;
-                            isHitSlot1 = true;
-                        } else if (rollFoilBF < 33.8 + 14.3 + 11.9 + 11.0) {
-                            poolFoilBF = cPools.foilHobSceneRare;
-                        } else if (rollFoilBF < 33.8 + 14.3 + 11.9 + 11.0 + 6.5) {
-                            poolFoilBF = cPools.surgeFoilDragonHoardRare;
-                            isHitSlot1 = true;
-                        } else if (rollFoilBF < 33.8 + 14.3 + 11.9 + 11.0 + 6.5 + 4.9) {
-                            poolFoilBF = cPools.foilDragonHoardMythic;
-                        } else if (rollFoilBF < 33.8 + 14.3 + 11.9 + 11.0 + 6.5 + 4.9 + 4.6) {
-                            poolFoilBF = cPools.foilBookCoverRare;
-                        } else if (rollFoilBF < 33.8 + 14.3 + 11.9 + 11.0 + 6.5 + 4.9 + 4.6 + 3.6) {
-                            poolFoilBF = cPools.foilBookCoverMythic;
-                        } else if (rollFoilBF < 33.8 + 14.3 + 11.9 + 11.0 + 6.5 + 4.9 + 4.6 + 3.6 + 2.4) {
-                            poolFoilBF = cPools.surgeFoilDragonHoardMythic;
-                            isHitSlot1 = true;
-                        } else if (rollFoilBF < 33.8 + 14.3 + 11.9 + 11.0 + 6.5 + 4.9 + 4.6 + 3.6 + 2.4 + 2.4) {
-                            poolFoilBF = cPools.surgeFoilBookCoverRare;
-                            isHitSlot1 = true;
-                        } else if (rollFoilBF < 33.8 + 14.3 + 11.9 + 11.0 + 6.5 + 4.9 + 4.6 + 3.6 + 2.4 + 2.4 + 1.8) {
-                            poolFoilBF = cPools.surgeFoilBookCoverMythic;
-                            isHitSlot1 = true;
-                        } else if (rollFoilBF < 33.8 + 14.3 + 11.9 + 11.0 + 6.5 + 4.9 + 4.6 + 3.6 + 2.4 + 2.4 + 1.8 + 1.6) {
-                            poolFoilBF = cPools.foilDwarvishLanguage;
-                            isHitSlot1 = true;
-                        } else if (rollFoilBF < 33.8 + 14.3 + 11.9 + 11.0 + 6.5 + 4.9 + 4.6 + 3.6 + 2.4 + 2.4 + 1.8 + 1.6 + 1.3) {
-                            poolFoilBF = cPools.foilExtendedHobMythic;
-                        } else {
-                            poolFoilBF = cPools.smaugHeadliner;
-                            isHitSlot1 = true;
-                        }
-
-                        appendCardSlot(poolFoilBF, '1 Foil Booster Fun Card', 'rare', 1, isHitSlot1);
-
-                        for (let i = 0; i < 2; i++) {
-                            const roll = Math.random() * 100;
-                            let pool = cPools.extendedHobRare;
-                            if (roll < 30.9) pool = cPools.extendedHobRare;
-                            else if (roll < 30.9 + 14.2) pool = cPools.hocSceneRare;
-                            else if (roll < 30.9 + 14.2 + 13.1) pool = cPools.dragonHoardRare;
-                            else if (roll < 30.9 + 14.2 + 13.1 + 11.9) pool = cPools.classicArtist;
-                            else if (roll < 30.9 + 14.2 + 13.1 + 11.9 + 10.1) pool = cPools.hobSceneRare;
-                            else if (roll < 30.9 + 14.2 + 13.1 + 11.9 + 10.1 + 5.3) pool = cPools.extendedHocMythic;
-                            else if (roll < 30.9 + 14.2 + 13.1 + 11.9 + 10.1 + 5.3 + 4.5) pool = cPools.dragonHoardMythic;
-                            else if (roll < 30.9 + 14.2 + 13.1 + 11.9 + 10.1 + 5.3 + 4.5 + 4.2) pool = cPools.bookCoverRare;
-                            else if (roll < 30.9 + 14.2 + 13.1 + 11.9 + 10.1 + 5.3 + 4.5 + 4.2 + 3.3) pool = cPools.bookCoverMythic;
-                            else if (roll < 30.9 + 14.2 + 13.1 + 11.9 + 10.1 + 5.3 + 4.5 + 4.2 + 3.3 + 1.5) pool = cPools.dwarvishLanguage;
-                            else pool = cPools.extendedHobMythic;
-                            appendCardSlot(pool, `Non-Foil Booster Fun Card #${i + 1}`, 'rare', 1, false);
-                        }
-
-                        for (let i = 0; i < 2; i++) {
-                            const roll = Math.random() * 100;
-                            const pool = roll < 12.4 ? cPools.foilMythic : cPools.foilRare;
-                            appendCardSlot(pool, `Traditional Foil Rare or Mythic Rare Card #${i + 1}`, 'rare', 1, false);
-                        }
-
-                        appendCardSlot(cPools.foilLand, '1 Traditional Foil Middle-earth Journey Basic Land', 'common', 1, false);
-
-                        for (let i = 0; i < 4; i++) {
-                            const roll = Math.random() * 100;
-                            let pool = cPools.foilUncommon;
-                            if (roll < 9.2) {
-                                const surgeRoll = Math.random();
-                                pool = surgeRoll < 0.10 ? cPools.surgeFoilDragonHoardUncommon : cPools.foilDragonHoardUncommon;
-                            } else if (roll < 9.2 + 6.2) {
-                                pool = cPools.foilUncommonScene;
-                            }
-                            appendCardSlot(pool, `Traditional Foil Uncommon Card #${i + 1}`, 'uncommon', 1, false);
-                        }
-
-                        for (let i = 0; i < 5; i++) {
-                            const roll = Math.random() * 100;
-                            let pool = cPools.foilCommon;
-                            if (roll < 7.5) pool = cPools.foilCommonDualLand;
-                            else if (roll < 7.5 + 3.0) pool = cPools.foilCommonScene;
-                            appendCardSlot(pool, `Traditional Foil Common Card #${i + 1}`, 'common', 1, false);
-                        }
-
-                        const rollToken = Math.random() * 100;
-                        if (rollToken < 65.0) {
-                            appendCardSlot(cPools.foilToken, '1 Traditional Foil Double-Sided Token', 'common', 1, false);
-                        } else {
-                            const isSigned = Math.random() < (1 / 7);
-                            const label = isSigned ? '1 Gold Stamped Signature Art Card' : '1 Art Card';
-                            appendCardSlot(cPools.artCard, label, 'common', 1, false);
-                        }
-
                     } else if (setKey === 'mtgtmt') {
                         const cPools = activeSetData.collectorPools || {};
 
@@ -1642,9 +1514,7 @@ function initializePackOpenerScript(setKey) {
     }
 
     function refreshGridSlots() {
-        if (setKey === 'mtghob' && containerECLSub) {
-            renderHOBSubcategoryChecklist(containerECLSub, savedData.base, activeSetData);
-        } else if (setKey === 'mtgmsh' && containerECLSub) {
+        if (setKey === 'mtgmsh' && containerECLSub) {
             renderMSHSubcategoryChecklist(containerECLSub, savedData.base, activeSetData);
         } else if (setKey === 'mtgfra' && containerECLSub) {
             renderFRASubcategoryChecklist(containerECLSub, savedData.base, activeSetData);

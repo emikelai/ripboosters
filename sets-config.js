@@ -47,6 +47,7 @@ export const SETS_REGISTRY = [
         coverImage: 'card_images/mtg_sets/mtg_hob_collectorboosterwrapper.jpg',
         themeColor: '#b08d24',
         isMtg: true,
+        isMasterSchema: true,
         aboutTitle: 'About The Hobbit Collector Boosters',
         aboutText: 'Step into Middle-earth with The Hobbit Collector Booster simulation. Features serialized Gold Smaug cards, Dwarvish language foils, Scene cards, and Dragon Hoard chase hits.',
         seoTitle: 'MTG The Hobbit Collector Booster Pack Opening Simulator - Rip Boosters',

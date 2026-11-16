@@ -1,13 +1,11 @@
 // data-mtg.js - Universal Scryfall API Fetch Engine & Collector Set Loader
 import { SETS_REGISTRY } from './sets-config.js';
-import { HOB_CONFIG, renderHOBSubcategoryChecklist as renderHOB } from './sets/mtg/mtg-hob.js';
 import { MSH_CONFIG, renderMSHSubcategoryChecklist as renderMSH } from './sets/mtg/mtg-msh.js';
 import { TMT_CONFIG } from './sets/mtg/mtg-tmt.js';
 import { SOS_CONFIG } from './sets/mtg/mtg-sos.js';
 import { FRA_CONFIG, renderFRASubcategoryChecklist as renderFRA } from './sets/mtg/mtg-fra.js';
 import { MASTER_MTG_SCHEMAS } from './sets/mtg/mtg-master-schemas.js';
 
-export const renderHOBSubcategoryChecklist = renderHOB;
 export const renderMSHSubcategoryChecklist = renderMSH;
 export const renderFRASubcategoryChecklist = renderFRA;
 
@@ -32,7 +30,6 @@ export const MTG_CONFIGS = {
     mtgtmt: TMT_CONFIG,
     mtgsos: SOS_CONFIG,
     mtgmsh: MSH_CONFIG,
-    mtghob: HOB_CONFIG,
     mtgfra: FRA_CONFIG
 };
 
@@ -44,13 +41,17 @@ async function fetchScryfallQuery(query) {
     while (url) {
         try {
             const response = await fetch(url);
+            if (response.status === 429) {
+                await new Promise(r => setTimeout(r, 600));
+                continue;
+            }
             if (!response.ok) break;
             const json = await response.json();
             if (json && Array.isArray(json.data)) {
                 cards = cards.concat(json.data);
             }
             url = (json && json.has_more) ? json.next_page : null;
-            if (url) await new Promise(r => setTimeout(r, 100));
+            if (url) await new Promise(r => setTimeout(r, 110));
         } catch (err) {
             console.error("Failed to fetch query page from Scryfall:", err);
             break;
@@ -124,7 +125,7 @@ export async function ensureSetData(setKey) {
     const isMasterSchema = Boolean(setReg && setReg.isMasterSchema && MASTER_MTG_SCHEMAS[setKey]);
 
     if (cache[setKey] && cache[setKey].baseCards) {
-        if ((setKey !== 'mtgmsh' && setKey !== 'mtgsos' && setKey !== 'mtgtmt' && setKey !== 'mtghob' && setKey !== 'mtgfra' && !isMasterSchema) || cache[setKey].collectorPools) {
+        if ((setKey !== 'mtgmsh' && setKey !== 'mtgsos' && setKey !== 'mtgtmt' && setKey !== 'mtgfra' && !isMasterSchema) || cache[setKey].collectorPools) {
             return cache[setKey];
         }
     }
@@ -157,11 +158,18 @@ export async function ensureSetData(setKey) {
             }
         }
 
-        const queryResults = await Promise.all(
-            Array.from(uniqueQueries.entries()).map(([qKey, info]) =>
-                fetchScryfallQuery(info.query).then(cards => ({ qKey, query: info.query, isFoil: info.isFoil, cards }))
-            )
-        );
+        // Ensure complete scene card sets are fetched for sets with interlocking scene grids
+        if (setKey === 'mtghob') {
+            registerQuery('e:hob cn>=199 cn<=213', false);
+            registerQuery('e:hoc cn>=1 cn<=6', false);
+        }
+
+        const queryResults = [];
+        for (const [qKey, info] of uniqueQueries.entries()) {
+            const cards = await fetchScryfallQuery(info.query);
+            queryResults.push({ qKey, query: info.query, isFoil: info.isFoil, cards });
+            await new Promise(r => setTimeout(r, 110));
+        }
 
         const resolvedByQKey = new Map();
         for (const { qKey, query, isFoil, cards } of queryResults) {
@@ -232,6 +240,20 @@ export async function ensureSetData(setKey) {
             }
         });
 
+        // Populate named scene pools for The Hobbit interlocking scene grids
+        if (setKey === 'mtghob') {
+            const hobSceneAll = resolvedByQKey.get('e:hob cn>=199 cn<=213__nf') || [];
+            collectorPools.hobScene1 = hobSceneAll.filter(c => {
+                const cn = parseInt(c.collectorNumber, 10);
+                return cn >= 199 && cn <= 204;
+            });
+            collectorPools.hobScene2 = hobSceneAll.filter(c => {
+                const cn = parseInt(c.collectorNumber, 10);
+                return cn >= 205 && cn <= 213;
+            });
+            collectorPools.hobScene3 = resolvedByQKey.get('e:hoc cn>=1 cn<=6__nf') || [];
+        }
+
         // Pair double-sided token back images if a token pool lacks explicit back faces
         for (const pool of Object.values(collectorPools)) {
             const tokenCards = pool.filter(c => c.setCode && c.setCode.startsWith('t') && c.typeLine.includes('Token'));
@@ -261,7 +283,7 @@ export async function ensureSetData(setKey) {
     const config = MTG_CONFIGS[setKey];
     if (!config) throw new Error(`Unknown MTG Set Key: ${setKey}`);
 
-    if (setKey === 'mtghob' || setKey === 'mtgmsh' || setKey === 'mtgfra') {
+    if (setKey === 'mtgmsh' || setKey === 'mtgfra') {
         const collectorPools = {};
         const baseCards = [];
         const hitsSet = new Set();
