@@ -1,12 +1,12 @@
 // data-mtg.js - Universal Scryfall API Fetch Engine & Collector Set Loader
-import { ECL_CONFIG, renderECLSubcategoryChecklist as renderECL } from './sets/mtg/mtg-ecl.js';
+import { SETS_REGISTRY } from './sets-config.js';
 import { HOB_CONFIG, renderHOBSubcategoryChecklist as renderHOB } from './sets/mtg/mtg-hob.js';
 import { MSH_CONFIG, renderMSHSubcategoryChecklist as renderMSH } from './sets/mtg/mtg-msh.js';
 import { TMT_CONFIG } from './sets/mtg/mtg-tmt.js';
 import { SOS_CONFIG } from './sets/mtg/mtg-sos.js';
 import { FRA_CONFIG, renderFRASubcategoryChecklist as renderFRA } from './sets/mtg/mtg-fra.js';
+import { MASTER_MTG_SCHEMAS } from './sets/mtg/mtg-master-schemas.js';
 
-export const renderECLSubcategoryChecklist = renderECL;
 export const renderHOBSubcategoryChecklist = renderHOB;
 export const renderMSHSubcategoryChecklist = renderMSH;
 export const renderFRASubcategoryChecklist = renderFRA;
@@ -29,7 +29,6 @@ export const MTG_CONFIGS = {
     mtgdrk: { setKey: 'mtgdrk', name: 'The Dark', code: 'drk', year: 1994, maxCount: 119, hitCardNames: ["Blood Moon", "Maze of Ith", "Tormod's Crypt", "Preacher"] },
     rav: { setKey: 'rav', name: 'Ravnica: City of Guilds', code: 'rav', year: 2005, maxCount: 306, hitCardNames: ["Overgrown Tomb", "Temple Garden", "Sacred Foundry", "Watery Grave", "Dark Confidant", "Chord of Calling", "Doubling Season", "Privileged Position"] },
     isd: { setKey: 'isd', name: 'Innistrad', code: 'isd', year: 2011, maxCount: 264, hitCardNames: ["Liliana of the Veil", "Snapcaster Mage", "Geist of Saint Traft", "Garruk Relentless", "Parallel Lives", "Griselbrand"] },
-    mtgecl: ECL_CONFIG,
     mtgtmt: TMT_CONFIG,
     mtgsos: SOS_CONFIG,
     mtgmsh: MSH_CONFIG,
@@ -121,16 +120,148 @@ function processScryfallCard(card, count) {
 }
 
 export async function ensureSetData(setKey) {
+    const setReg = SETS_REGISTRY.find(s => s.key === setKey);
+    const isMasterSchema = Boolean(setReg && setReg.isMasterSchema && MASTER_MTG_SCHEMAS[setKey]);
+
     if (cache[setKey] && cache[setKey].baseCards) {
-        if ((setKey !== 'mtgmsh' && setKey !== 'mtgsos' && setKey !== 'mtgtmt' && setKey !== 'mtgecl' && setKey !== 'mtghob' && setKey !== 'mtgfra') || cache[setKey].collectorPools) {
+        if ((setKey !== 'mtgmsh' && setKey !== 'mtgsos' && setKey !== 'mtgtmt' && setKey !== 'mtghob' && setKey !== 'mtgfra' && !isMasterSchema) || cache[setKey].collectorPools) {
             return cache[setKey];
         }
+    }
+
+    // --- Universal Master Schema Loader (Supports both flat queries and weighted subPools) ---
+    if (isMasterSchema) {
+        const schema = MASTER_MTG_SCHEMAS[setKey];
+        const collectorPools = {};
+        const baseCards = [];
+        const hitsSet = new Set();
+        const cardObjMap = new Map();
+
+        // Collect and deduplicate all unique queries across flat slots and weighted subPools
+        const uniqueQueries = new Map();
+        const registerQuery = (query, isFoil) => {
+            const qKey = `${query}__${isFoil ? 'f' : 'nf'}`;
+            if (!uniqueQueries.has(qKey)) {
+                uniqueQueries.set(qKey, { query, isFoil });
+            }
+        };
+
+        for (const slotDef of schema) {
+            if (Array.isArray(slotDef.subPools) && slotDef.subPools.length > 0) {
+                for (const sp of slotDef.subPools) {
+                    const spFoil = sp.isFoil !== undefined ? sp.isFoil : slotDef.isFoil;
+                    registerQuery(sp.query, spFoil);
+                }
+            } else if (slotDef.query) {
+                registerQuery(slotDef.query, slotDef.isFoil);
+            }
+        }
+
+        const queryResults = await Promise.all(
+            Array.from(uniqueQueries.entries()).map(([qKey, info]) =>
+                fetchScryfallQuery(info.query).then(cards => ({ qKey, query: info.query, isFoil: info.isFoil, cards }))
+            )
+        );
+
+        const resolvedByQKey = new Map();
+        for (const { qKey, query, isFoil, cards } of queryResults) {
+            const pool = [];
+            for (const card of cards) {
+                const compositeId = isFoil ? `${card.id}_f` : `${card.id}_nf`;
+                let cardObj = cardObjMap.get(compositeId);
+                if (!cardObj) {
+                    cardObj = processScryfallCard(card, 0);
+                    cardObj.id = compositeId;
+                    cardObj.rawId = card.id;
+                    cardObj.isFoil = isFoil;
+                    if (query.includes('is:serialized')) cardObj.isSerialized = true;
+                    cardObjMap.set(compositeId, cardObj);
+                    baseCards.push(cardObj);
+                }
+                pool.push(cardObj);
+            }
+            resolvedByQKey.set(qKey, pool);
+        }
+
+        const resolvedSchema = schema.map(slotDef => {
+            if (Array.isArray(slotDef.subPools) && slotDef.subPools.length > 0) {
+                const combinedCards = [];
+                const seenSlotIds = new Set();
+
+                const resolvedSubPools = slotDef.subPools.map(sp => {
+                    const spFoil = sp.isFoil !== undefined ? sp.isFoil : slotDef.isFoil;
+                    const spHit = sp.isHitSlot !== undefined ? sp.isHitSlot : slotDef.isHitSlot;
+                    const spRank = sp.hitRank !== undefined ? sp.hitRank : (slotDef.hitRank ?? 99);
+                    const qKey = `${sp.query}__${spFoil ? 'f' : 'nf'}`;
+                    const cards = resolvedByQKey.get(qKey) || [];
+
+                    cards.forEach(c => {
+                        if (!seenSlotIds.has(c.id)) {
+                            seenSlotIds.add(c.id);
+                            combinedCards.push(c);
+                        }
+                        if (spHit) {
+                            c.hitRank = Math.min(c.hitRank ?? 99, spRank);
+                            hitsSet.add(c);
+                        }
+                    });
+
+                    return {
+                        weight: sp.weight,
+                        cards,
+                        isFoil: spFoil,
+                        isHitSlot: spHit,
+                        hitRank: spRank
+                    };
+                });
+
+                collectorPools[slotDef.slotNumber] = combinedCards;
+                return { ...slotDef, resolvedSubPools };
+            } else {
+                const qKey = `${slotDef.query}__${slotDef.isFoil ? 'f' : 'nf'}`;
+                const slotPool = resolvedByQKey.get(qKey) || [];
+                collectorPools[slotDef.slotNumber] = slotPool;
+
+                if (slotDef.isHitSlot) {
+                    slotPool.forEach(c => {
+                        c.hitRank = Math.min(c.hitRank ?? 99, slotDef.hitRank ?? 99);
+                        hitsSet.add(c);
+                    });
+                }
+                return { ...slotDef };
+            }
+        });
+
+        // Pair double-sided token back images if a token pool lacks explicit back faces
+        for (const pool of Object.values(collectorPools)) {
+            const tokenCards = pool.filter(c => c.setCode && c.setCode.startsWith('t') && c.typeLine.includes('Token'));
+            if (tokenCards.length > 1) {
+                for (let t = 0; t < tokenCards.length; t++) {
+                    if (tokenCards[t].backImg === "card_images/mtg_sets/Magic_the_Gathering_Card_Back.jpg") {
+                        const partnerIdx = (t + 1) % tokenCards.length;
+                        if (tokenCards[partnerIdx] && tokenCards[partnerIdx].frontImg) {
+                            tokenCards[t].backImg = tokenCards[partnerIdx].frontImg;
+                        }
+                    }
+                }
+            }
+        }
+
+        baseCards.forEach((c, idx) => { c.n = idx + 1; });
+
+        cache[setKey] = {
+            baseCards,
+            collectorPools,
+            pools: { hits: Array.from(hitsSet) },
+            masterSchema: resolvedSchema
+        };
+        return cache[setKey];
     }
 
     const config = MTG_CONFIGS[setKey];
     if (!config) throw new Error(`Unknown MTG Set Key: ${setKey}`);
 
-    if (setKey === 'mtgecl' || setKey === 'mtghob' || setKey === 'mtgmsh' || setKey === 'mtgfra') {
+    if (setKey === 'mtghob' || setKey === 'mtgmsh' || setKey === 'mtgfra') {
         const collectorPools = {};
         const baseCards = [];
         const hitsSet = new Set();

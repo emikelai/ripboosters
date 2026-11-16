@@ -1,6 +1,6 @@
 // js/app.js
 import { SETS_REGISTRY, STATIC_ROUTES } from '../sets-config.js';
-import { MTG_CONFIGS, ensureSetData, renderECLSubcategoryChecklist, renderHOBSubcategoryChecklist, renderMSHSubcategoryChecklist, renderFRASubcategoryChecklist } from '../data-mtg.js';
+import { MTG_CONFIGS, ensureSetData, renderHOBSubcategoryChecklist, renderMSHSubcategoryChecklist, renderFRASubcategoryChecklist } from '../data-mtg.js';
 import { initModals, openSetAboutModal, showLightbox } from './ui-modals.js';
 import { navigateToView } from './router.js';
 
@@ -289,6 +289,7 @@ function loadViewLayout(setKey) {
         else if (setKey === "mtgmsh") showcaseSubText = "Cosmic Foil Mind Stone &middot; Borderless Gauntlet Mind Stone &middot; Classic Comic Foil &middot; Panel Mythic &middot; Logo Mythic &middot; Scene Mythic &middot; Extended Mythic &middot; Source Material Foil";
         else if (setKey === "mtghob") showcaseSubText = "Gleaming Gold Smaug the Magnificent &middot; Foil Dwarvish Language &middot; Surge Foil Book Cover Mythic &middot; Surge Foil Book Cover Rare &middot; Surge Foil Dragon Hoard Mythic &middot; Surge Foil Dragon Hoard Rare &middot; Surge Foil Classic Artist";
         else if (setKey === "mtgfra") showcaseSubText = "Serialized Bloodline Recollector &middot; Facet Foil Shattered Mirror &middot; Fracture Foil Japan Showcase &middot; Japan Showcase Foil &middot; Special Guests";
+        else if (setConfig.isMasterSchema) showcaseSubText = "Master Schema Chase Hits";
 
         const subMarkup = showcaseSubText ? `<p class="collection-sub" style="color:#b08d24;">${showcaseSubText}</p>` : ``;
 
@@ -417,6 +418,7 @@ function loadViewLayout(setKey) {
         else if (setKey === 'mtgmsh') packCoverHTML = `<img id="packWrapperImg" src="card_images/mtg_sets/mtg_msh_collectorboosterwrapper.jpg" alt="Marvel Super Heroes Collector Pack" style="width:100%;height:100%;object-fit:contain;border-radius:6px;">`;
         else if (setKey === 'mtghob') packCoverHTML = `<img id="packWrapperImg" src="card_images/mtg_sets/mtg_hob_collectorboosterwrapper.jpg" alt="The Hobbit Collector Pack" style="width:100%;height:100%;object-fit:contain;border-radius:6px;">`;
         else if (setKey === 'mtgfra') packCoverHTML = `<img id="packWrapperImg" src="card_images/mtg_sets/mtg_fra_collectorboosterwrapper.jpg" alt="Reality Fracture Collector Pack" style="width:100%;height:100%;object-fit:contain;border-radius:6px;">`;
+        else if (setConfig.isMasterSchema) packCoverHTML = `<img id="packWrapperImg" src="${setConfig.coverImage}" alt="${setConfig.name}" style="width:100%;height:100%;object-fit:contain;border-radius:6px;">`;
         else if (setKey === 'mtg3ed') packCoverHTML = `<img id="packWrapperImg" src="card_images/mtg_sets/mtg_3ed_revised_pack_wrapper.jpg" alt="Pack" style="width:100%;height:100%;object-fit:cover;border-radius:6px;">`;
         else if (setKey === 'mtglea' || setKey === 'mtgleb') packCoverHTML = `<img id="packWrapperImg" src="card_images/mtg_sets/mtg_alpha_beta_pack_wrapper.jpg" alt="Pack" style="width:100%;height:100%;object-fit:cover;border-radius:6px;">`;
         else if (setKey === 'mtg2ed') packCoverHTML = `<img id="packWrapperImg" src="card_images/mtg_sets/mtg_unlimited_pack_wrapper.jpg" alt="Pack" style="width:100%;height:100%;object-fit:cover;border-radius:6px;">`;
@@ -626,6 +628,86 @@ function initializePackOpenerScript(setKey) {
 
     const containerECLSub = document.getElementById('eclSubcategoriesContainer');
 
+    // --- Universal Master Schema Subcategory Checklist Renderer ---
+    const renderMasterSchemaChecklist = () => {
+        if (!containerECLSub || !activeSetData.masterSchema) return;
+        const pools = activeSetData.collectorPools || {};
+        const allSavedIds = new Set([
+            ...savedData.base.map(String),
+            ...savedData.spectra.map(String)
+        ]);
+
+        // Group identical slot queries/subPools together so multi-slot commons/uncommons render as one section
+        const groupedSlots = [];
+        const seenGroupKeys = new Map();
+        for (const slotDef of activeSetData.masterSchema) {
+            const cleanTitle = slotDef.title.replace(/^1\s+/, '').replace(/\s+#\d+$/, '');
+            const schemaFingerprint = slotDef.subPools
+                ? JSON.stringify(slotDef.subPools.map(sp => ({ q: sp.query, f: sp.isFoil })))
+                : `${slotDef.query}__${slotDef.isFoil}`;
+            const groupKey = `${cleanTitle}__${schemaFingerprint}`;
+            if (!seenGroupKeys.has(groupKey)) {
+                const group = {
+                    id: `master-slot-${slotDef.slotNumber}`,
+                    name: cleanTitle,
+                    cards: pools[slotDef.slotNumber] || []
+                };
+                seenGroupKeys.set(groupKey, group);
+                groupedSlots.push(group);
+            }
+        }
+
+        const rarityWeights = { mythic: 4, rare: 3, uncommon: 2, common: 1 };
+        let html = `<div class="checklist-subcategories-container">`;
+
+        groupedSlots.forEach(group => {
+            const sortedCards = [...group.cards].sort((a, b) => {
+                if (a.isSerialized !== b.isSerialized) return a.isSerialized ? -1 : 1;
+                const rDiff = (rarityWeights[b.rarity] || 0) - (rarityWeights[a.rarity] || 0);
+                if (rDiff !== 0) return rDiff;
+                return (parseInt(String(a.collectorNumber || a.n).replace(/\D/g, ''), 10) || 0) -
+                       (parseInt(String(b.collectorNumber || b.n).replace(/\D/g, ''), 10) || 0);
+            });
+
+            const collectedInSlot = sortedCards.filter(c => allSavedIds.has(String(c.id))).length;
+            html += `
+                <div class="checklist-subcategory-group" id="${group.id}" style="margin-bottom: 2rem;">
+                    <div class="subcategory-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem;">
+                        <h4 style="font-size: 1rem; color: var(--accent-gold); margin: 0;">${group.name}</h4>
+                        <span class="subcategory-count" style="font-size: 0.85rem; color: var(--text-sub);">${collectedInSlot} / ${sortedCards.length}</span>
+                    </div>
+                    <div class="subcategory-cards-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(68px, 1fr)); gap: 0.5rem;">
+            `;
+
+            sortedCards.forEach(card => {
+                const isPulled = allSavedIds.has(String(card.id));
+                const backImg = card.backImg || "card_images/mtg_sets/Magic_the_Gathering_Card_Back.jpg";
+                const displayNum = card.collectorNumber || card.n || '---';
+                html += `
+                    <div class="col-slot ${isPulled ? 'filled' : 'no-image'}"
+                         data-front-img="${card.frontImg || ''}"
+                         data-back-img="${backImg}">
+                        ${isPulled
+                            ? `<img src="${card.frontImg}">`
+                            : `<span class="col-num">#${displayNum}</span><span class="col-name">${card.name}</span>`
+                        }
+                    </div>
+                `;
+            });
+
+            html += `</div></div>`;
+        });
+
+        html += `</div>`;
+        containerECLSub.innerHTML = html;
+
+        containerECLSub.querySelectorAll('.col-slot.filled').forEach(slot => {
+            slot.addEventListener('click', () => {
+                showLightbox(slot.getAttribute('data-front-img'), slot.getAttribute('data-back-img'));
+            });
+        });
+    };
+
     const renderSceneGridHelper = (container, filterFn, poolKey, backSceneNumbers = []) => {
         if (!container) return;
         container.innerHTML = '';
@@ -682,10 +764,7 @@ function initializePackOpenerScript(setKey) {
         });
     };
 
-    if (setKey === 'mtgecl' && containerECLSub) {
-        gridBase.style.display = 'none';
-        renderECLSubcategoryChecklist(containerECLSub, savedData.base, activeSetData);
-    } else if (setKey === 'mtghob' && containerECLSub) {
+    if (setKey === 'mtghob' && containerECLSub) {
         gridBase.style.display = 'none';
         renderHOBSubcategoryChecklist(containerECLSub, savedData.base, activeSetData);
 
@@ -710,9 +789,12 @@ function initializePackOpenerScript(setKey) {
     } else if (setKey === 'mtgfra' && containerECLSub) {
         gridBase.style.display = 'none';
         renderFRASubcategoryChecklist(containerECLSub, savedData.base, activeSetData);
+    } else if (setConfig && setConfig.isMasterSchema && containerECLSub) {
+        gridBase.style.display = 'none';
+        renderMasterSchemaChecklist();
     }
 
-    if (gridBase && setKey !== 'mtgecl' && setKey !== 'mtghob' && setKey !== 'mtgmsh' && setKey !== 'mtgfra') {
+    if (gridBase && setKey !== 'mtghob' && setKey !== 'mtgmsh' && setKey !== 'mtgfra' && !(setConfig && setConfig.isMasterSchema)) {
         let loopPool = activeSetData.baseCards;
         if (setKey === 'mu1990') {
             loopPool = loopPool.filter(card => parseInt(String(card.n).trim().replace(/^\D+/g, ''), 10) <= 162);
@@ -819,7 +901,18 @@ function initializePackOpenerScript(setKey) {
         if (isMtg) {
             let sortedHits = [...activeSetData.pools.hits];
 
-            if (setKey === 'mtghob') {
+            if (setConfig && setConfig.isMasterSchema) {
+                const rarityWeights = { serialized: 5, mythic: 4, rare: 3, uncommon: 2, common: 1 };
+                sortedHits.sort((a, b) => {
+                    const rankDiff = (a.hitRank ?? 99) - (b.hitRank ?? 99);
+                    if (rankDiff !== 0) return rankDiff;
+                    const wA = a.isSerialized ? 5 : (rarityWeights[a.rarity] || 0);
+                    const wB = b.isSerialized ? 5 : (rarityWeights[b.rarity] || 0);
+                    if (wB !== wA) return wB - wA;
+                    return (parseInt(String(a.collectorNumber || a.n).replace(/\D/g, ''), 10) || 0) -
+                           (parseInt(String(b.collectorNumber || b.n).replace(/\D/g, ''), 10) || 0);
+                });
+            } else if (setKey === 'mtghob') {
                 const cPools = activeSetData.collectorPools || {};
                 const poolRarityOrder = [
                     cPools.smaugHeadliner,
@@ -829,38 +922,6 @@ function initializePackOpenerScript(setKey) {
                     cPools.surgeFoilDragonHoardMythic,
                     cPools.surgeFoilDragonHoardRare,
                     cPools.surgeFoilClassicArtist
-                ];
-
-                sortedHits.sort((a, b) => {
-                    const getRank = (card) => {
-                        const cardRawId = String(card.rawId || card.id || card.n || '').replace(/_(f|nf)$/, '');
-                        const cardNum = String(card.collectorNumber || card.n || '');
-
-                        for (let r = 0; r < poolRarityOrder.length; r++) {
-                            const pool = poolRarityOrder[r];
-                            if (pool && pool.some(c => {
-                                const poolRawId = String(c.rawId || c.id || c.n || '').replace(/_(f|nf)$/, '');
-                                const poolNum = String(c.collectorNumber || c.n || '');
-                                return (cardRawId && cardRawId === poolRawId) || (cardNum && cardNum === poolNum);
-                            })) {
-                                return r;
-                            }
-                        }
-                        return 99;
-                    };
-                    return getRank(a) - getRank(b);
-                });
-            } else if (setKey === 'mtgecl') {
-                const cPools = activeSetData.collectorPools || {};
-                const poolRarityOrder = [
-                    cPools.serializedBitterbloom,
-                    cPools.japanShowcaseFracture,
-                    cPools.foilBorderlessMythic,
-                    cPools.foilReversibleShock,
-                    cPools.foilBorderlessRare,
-                    cPools.foilFableMythic,
-                    cPools.japanShowcaseFoil,
-                    cPools.foilSpecialGuests
                 ];
 
                 sortedHits.sort((a, b) => {
@@ -1024,11 +1085,13 @@ function initializePackOpenerScript(setKey) {
                     mainContainer.innerHTML = '';
                     mainRow.style.display = 'block';
 
-                    const appendCardSlot = (poolArray, labelText, rarityType, count = 1, isHitSlot = false) => {
+                    const appendCardSlot = (poolArray, labelText, rarityType, count = 1, isHitSlot = false, forceFoil = null) => {
                         const sourcePool = (poolArray && poolArray.length) ? poolArray : activeSetData.pools.rare;
                         if (!sourcePool || !sourcePool.length) return;
                         
-                        const isFoilSlot = labelText.toLowerCase().includes('foil') && !labelText.toLowerCase().includes('non-foil');
+                        const isFoilSlot = forceFoil !== null
+                            ? forceFoil
+                            : (labelText.toLowerCase().includes('foil') && !labelText.toLowerCase().includes('non-foil'));
 
                         for (let i = 0; i < count; i++) {
                             const rawPickedCard = sourcePool[Math.floor(Math.random() * sourcePool.length)];
@@ -1055,7 +1118,37 @@ function initializePackOpenerScript(setKey) {
                         }
                     };
 
-                    if (setKey === 'mtghob') {
+                    if (setConfig && setConfig.isMasterSchema && activeSetData.masterSchema) {
+                        const cPools = activeSetData.collectorPools || {};
+                        activeSetData.masterSchema.forEach(slotDef => {
+                            const lowerTitle = slotDef.title.toLowerCase();
+                            const rarityClass = slotDef.isHitSlot || lowerTitle.includes('rare') || lowerTitle.includes('mythic')
+                                ? 'rare'
+                                : (lowerTitle.includes('uncommon') ? 'uncommon' : 'common');
+
+                            if (Array.isArray(slotDef.resolvedSubPools) && slotDef.resolvedSubPools.length > 0) {
+                                const validSubPools = slotDef.resolvedSubPools.filter(sp => sp.cards && sp.cards.length > 0);
+                                const totalWeight = validSubPools.reduce((sum, sp) => sum + (sp.weight || 0), 0);
+                                let roll = Math.random() * totalWeight;
+                                let chosenSubPool = validSubPools[validSubPools.length - 1];
+
+                                for (const sp of validSubPools) {
+                                    if (roll < sp.weight) {
+                                        chosenSubPool = sp;
+                                        break;
+                                    }
+                                    roll -= sp.weight;
+                                }
+
+                                if (chosenSubPool) {
+                                    appendCardSlot(chosenSubPool.cards, slotDef.title, rarityClass, 1, chosenSubPool.isHitSlot, chosenSubPool.isFoil);
+                                }
+                            } else {
+                                const pool = cPools[slotDef.slotNumber];
+                                appendCardSlot(pool, slotDef.title, rarityClass, 1, slotDef.isHitSlot, slotDef.isFoil);
+                            }
+                        });
+                    } else if (setKey === 'mtghob') {
                         const cPools = activeSetData.collectorPools || {};
 
                         const rollFoilBF = Math.random() * 100;
@@ -1193,89 +1286,6 @@ function initializePackOpenerScript(setKey) {
                             const artLabel = isSigned ? '1 Gold stamped signature art card' : '1 Art card';
                             appendCardSlot(cPools.artCards, artLabel, 'common', 1, false);
                         }
-
-                    } else if (setKey === 'mtgecl') {
-                        const cPools = activeSetData.collectorPools || {};
-
-                        const foilRoll = Math.random() * 100;
-                        let targetFoilPool, isHitSlot = false;
-
-                        if (foilRoll < 30.4) {
-                            targetFoilPool = cPools.foilExtendedRare;
-                        } else if (foilRoll < 30.4 + 27.2) {
-                            targetFoilPool = cPools.foilFableRare;
-                        } else if (foilRoll < 30.4 + 27.2 + 7.3) {
-                            targetFoilPool = cPools.foilFableMythic;
-                            isHitSlot = true;
-                        } else if (foilRoll < 30.4 + 27.2 + 7.3 + 5.2) {
-                            targetFoilPool = cPools.foilBorderlessRare;
-                            isHitSlot = true;
-                        } else if (foilRoll < 30.4 + 27.2 + 7.3 + 5.2 + 4.2) {
-                            targetFoilPool = cPools.foilBorderlessMythic;
-                            isHitSlot = true;
-                        } else if (foilRoll < 30.4 + 27.2 + 7.3 + 5.2 + 4.2 + 5.2) {
-                            targetFoilPool = cPools.foilReversibleShock;
-                            isHitSlot = true;
-                        } else if (foilRoll < 30.4 + 27.2 + 7.3 + 5.2 + 4.2 + 5.2 + 10.5) {
-                            targetFoilPool = cPools.foilSpecialGuests;
-                            isHitSlot = true;
-                        } else if (foilRoll < 30.4 + 27.2 + 7.3 + 5.2 + 4.2 + 5.2 + 10.5 + 9.0) {
-                            targetFoilPool = cPools.japanShowcaseFoil;
-                            isHitSlot = true;
-                        } else if (foilRoll < 30.4 + 27.2 + 7.3 + 5.2 + 4.2 + 5.2 + 10.5 + 9.0 + 0.8) {
-                            targetFoilPool = cPools.japanShowcaseFracture;
-                            isHitSlot = true;
-                        } else {
-                            targetFoilPool = cPools.serializedBitterbloom;
-                            isHitSlot = true;
-                        }
-
-                        appendCardSlot(targetFoilPool, '1 Foil Booster Fun Rare / Mythic', 'rare', 1, isHitSlot);
-
-                        for (let i = 0; i < 2; i++) {
-                            const roll = Math.random() * 100;
-                            let targetPool;
-
-                            if (roll < 37.7) {
-                                targetPool = cPools.extendedRare;
-                            } else if (roll < 37.7 + 33.7) {
-                                targetPool = cPools.fableRare;
-                            } else if (roll < 37.7 + 33.7 + 9.1) {
-                                targetPool = cPools.fableMythic;
-                            } else if (roll < 37.7 + 33.7 + 9.1 + 13.0) {
-                                targetPool = cPools.borderlessRare;
-                            } else if (roll < 37.7 + 33.7 + 9.1 + 13.0 + 4.5) {
-                                targetPool = cPools.borderlessMythic;
-                            } else {
-                                targetPool = cPools.reversibleShock;
-                            }
-
-                            appendCardSlot(targetPool, `Non-Foil Booster Fun Rare / Mythic #${i + 1}`, 'rare', 1, false);
-                        }
-
-                        const isEccMythic = Math.random() < 0.09;
-                        const eccPool = isEccMythic ? cPools.eccMythicBorderless : cPools.eccRareExtended;
-                        appendCardSlot(eccPool, '1 Non-Foil Commander (ECC) Rare or Mythic', 'rare', 1, false);
-
-                        const isMythic = Math.random() < 0.145;
-                        const rarePool = isMythic ? cPools.foilMythic : cPools.foilRare;
-                        appendCardSlot(rarePool, '1 Traditional Foil Rare or Mythic', 'rare', 1, false);
-
-                        appendCardSlot(cPools.foilLand, '1 Traditional Foil Full-Art Basic Land', 'common', 1, false);
-
-                        for (let i = 0; i < 4; i++) {
-                            const isFable = Math.random() < 0.364;
-                            const targetPool = isFable ? cPools.uncommonFable : cPools.foilUncommon;
-                            appendCardSlot(targetPool, `Traditional Foil Uncommon #${i + 1}`, 'uncommon', 1, false);
-                        }
-
-                        for (let i = 0; i < 5; i++) {
-                            appendCardSlot(cPools.foilCommon, `Traditional Foil Common #${i + 1}`, 'common', 1, false);
-                        }
-
-                        const tokenRoll = Math.random() * 100;
-                        const targetTokenPool = tokenRoll < 65.0 ? cPools.foilToken : cPools.artCard;
-                        appendCardSlot(targetTokenPool, '1 Art Card or Foil Double-Sided Token', 'common', 1, false);
 
                     } else if (setKey === 'mtgmsh') {
                         const cPools = activeSetData.collectorPools || {};
@@ -1632,14 +1642,14 @@ function initializePackOpenerScript(setKey) {
     }
 
     function refreshGridSlots() {
-        if (setKey === 'mtgecl' && containerECLSub) {
-            renderECLSubcategoryChecklist(containerECLSub, savedData.base, activeSetData);
-        } else if (setKey === 'mtghob' && containerECLSub) {
+        if (setKey === 'mtghob' && containerECLSub) {
             renderHOBSubcategoryChecklist(containerECLSub, savedData.base, activeSetData);
         } else if (setKey === 'mtgmsh' && containerECLSub) {
             renderMSHSubcategoryChecklist(containerECLSub, savedData.base, activeSetData);
         } else if (setKey === 'mtgfra' && containerECLSub) {
             renderFRASubcategoryChecklist(containerECLSub, savedData.base, activeSetData);
+        } else if (setConfig && setConfig.isMasterSchema && containerECLSub) {
+            renderMasterSchemaChecklist();
         } else {
             savedData.base.forEach(k => {
                 const slot = document.getElementById(`col-base-${k}`);

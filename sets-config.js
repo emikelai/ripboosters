@@ -1,5 +1,25 @@
 export const SETS_REGISTRY = [
     // ---------------------------------------------------------------------------
+    // MASTER SCHEMA TEST SET
+    // ---------------------------------------------------------------------------
+    {
+        key: 'mtgtest',
+        name: 'Master Schema Test Set',
+        year: '2026',
+        publisher: 'Wizards of the Coast',
+        category: 'Magic: The Gathering',
+        totalCards: 498,
+        coverImage: 'card_images/mtg_sets/mtg_ecl_collectorboosterwrapper.jpg',
+        themeColor: '#2d6a4f',
+        isMtg: true,
+        isMasterSchema: true,
+        aboutTitle: 'About Master Schema Engine',
+        aboutText: 'Testing declarative spreadsheet-driven MTG set rendering.',
+        seoTitle: 'MTG Master Schema Test Simulator - Rip Boosters',
+        seoDesc: 'Testing master schema pack opener.'
+    },
+
+    // ---------------------------------------------------------------------------
     // MAGIC: THE GATHERING (Ordered Descending by Release Date)
     // ---------------------------------------------------------------------------
     {
@@ -87,6 +107,7 @@ export const SETS_REGISTRY = [
         coverImage: 'card_images/mtg_sets/mtg_ecl_collectorboosterwrapper.jpg',
         themeColor: '#2d6a4f',
         isMtg: true,
+        isMasterSchema: true,
         aboutTitle: 'About Lorwyn Eclipsed Collector Boosters',
         aboutText: 'Revisit the realm of Lorwyn with the Lorwyn Eclipsed Collector Booster simulator. Hunt for Serialized Bitterbloom Bearer, Japan Showcase Fracture Foils, Reversible Shock Lands, and Fable Frame Mythics.',
         seoTitle: 'MTG Lorwyn Eclipsed Collector Booster Simulator - Rip Boosters',
