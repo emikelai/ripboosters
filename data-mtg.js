@@ -27,29 +27,64 @@ export const MTG_CONFIGS = {
 };
 
 const cache = {};
+const QUERY_CACHE_PREFIX = 'rb_sf_q_v1_';
 
 async function fetchScryfallQuery(query) {
-    let url = `https://api.scryfall.com/cards/search?q=${encodeURIComponent(query)}`;
+    const cacheKey = QUERY_CACHE_PREFIX + query;
+    try {
+        const cached = sessionStorage.getItem(cacheKey);
+        if (cached) {
+            const parsed = JSON.parse(cached);
+            if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+        }
+    } catch (_) {}
+
+    let url = `https://api.scryfall.com/cards/search?q=${encodeURIComponent(query)}&unique=prints`;
     let cards = [];
+    let retries = 0;
+
     while (url) {
         try {
             const response = await fetch(url);
             if (response.status === 429) {
-                await new Promise(r => setTimeout(r, 600));
-                continue;
+                const backoff = Math.min(4000, 1000 * Math.pow(2, retries));
+                retries++;
+                await new Promise(r => setTimeout(r, backoff));
+                if (retries <= 5) continue;
+                break;
             }
-            if (!response.ok) break;
+            if (!response.ok) {
+                if (response.status >= 500 && retries < 3) {
+                    retries++;
+                    await new Promise(r => setTimeout(r, 800 * retries));
+                    continue;
+                }
+                break;
+            }
+            retries = 0;
             const json = await response.json();
             if (json && Array.isArray(json.data)) {
                 cards = cards.concat(json.data);
             }
             url = (json && json.has_more) ? json.next_page : null;
-            if (url) await new Promise(r => setTimeout(r, 110));
+            if (url) await new Promise(r => setTimeout(r, 150));
         } catch (err) {
-            console.error("Failed to fetch query page from Scryfall:", err);
+            if (retries < 3) {
+                retries++;
+                await new Promise(r => setTimeout(r, 800 * retries));
+                continue;
+            }
+            console.error("Failed to fetch query page from Scryfall:", query, err);
             break;
         }
     }
+
+    if (cards.length > 0) {
+        try {
+            sessionStorage.setItem(cacheKey, JSON.stringify(cards));
+        } catch (_) {}
+    }
+
     return cards;
 }
 
@@ -157,28 +192,32 @@ export async function ensureSetData(setKey) {
             registerQuery('e:hoc cn>=1 cn<=6', false);
         } else if (setKey === 'mtgmsh') {
             registerQuery('e:msh cn>=314 cn<=351', false);
-            registerQuery('e:msc cn>=501 cn<=512 is:nonfoil', false);
+            registerQuery('e:msc cn>=501 cn<=512', false);
         }
 
-        const queryResults = [];
-        for (const [qKey, info] of uniqueQueries.entries()) {
-            const cards = await fetchScryfallQuery(info.query);
-            queryResults.push({ qKey, query: info.query, isFoil: info.isFoil, cards });
-            await new Promise(r => setTimeout(r, 110));
+        // Deduplicate identical Scryfall query strings so foil & non-foil variants only fetch once
+        const cardsByRawQuery = new Map();
+        for (const info of uniqueQueries.values()) {
+            if (!cardsByRawQuery.has(info.query)) {
+                const cards = await fetchScryfallQuery(info.query);
+                cardsByRawQuery.set(info.query, cards);
+                await new Promise(r => setTimeout(r, 150));
+            }
         }
 
         const resolvedByQKey = new Map();
-        for (const { qKey, query, isFoil, cards } of queryResults) {
+        for (const [qKey, info] of uniqueQueries.entries()) {
+            const cards = cardsByRawQuery.get(info.query) || [];
             const pool = [];
             for (const card of cards) {
-                const compositeId = isFoil ? `${card.id}_f` : `${card.id}_nf`;
+                const compositeId = info.isFoil ? `${card.id}_f` : `${card.id}_nf`;
                 let cardObj = cardObjMap.get(compositeId);
                 if (!cardObj) {
                     cardObj = processScryfallCard(card, 0);
                     cardObj.id = compositeId;
                     cardObj.rawId = card.id;
-                    cardObj.isFoil = isFoil;
-                    if (query.includes('is:serialized')) cardObj.isSerialized = true;
+                    cardObj.isFoil = info.isFoil;
+                    if (info.query.includes('is:serialized')) cardObj.isSerialized = true;
                     cardObjMap.set(compositeId, cardObj);
                     baseCards.push(cardObj);
                 }
@@ -257,7 +296,7 @@ export async function ensureSetData(setKey) {
             });
         } else if (setKey === 'mtgmsh') {
             const qMsh = resolvedByQKey.get('e:msh cn>=314 cn<=351__nf');
-            const qMsc = resolvedByQKey.get('e:msc cn>=501 cn<=512 is:nonfoil__nf');
+            const qMsc = resolvedByQKey.get('e:msc cn>=501 cn<=512__nf');
             const mshSceneAll = (qMsh && qMsh.length > 0) ? qMsh : baseCards.filter(c => c.setCode === 'msh');
             const mscSceneAll = (qMsc && qMsc.length > 0) ? qMsc : baseCards.filter(c => c.setCode === 'msc');
             const bbqNums = new Set(['328', '346', '345', '350', '331']);
