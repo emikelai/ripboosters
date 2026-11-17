@@ -713,7 +713,9 @@ function initializePackOpenerScript(setKey) {
         container.innerHTML = '';
         
         const pools = activeSetData.collectorPools || {};
-        let sceneCards = pools[poolKey] ? pools[poolKey].filter(filterFn) : activeSetData.baseCards.filter(filterFn);
+        let sceneCards = (pools[poolKey] && pools[poolKey].length > 0)
+            ? pools[poolKey].filter(filterFn)
+            : activeSetData.baseCards.filter(filterFn);
         
         const sceneMap = new Map();
 
@@ -751,12 +753,13 @@ function initializePackOpenerScript(setKey) {
             });
             
             slot.className = `col-slot ${isCollected ? 'filled' : 'no-image'}`;
+            const idPrefix = poolKey === 'sceneAvengersBBQ' ? 'col-msh-bbq' : `col-msh-scene-${cardSet}`;
             slot.id = (cardSet === 'hob' || cardSet === 'hoc')
                 ? `col-hob-scene-${cardSet}-${cardNumStr}`
-                : `col-msh-scene-${cardNumStr}`;
+                : `${idPrefix}-${cardNumStr}`;
 
             if (isCollected) {
-                const useBackForScene = backSceneNumbers.includes(cardNumStr);
+                const useBackForScene = poolKey === 'sceneAvengersBBQ' || backSceneNumbers.includes(cardNumStr);
                 const frontImg = getCardFrontImage(card, useBackForScene);
                 const backImg = getCardBackImage(card, useBackForScene);
                 slot.innerHTML = `<img src="${frontImg}">`;
@@ -785,7 +788,7 @@ function initializePackOpenerScript(setKey) {
         renderSceneGridHelper(gridMshScene7, c => c.setCode === 'msc' && parseInt(c.collectorNumber || c.n, 10) >= 501 && parseInt(c.collectorNumber || c.n, 10) <= 506, 'sceneBoxHeroes');
         renderSceneGridHelper(gridMshScene8, c => c.setCode === 'msc' && parseInt(c.collectorNumber || c.n, 10) >= 507 && parseInt(c.collectorNumber || c.n, 10) <= 512, 'sceneBoxVillains');
         renderSceneGridHelper(gridMshScene5, c => c.setCode === 'msh' && parseInt(c.collectorNumber || c.n, 10) >= 334 && parseInt(c.collectorNumber || c.n, 10) <= 351, 'sceneCosmicCube', cosmicCubeBackNumbers);
-        renderSceneGridHelper(gridMshScene6, c => c.setCode === 'msh' && bbqCollectorNumbers.includes(String(c.collectorNumber || c.n)), 'sceneAvengersBBQ');
+        renderSceneGridHelper(gridMshScene6, c => c.setCode === 'msh' && bbqCollectorNumbers.includes(String(c.collectorNumber || c.n)), 'sceneAvengersBBQ', bbqCollectorNumbers);
     }
 
     if (setConfig && setConfig.isMasterSchema && containerECLSub) {
@@ -1291,10 +1294,15 @@ function initializePackOpenerScript(setKey) {
             const cosmicCubeBackNumbers = ['345', '346', '350'];
 
             activeSetData.baseCards.forEach(card => {
+                const cardSet = (card.setCode || '').toLowerCase();
+                if (cardSet !== 'msh' && cardSet !== 'msc') return;
+
                 const cardNumStr = String(card.collectorNumber || card.n);
-                const slot = document.getElementById(`col-msh-scene-${cardNumStr}`);
+                const primarySlot = document.getElementById(`col-msh-scene-${cardSet}-${cardNumStr}`);
+                const bbqSlot = cardSet === 'msh' ? document.getElementById(`col-msh-bbq-${cardNumStr}`) : null;
+                if (!primarySlot && !bbqSlot) return;
+
                 const rawId = String(card.rawId || card.id || card.n).replace(/_(f|nf)$/, '');
-                
                 const isCollected = savedData.base.some(savedId => {
                     const cleanSaved = String(savedId).replace(/_(f|nf)$/, '');
                     return cleanSaved === rawId;
@@ -1303,13 +1311,23 @@ function initializePackOpenerScript(setKey) {
                     return cleanSaved === rawId;
                 });
 
-                if (slot && isCollected && slot.classList.contains('no-image')) {
-                    const useBackForScene = cosmicCubeBackNumbers.includes(cardNumStr);
+                if (!isCollected) return;
+
+                if (primarySlot && primarySlot.classList.contains('no-image')) {
+                    const useBackForScene = cardSet === 'msh' && cosmicCubeBackNumbers.includes(cardNumStr);
                     const frontImg = getCardFrontImage(card, useBackForScene);
                     const backImg = getCardBackImage(card, useBackForScene);
-                    slot.className = 'col-slot filled';
-                    slot.innerHTML = `<img src="${frontImg}">`;
-                    slot.onclick = () => showLightbox(frontImg, backImg);
+                    primarySlot.className = 'col-slot filled';
+                    primarySlot.innerHTML = `<img src="${frontImg}">`;
+                    primarySlot.onclick = () => showLightbox(frontImg, backImg);
+                }
+
+                if (bbqSlot && bbqSlot.classList.contains('no-image')) {
+                    const frontImg = getCardFrontImage(card, true);
+                    const backImg = getCardBackImage(card, true);
+                    bbqSlot.className = 'col-slot filled';
+                    bbqSlot.innerHTML = `<img src="${frontImg}">`;
+                    bbqSlot.onclick = () => showLightbox(frontImg, backImg);
                 }
             });
         }

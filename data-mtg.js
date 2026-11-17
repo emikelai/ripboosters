@@ -238,7 +238,11 @@ export async function ensureSetData(setKey) {
 
         // Populate named scene pools for interlocking scene grids
         if (setKey === 'mtghob') {
-            const hobSceneAll = resolvedByQKey.get('e:hob cn>=199 cn<=213__nf') || [];
+            const qHob = resolvedByQKey.get('e:hob cn>=199 cn<=213__nf');
+            const qHoc = resolvedByQKey.get('e:hoc cn>=1 cn<=6__nf');
+            const hobSceneAll = (qHob && qHob.length > 0) ? qHob : baseCards.filter(c => c.setCode === 'hob');
+            const hocSceneAll = (qHoc && qHoc.length > 0) ? qHoc : baseCards.filter(c => c.setCode === 'hoc');
+
             collectorPools.hobScene1 = hobSceneAll.filter(c => {
                 const cn = parseInt(c.collectorNumber, 10);
                 return cn >= 199 && cn <= 204;
@@ -247,10 +251,15 @@ export async function ensureSetData(setKey) {
                 const cn = parseInt(c.collectorNumber, 10);
                 return cn >= 205 && cn <= 213;
             });
-            collectorPools.hobScene3 = resolvedByQKey.get('e:hoc cn>=1 cn<=6__nf') || [];
+            collectorPools.hobScene3 = hocSceneAll.filter(c => {
+                const cn = parseInt(c.collectorNumber, 10);
+                return cn >= 1 && cn <= 6;
+            });
         } else if (setKey === 'mtgmsh') {
-            const mshSceneAll = resolvedByQKey.get('e:msh cn>=314 cn<=351__nf') || [];
-            const mscSceneAll = resolvedByQKey.get('e:msc cn>=501 cn<=512 is:nonfoil__nf') || [];
+            const qMsh = resolvedByQKey.get('e:msh cn>=314 cn<=351__nf');
+            const qMsc = resolvedByQKey.get('e:msc cn>=501 cn<=512 is:nonfoil__nf');
+            const mshSceneAll = (qMsh && qMsh.length > 0) ? qMsh : baseCards.filter(c => c.setCode === 'msh');
+            const mscSceneAll = (qMsc && qMsc.length > 0) ? qMsc : baseCards.filter(c => c.setCode === 'msc');
             const bbqNums = new Set(['328', '346', '345', '350', '331']);
 
             collectorPools.sceneCapVsHydra = mshSceneAll.filter(c => {
