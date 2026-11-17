@@ -1,13 +1,8 @@
 // data-mtg.js - Universal Scryfall API Fetch Engine & Collector Set Loader
 import { SETS_REGISTRY } from './sets-config.js';
-import { MSH_CONFIG, renderMSHSubcategoryChecklist as renderMSH } from './sets/mtg/mtg-msh.js';
 import { TMT_CONFIG } from './sets/mtg/mtg-tmt.js';
 import { SOS_CONFIG } from './sets/mtg/mtg-sos.js';
-import { FRA_CONFIG, renderFRASubcategoryChecklist as renderFRA } from './sets/mtg/mtg-fra.js';
 import { MASTER_MTG_SCHEMAS } from './sets/mtg/mtg-master-schemas.js';
-
-export const renderMSHSubcategoryChecklist = renderMSH;
-export const renderFRASubcategoryChecklist = renderFRA;
 
 const ABU_POWER_AND_DUALS = [
     "Black Lotus", "Mox Sapphire", "Mox Jet", "Mox Ruby", "Mox Emerald", "Mox Pearl",
@@ -28,9 +23,7 @@ export const MTG_CONFIGS = {
     rav: { setKey: 'rav', name: 'Ravnica: City of Guilds', code: 'rav', year: 2005, maxCount: 306, hitCardNames: ["Overgrown Tomb", "Temple Garden", "Sacred Foundry", "Watery Grave", "Dark Confidant", "Chord of Calling", "Doubling Season", "Privileged Position"] },
     isd: { setKey: 'isd', name: 'Innistrad', code: 'isd', year: 2011, maxCount: 264, hitCardNames: ["Liliana of the Veil", "Snapcaster Mage", "Geist of Saint Traft", "Garruk Relentless", "Parallel Lives", "Griselbrand"] },
     mtgtmt: TMT_CONFIG,
-    mtgsos: SOS_CONFIG,
-    mtgmsh: MSH_CONFIG,
-    mtgfra: FRA_CONFIG
+    mtgsos: SOS_CONFIG
 };
 
 const cache = {};
@@ -125,7 +118,7 @@ export async function ensureSetData(setKey) {
     const isMasterSchema = Boolean(setReg && setReg.isMasterSchema && MASTER_MTG_SCHEMAS[setKey]);
 
     if (cache[setKey] && cache[setKey].baseCards) {
-        if ((setKey !== 'mtgmsh' && setKey !== 'mtgsos' && setKey !== 'mtgtmt' && setKey !== 'mtgfra' && !isMasterSchema) || cache[setKey].collectorPools) {
+        if ((setKey !== 'mtgsos' && setKey !== 'mtgtmt' && !isMasterSchema) || cache[setKey].collectorPools) {
             return cache[setKey];
         }
     }
@@ -162,6 +155,9 @@ export async function ensureSetData(setKey) {
         if (setKey === 'mtghob') {
             registerQuery('e:hob cn>=199 cn<=213', false);
             registerQuery('e:hoc cn>=1 cn<=6', false);
+        } else if (setKey === 'mtgmsh') {
+            registerQuery('e:msh cn>=314 cn<=351', false);
+            registerQuery('e:msc cn>=501 cn<=512 is:nonfoil', false);
         }
 
         const queryResults = [];
@@ -240,7 +236,7 @@ export async function ensureSetData(setKey) {
             }
         });
 
-        // Populate named scene pools for The Hobbit interlocking scene grids
+        // Populate named scene pools for interlocking scene grids
         if (setKey === 'mtghob') {
             const hobSceneAll = resolvedByQKey.get('e:hob cn>=199 cn<=213__nf') || [];
             collectorPools.hobScene1 = hobSceneAll.filter(c => {
@@ -252,6 +248,40 @@ export async function ensureSetData(setKey) {
                 return cn >= 205 && cn <= 213;
             });
             collectorPools.hobScene3 = resolvedByQKey.get('e:hoc cn>=1 cn<=6__nf') || [];
+        } else if (setKey === 'mtgmsh') {
+            const mshSceneAll = resolvedByQKey.get('e:msh cn>=314 cn<=351__nf') || [];
+            const mscSceneAll = resolvedByQKey.get('e:msc cn>=501 cn<=512 is:nonfoil__nf') || [];
+            const bbqNums = new Set(['328', '346', '345', '350', '331']);
+
+            collectorPools.sceneCapVsHydra = mshSceneAll.filter(c => {
+                const cn = parseInt(c.collectorNumber, 10);
+                return cn >= 314 && cn <= 319;
+            });
+            collectorPools.sceneFantasticFamily = mshSceneAll.filter(c => {
+                const cn = parseInt(c.collectorNumber, 10);
+                return cn >= 320 && cn <= 323;
+            });
+            collectorPools.sceneDaredevilStreetFight = mshSceneAll.filter(c => {
+                const cn = parseInt(c.collectorNumber, 10);
+                return cn >= 324 && cn <= 327;
+            });
+            collectorPools.sceneHulksSmash = mshSceneAll.filter(c => {
+                const cn = parseInt(c.collectorNumber, 10);
+                return cn >= 328 && cn <= 333;
+            });
+            collectorPools.sceneCosmicCube = mshSceneAll.filter(c => {
+                const cn = parseInt(c.collectorNumber, 10);
+                return cn >= 334 && cn <= 351;
+            });
+            collectorPools.sceneAvengersBBQ = mshSceneAll.filter(c => bbqNums.has(String(c.collectorNumber)));
+            collectorPools.sceneBoxHeroes = mscSceneAll.filter(c => {
+                const cn = parseInt(c.collectorNumber, 10);
+                return cn >= 501 && cn <= 506;
+            });
+            collectorPools.sceneBoxVillains = mscSceneAll.filter(c => {
+                const cn = parseInt(c.collectorNumber, 10);
+                return cn >= 507 && cn <= 512;
+            });
         }
 
         // Pair double-sided token back images if a token pool lacks explicit back faces
@@ -283,90 +313,26 @@ export async function ensureSetData(setKey) {
     const config = MTG_CONFIGS[setKey];
     if (!config) throw new Error(`Unknown MTG Set Key: ${setKey}`);
 
-    if (setKey === 'mtgmsh' || setKey === 'mtgfra') {
-        const collectorPools = {};
-        const baseCards = [];
-        const hitsSet = new Set();
-        const cardObjMap = new Map();
+    const query = `set:${config.code}`;
+    const rawCards = await fetchScryfallQuery(query);
+    let count = 1;
+    const processedCards = rawCards.map(c => processScryfallCard(c, count++));
 
-        const queryMap = config.slotQueries;
-        const hitPoolKeys = config.hitPoolKeys;
+    const rarePool = processedCards.filter(c => c.rarity === 'rare' || c.rarity === 'mythic');
+    const uncommonPool = processedCards.filter(c => c.rarity === 'uncommon');
+    const commonPool = processedCards.filter(c => c.rarity === 'common');
 
-        const entries = Object.entries(queryMap);
-        const queryResults = await Promise.all(
-            entries.map(([poolKey, queryStr]) => 
-                fetchScryfallQuery(queryStr).then(cards => ({ poolKey, queryStr, cards }))
-            )
-        );
+    const hitsNames = config.hitCardNames || [];
+    const hitsPool = processedCards.filter(c => hitsNames.includes(c.name));
 
-        for (const { poolKey, queryStr, cards } of queryResults) {
-            const processedPool = [];
-            const isFoilQuery = queryStr.includes('is:foil') || queryStr.includes('is:fracturefoil') || queryStr.includes('is:serialized') || queryStr.includes('is:surge');
-
-            for (const card of cards) {
-                const compositeId = isFoilQuery ? `${card.id}_f` : `${card.id}_nf`;
-
-                let cardObj = cardObjMap.get(compositeId);
-                if (!cardObj) {
-                    cardObj = processScryfallCard(card, 0);
-                    cardObj.id = compositeId; 
-                    cardObj.rawId = card.id;
-                    cardObj.isFoil = isFoilQuery;
-                    if (queryStr.includes('is:serialized')) cardObj.isSerialized = true;
-
-                    cardObjMap.set(compositeId, cardObj);
-                    baseCards.push(cardObj);
-                }
-                
-                processedPool.push(cardObj);
-
-                if (hitPoolKeys && hitPoolKeys.has(poolKey)) {
-                    hitsSet.add(cardObj);
-                }
-            }
-            collectorPools[poolKey] = processedPool;
+    cache[setKey] = {
+        baseCards: processedCards,
+        pools: {
+            rare: rarePool.length ? rarePool : processedCards,
+            uncommon: uncommonPool.length ? uncommonPool : processedCards,
+            common: commonPool.length ? commonPool : processedCards,
+            hits: hitsPool
         }
-
-        if (collectorPools.foilToken && collectorPools.foilToken.length > 1) {
-            for (let t = 0; t < collectorPools.foilToken.length; t++) {
-                if (collectorPools.foilToken[t].backImg === "card_images/mtg_sets/Magic_the_Gathering_Card_Back.jpg") {
-                    const partnerIdx = (t + 1) % collectorPools.foilToken.length;
-                    if (collectorPools.foilToken[partnerIdx] && collectorPools.foilToken[partnerIdx].frontImg) {
-                        collectorPools.foilToken[t].backImg = collectorPools.foilToken[partnerIdx].frontImg;
-                    }
-                }
-            }
-        }
-
-        const hits = Array.from(hitsSet);
-        cache[setKey] = {
-            baseCards,
-            collectorPools,
-            pools: { hits }
-        };
-        return cache[setKey];
-    } else {
-        const query = `set:${config.code}`;
-        const rawCards = await fetchScryfallQuery(query);
-        let count = 1;
-        const processedCards = rawCards.map(c => processScryfallCard(c, count++));
-
-        const rarePool = processedCards.filter(c => c.rarity === 'rare' || c.rarity === 'mythic');
-        const uncommonPool = processedCards.filter(c => c.rarity === 'uncommon');
-        const commonPool = processedCards.filter(c => c.rarity === 'common');
-
-        const hitsNames = config.hitCardNames || [];
-        const hitsPool = processedCards.filter(c => hitsNames.includes(c.name));
-
-        cache[setKey] = {
-            baseCards: processedCards,
-            pools: {
-                rare: rarePool.length ? rarePool : processedCards,
-                uncommon: uncommonPool.length ? uncommonPool : processedCards,
-                common: commonPool.length ? commonPool : processedCards,
-                hits: hitsPool
-            }
-        };
-        return cache[setKey];
-    }
+    };
+    return cache[setKey];
 }
