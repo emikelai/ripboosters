@@ -52,8 +52,13 @@ export function showLightbox(front, back) {
     
     if (backImg) {
         backImg.onerror = null;
-        backImg.src = back;
-        backImg.style.display = 'block';
+        if (back) {
+            backImg.src = back;
+            backImg.style.display = 'block';
+        } else {
+            backImg.removeAttribute('src');
+            backImg.style.display = 'none';
+        }
     }
     
     if (lb) lb.classList.add('open');

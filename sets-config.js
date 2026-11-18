@@ -375,6 +375,27 @@ export const SETS_REGISTRY = [
         aboutText: 'Created by Topps in 1985 as a parody of Cabbage Patch Kids, Series 1 features 82 die-cut sticker cards (41 "a" and "b" twin name variations) with artwork by John Pound.',
         seoTitle: 'Garbage Pail Kids Series 1 Pack Opening Simulator - Rip Boosters',
         seoDesc: 'Open free 1985 Garbage Pail Kids Series 1 sticker packs online. Collect all 82 original die-cut sticker cards and twin variations.'
+    },
+
+    // ---------------------------------------------------------------------------
+    // FUN
+    // ---------------------------------------------------------------------------
+    {
+        key: 'pokenots151',
+        name: 'Pokenots 151',
+        year: '2026',
+        publisher: 'Pokenots',
+        category: 'Fun',
+        totalCards: 155,
+        coverImage: 'card_images/pokenots/pokenots_151/pokenots_151_boosterpackwrapper.jpg',
+        themeColor: '#e63946',
+        isMtg: false,
+        dataFile: './data-pokenots151.js',
+        dataExport: 'POKENOTS151_DATA',
+        aboutTitle: 'About Pokenots 151',
+        aboutText: 'A hilarious parody tribute to the original 151 pocket monsters, featuring 10 cards per booster pack and a 155-card checklist packed with off-brand classics like Boolbiesore, Peekachu, and Chardlard.',
+        seoTitle: 'Pokenots 151 Booster Pack Simulator - Rip Boosters',
+        seoDesc: 'Open free Pokenots 151 parody trading card booster packs online and track your 155-card checklist.'
     }
 ];
 

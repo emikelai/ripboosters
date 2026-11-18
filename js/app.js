@@ -94,10 +94,11 @@ function renderDashboardGrid() {
         catSets.forEach(set => {
             const cardMetaSub = `${set.year} &middot; ${set.publisher}`;
             const unitLabel = set.key === 'gpk1' ? 'stickers' : 'cards';
+            const imgStyle = set.key === 'pokenots151' ? ' style="object-fit: contain;"' : '';
 
             cardsHTML += `
                 <div class="set-card" data-set-key="${set.key}">
-                    <div class="set-cover"><img src="${set.coverImage}" alt="${set.name} pack"></div>
+                    <div class="set-cover"><img src="${set.coverImage}" alt="${set.name} pack"${imgStyle}></div>
                     <div class="set-body">
                         <div class="set-name">${set.name}</div>
                         <div class="set-meta">${cardMetaSub} &middot; <span class="set-meta-about-trigger" data-set-key="${set.key}">About</span> &middot; ${set.totalCards} ${unitLabel}</div>
@@ -266,6 +267,10 @@ function loadViewLayout(setKey) {
         
         const activeWrapper = getRandomPackWrapper(setKey, setConfig.coverImage);
         packCoverHTML = `<img id="packWrapperImg" src="${activeWrapper}" alt="The Uncanny X-Men 1992 pack" style="width:100%;height:100%;object-fit:cover;border-radius:6px;">`;
+    } else if (setKey === 'pokenots151') {
+        rowLabelHTML = '<div class="row-label">Pokenots 151 &mdash; 10 cards per pack</div>';
+        collectionHeaderHTML = `<div class="collection-header"><div><h2 class="collection-title">Collection Checklist</h2><p class="collection-sub">Base Set &mdash; 155 cards</p></div><span class="collection-count" id="collectionCount">0 / 155</span></div><div class="collection-grid" id="collectionGrid"></div>`;
+        packCoverHTML = `<img id="packWrapperImg" src="${setConfig.coverImage}" alt="Pokenots 151 pack" style="width:100%;height:100%;object-fit:contain;border-radius:6px;">`;
     } else if (setConfig && setConfig.isMtg) {
         const config = DATA_MAP[setKey] || setConfig;
         const setName = setConfig.name || (config ? config.name : 'MTG');
@@ -531,6 +536,7 @@ function initializePackOpenerScript(setKey) {
     };
 
     const getCardBackImage = (card, useBackForScene = false) => {
+        if (setKey === 'pokenots151') return null;
         if (useBackForScene) {
             if (card.frontImg) return card.frontImg;
             if (card.card_faces && card.card_faces[0]?.image_uris?.png) {
@@ -546,6 +552,12 @@ function initializePackOpenerScript(setKey) {
 
     const getImgPath = (n, side = 'front', isInsert = false, variant = '') => {
         const targetSide = side === 'back' ? 'back' : 'front';
+
+        if (setKey === 'pokenots151') {
+            if (targetSide === 'back') return null;
+            const cardObj = activeSetData.baseCards.find(c => c.n == n);
+            return cardObj?.frontImg || '';
+        }
 
         if (isMtg) {
             const cardObj = activeSetData.baseCards.find(c => c.n == n);
@@ -1146,7 +1158,7 @@ function initializePackOpenerScript(setKey) {
             } else {
                 let insertArr = activeSetData.spectraCards || activeSetData.dynaCards || activeSetData.holoCards || activeSetData.stickerCards || [];
                 let pullRate = setKey === 'motu1984' ? 1.0 : (setKey === 'mm1993' ? (1/9) : (setKey === 'mm1992' ? 0.25 : (1/12)));
-                let hasInsert = setKey !== 'gpk1' && Math.random() <= pullRate;
+                let hasInsert = setKey !== 'gpk1' && setKey !== 'pokenots151' && Math.random() <= pullRate;
 
                 if (hasInsert && sInsert && rowIns) {
                     const rInsert = insertArr[Math.floor(Math.random() * insertArr.length)];
@@ -1159,12 +1171,13 @@ function initializePackOpenerScript(setKey) {
 
                 let targetAmt = 5; 
                 if (setKey === 'gpk1') targetAmt = 5;
-                else if (setKey === 'motu1984') targetAmt = 10;
+                else if (setKey === 'motu1984' || setKey === 'pokenots151') targetAmt = 10;
                 else if (setKey === 'mu1990') targetAmt = hasInsert ? 11 : 12;
                 else targetAmt = hasInsert ? 5 : 6;
 
                 let availablePool = [...activeSetData.baseCards];
                 if (setKey === 'mu1990') availablePool = availablePool.filter(c => parseInt(String(c.n).trim().replace(/^\D+/g, ''), 10) <= 162);
+                if (setKey === 'pokenots151') availablePool = availablePool.filter(c => Boolean(c.frontImg));
                 
                 for (let i = availablePool.length - 1; i > 0; i--) {
                     const j = Math.floor(Math.random() * (i + 1));
@@ -1227,7 +1240,9 @@ function initializePackOpenerScript(setKey) {
         cardDiv.onclick = () => showLightbox(frontImg, backImg);
 
         setTimeout(() => { cardDiv.classList.add('revealed'); }, currentDelay + 20);
-        const hint = document.createElement('div'); hint.className = 'flip-hint'; hint.textContent = 'click to view';
+        const hint = document.createElement('div');
+        hint.className = 'flip-hint';
+        hint.textContent = backImg ? 'click to view' : 'click to zoom';
         slot.appendChild(cardDiv); slot.appendChild(hint); return slot;
     }
 
