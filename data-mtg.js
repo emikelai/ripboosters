@@ -27,65 +27,306 @@ export const MTG_CONFIGS = {
 };
 
 const cache = {};
-const QUERY_CACHE_PREFIX = 'rb_sf_q_v1_';
+const memoryQueryCache = new Map();
+const SET_CARDS_CACHE = new Map();
+const QUERY_CACHE_PREFIX = 'rb_sf_slim_v3_';
+
+function slimScryfallCard(card) {
+    return {
+        id: card.id,
+        name: card.name,
+        rarity: card.rarity,
+        set: card.set,
+        layout: card.layout || '',
+        type_line: card.type_line || '',
+        border_color: card.border_color || '',
+        full_art: Boolean(card.full_art),
+        reprint: Boolean(card.reprint),
+        lang: card.lang || 'en',
+        collector_number: card.collector_number || '',
+        color_identity: card.color_identity || [],
+        foil: card.foil,
+        finishes: card.finishes || [],
+        serialized: card.serialized || false,
+        promo_types: card.promo_types || [],
+        frame_effects: card.frame_effects || [],
+        keywords: card.keywords || [],
+        image_uris: card.image_uris ? { normal: card.image_uris.normal } : null,
+        card_faces: Array.isArray(card.card_faces)
+            ? card.card_faces.map(f => ({
+                image_uris: f.image_uris ? { normal: f.image_uris.normal } : null
+            }))
+            : null
+    };
+}
+
+let lastRequestTime = 0;
+async function rateLimitedFetch(url) {
+    const minGapMs = 220;
+    const now = Date.now();
+    const wait = Math.max(0, lastRequestTime + minGapMs - now);
+    if (wait > 0) await new Promise(r => setTimeout(r, wait));
+    lastRequestTime = Date.now();
+    return fetch(url);
+}
 
 async function fetchScryfallQuery(query) {
+    if (memoryQueryCache.has(query)) {
+        return memoryQueryCache.get(query);
+    }
+
     const cacheKey = QUERY_CACHE_PREFIX + query;
     try {
         const cached = sessionStorage.getItem(cacheKey);
         if (cached) {
             const parsed = JSON.parse(cached);
-            if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+            if (Array.isArray(parsed)) {
+                memoryQueryCache.set(query, parsed);
+                return parsed;
+            }
         }
     } catch (_) {}
 
     let url = `https://api.scryfall.com/cards/search?q=${encodeURIComponent(query)}&unique=prints`;
     let cards = [];
     let retries = 0;
+    let hadError = false;
 
     while (url) {
         try {
-            const response = await fetch(url);
+            const response = await rateLimitedFetch(url);
             if (response.status === 429) {
-                const backoff = Math.min(4000, 1000 * Math.pow(2, retries));
+                const backoff = Math.min(8000, 2000 * Math.pow(2, retries));
                 retries++;
-                await new Promise(r => setTimeout(r, backoff));
-                if (retries <= 5) continue;
+                if (retries <= 3) {
+                    await new Promise(r => setTimeout(r, backoff));
+                    continue;
+                }
+                hadError = true;
+                break;
+            }
+            if (response.status === 404) {
+                // Scryfall returns 404 when a valid search matches 0 cards
+                cards = [];
                 break;
             }
             if (!response.ok) {
-                if (response.status >= 500 && retries < 3) {
+                if (response.status >= 500 && retries < 2) {
                     retries++;
-                    await new Promise(r => setTimeout(r, 800 * retries));
+                    await new Promise(r => setTimeout(r, 1000 * retries));
                     continue;
                 }
+                hadError = true;
                 break;
             }
             retries = 0;
             const json = await response.json();
             if (json && Array.isArray(json.data)) {
-                cards = cards.concat(json.data);
+                cards = cards.concat(json.data.map(slimScryfallCard));
             }
             url = (json && json.has_more) ? json.next_page : null;
-            if (url) await new Promise(r => setTimeout(r, 150));
         } catch (err) {
-            if (retries < 3) {
+            if (retries < 2) {
                 retries++;
-                await new Promise(r => setTimeout(r, 800 * retries));
+                await new Promise(r => setTimeout(r, 1500 * retries));
                 continue;
             }
+            hadError = true;
             console.error("Failed to fetch query page from Scryfall:", query, err);
             break;
         }
     }
 
-    if (cards.length > 0) {
+    if (!hadError) {
+        memoryQueryCache.set(query, cards);
         try {
             sessionStorage.setItem(cacheKey, JSON.stringify(cards));
         } catch (_) {}
     }
 
     return cards;
+}
+
+// Fetch an entire set code once (e.g. "hob", "hoc", "msh", "msc", "mar", "spg")
+async function fetchAllCardsForSetCode(setCode) {
+    const code = setCode.toLowerCase();
+    if (SET_CARDS_CACHE.has(code)) return SET_CARDS_CACHE.get(code);
+    const cards = await fetchScryfallQuery(`e:${code} include:extras`);
+    SET_CARDS_CACHE.set(code, cards);
+    return cards;
+}
+
+// Compile a single Scryfall term into a card predicate function (returns null if unsupported)
+function compileSingleTerm(rawTerm, state) {
+    let term = rawTerm;
+    let negated = false;
+    if (term.startsWith('-')) {
+        negated = true;
+        term = term.slice(1);
+    }
+    const lower = term.toLowerCase();
+    let fn = null;
+
+    if (lower.startsWith('e:') || lower.startsWith('set:')) {
+        const sCode = lower.split(':')[1];
+        if (!negated) state.targetSets.add(sCode);
+        fn = c => (c.set || '').toLowerCase() === sCode;
+    } else if (lower.startsWith('cn>=')) {
+        const min = parseInt(lower.slice(4), 10);
+        fn = c => parseInt(String(c.collector_number).replace(/\D/g, ''), 10) >= min;
+    } else if (lower.startsWith('cn<=')) {
+        const max = parseInt(lower.slice(4), 10);
+        fn = c => parseInt(String(c.collector_number).replace(/\D/g, ''), 10) <= max;
+    } else if (lower.startsWith('cn>')) {
+        const min = parseInt(lower.slice(3), 10);
+        fn = c => parseInt(String(c.collector_number).replace(/\D/g, ''), 10) > min;
+    } else if (lower.startsWith('cn<')) {
+        const max = parseInt(lower.slice(3), 10);
+        fn = c => parseInt(String(c.collector_number).replace(/\D/g, ''), 10) < max;
+    } else if (lower.startsWith('cn:') || lower.startsWith('cn=')) {
+        const exact = lower.slice(3);
+        fn = c => String(c.collector_number).toLowerCase() === exact;
+    } else if (lower.startsWith('r:') || lower.startsWith('rarity:')) {
+        const rVal = lower.split(':')[1];
+        const map = { c: 'common', common: 'common', u: 'uncommon', uncommon: 'uncommon', r: 'rare', rare: 'rare', m: 'mythic', mythic: 'mythic' };
+        const expected = map[rVal];
+        if (!expected) return null;
+        fn = c => c.rarity === expected;
+    } else if (lower.startsWith('lang:')) {
+        const lVal = lower.slice(5);
+        fn = c => (c.lang || 'en').toLowerCase() === lVal;
+    } else if (lower.startsWith('frame:')) {
+        const fVal = lower.slice(6);
+        if (fVal === 'extendedart' || fVal === 'extended') {
+            fn = c => Array.isArray(c.frame_effects) && c.frame_effects.includes('extendedart');
+        } else if (fVal === 'showcase') {
+            fn = c => Array.isArray(c.frame_effects) && c.frame_effects.includes('showcase');
+        } else {
+            fn = c => Array.isArray(c.frame_effects) && c.frame_effects.includes(fVal);
+        }
+    } else if (lower.startsWith('border:')) {
+        const bVal = lower.slice(7);
+        fn = c => (c.border_color || '').toLowerCase() === bVal;
+    } else if (lower.startsWith('t:') || lower.startsWith('type:')) {
+        const tVal = lower.split(':')[1];
+        fn = c => (c.type_line || '').toLowerCase().includes(tVal);
+    } else if (lower === 'ci=2' || lower === 'id=2') {
+        fn = c => Array.isArray(c.color_identity) && c.color_identity.length === 2;
+    } else if (lower === 'is:nonfoil') {
+        fn = c => Array.isArray(c.finishes) && c.finishes.includes('nonfoil');
+    } else if (lower === 'is:foil') {
+        fn = c => Array.isArray(c.finishes) && c.finishes.includes('foil');
+    } else if (lower === 'is:fracturefoil') {
+        fn = c => Array.isArray(c.finishes) && c.finishes.includes('fracturefoil');
+    } else if (lower === 'is:surge' || lower === 'is:surgefoil') {
+        fn = c => Array.isArray(c.finishes) && c.finishes.includes('surgefoil');
+    } else if (lower === 'is:serialized') {
+        fn = c => c.serialized === true || (Array.isArray(c.promo_types) && c.promo_types.includes('serialized'));
+    } else if (lower === 'is:borderless') {
+        fn = c => c.border_color === 'borderless';
+    } else if (lower === 'is:extended' || lower === 'is:extendedart') {
+        fn = c => Array.isArray(c.frame_effects) && c.frame_effects.includes('extendedart');
+    } else if (lower === 'is:showcase') {
+        fn = c => Array.isArray(c.frame_effects) && c.frame_effects.includes('showcase');
+    } else if (lower === 'is:japanshowcase') {
+        fn = c => Array.isArray(c.promo_types) && c.promo_types.includes('japanshowcase');
+    } else if (lower === 'is:boosterfun') {
+        fn = c => Array.isArray(c.promo_types) && c.promo_types.includes('boosterfun');
+    } else if (lower === 'is:fullart') {
+        fn = c => c.full_art === true;
+    } else if (lower === 'is:reprint') {
+        fn = c => c.reprint === true;
+    } else if (lower === 'is:scene') {
+        fn = c => Array.isArray(c.frame_effects) && c.frame_effects.includes('scene');
+    } else if (lower === 'is:mdfc' || lower === 'is:modal_dfc') {
+        fn = c => c.layout === 'modal_dfc';
+    } else if (lower === 'is:reversible') {
+        fn = c => c.layout === 'reversible_card';
+    } else if (lower === 'is:shockland') {
+        const shockNames = new Set([
+            "Hallowed Fountain", "Watery Grave", "Blood Crypt", "Stomping Ground", "Temple Garden",
+            "Godless Shrine", "Steam Vents", "Overgrown Tomb", "Sacred Foundry", "Breeding Pool"
+        ]);
+        fn = c => shockNames.has(c.name);
+    } else {
+        return null;
+    }
+
+    return negated ? (c => !fn(c)) : fn;
+}
+
+// Parse full Scryfall boolean expressions including AND, OR, parentheses, and -negation
+function tryFilterSetCardsLocally(query, setCardPools) {
+    const rawTokens = query.match(/-\(|\(|\)|[^\s()]+/g);
+    if (!rawTokens || rawTokens.length === 0) return null;
+
+    const state = { targetSets: new Set(), unsupported: false };
+    let pos = 0;
+
+    function parseOr() {
+        let left = parseAnd();
+        if (!left) return null;
+        while (pos < rawTokens.length && rawTokens[pos].toUpperCase() === 'OR') {
+            pos++;
+            const right = parseAnd();
+            if (!right) return null;
+            const prevLeft = left;
+            left = c => prevLeft(c) || right(c);
+        }
+        return left;
+    }
+
+    function parseAnd() {
+        const parts = [];
+        while (pos < rawTokens.length) {
+            const tok = rawTokens[pos];
+            if (tok === ')') break;
+            if (tok.toUpperCase() === 'OR') break;
+            if (tok.toUpperCase() === 'AND') {
+                pos++;
+                continue;
+            }
+            const atom = parsePrimary();
+            if (!atom) return null;
+            parts.push(atom);
+        }
+        if (parts.length === 0) return null;
+        return parts.length === 1 ? parts[0] : (c => parts.every(fn => fn(c)));
+    }
+
+    function parsePrimary() {
+        if (pos >= rawTokens.length) return null;
+        const tok = rawTokens[pos];
+        if (tok === '-(') {
+            pos++;
+            const inner = parseOr();
+            if (!inner || rawTokens[pos] !== ')') return null;
+            pos++;
+            return c => !inner(c);
+        }
+        if (tok === '(') {
+            pos++;
+            const inner = parseOr();
+            if (!inner || rawTokens[pos] !== ')') return null;
+            pos++;
+            return inner;
+        }
+        pos++;
+        return compileSingleTerm(tok, state);
+    }
+
+    const rootPredicate = parseOr();
+    if (!rootPredicate || pos !== rawTokens.length || state.targetSets.size === 0) {
+        return null;
+    }
+
+    const candidateCards = [];
+    for (const sCode of state.targetSets) {
+        if (!setCardPools.has(sCode)) return null;
+        candidateCards.push(...setCardPools.get(sCode));
+    }
+
+    return candidateCards.filter(rootPredicate);
 }
 
 function processScryfallCard(card, count) {
@@ -158,7 +399,7 @@ export async function ensureSetData(setKey) {
         }
     }
 
-    // --- Universal Master Schema Loader (Supports both flat queries and weighted subPools) ---
+    // --- Universal Master Schema Loader (Bulk Set Prefetch + Local Filter + Fallback) ---
     if (isMasterSchema) {
         const schema = MASTER_MTG_SCHEMAS[setKey];
         const collectorPools = {};
@@ -166,7 +407,6 @@ export async function ensureSetData(setKey) {
         const hitsSet = new Set();
         const cardObjMap = new Map();
 
-        // Collect and deduplicate all unique queries across flat slots and weighted subPools
         const uniqueQueries = new Map();
         const registerQuery = (query, isFoil) => {
             const qKey = `${query}__${isFoil ? 'f' : 'nf'}`;
@@ -186,7 +426,6 @@ export async function ensureSetData(setKey) {
             }
         }
 
-        // Ensure complete scene card sets are fetched for sets with interlocking scene grids
         if (setKey === 'mtghob') {
             registerQuery('e:hob cn>=199 cn<=213', false);
             registerQuery('e:hoc cn>=1 cn<=6', false);
@@ -195,13 +434,30 @@ export async function ensureSetData(setKey) {
             registerQuery('e:msc cn>=501 cn<=512', false);
         }
 
-        // Deduplicate identical Scryfall query strings so foil & non-foil variants only fetch once
+        // 1. Discover all set codes referenced in queries and bulk-fetch each set ONCE
+        const referencedSetCodes = new Set();
+        for (const info of uniqueQueries.values()) {
+            const matches = info.query.match(/\b(?:e|set):([a-z0-9]+)/gi) || [];
+            matches.forEach(m => referencedSetCodes.add(m.split(':')[1].toLowerCase()));
+        }
+
+        const setCardPools = new Map();
+        for (const code of referencedSetCodes) {
+            const allCards = await fetchAllCardsForSetCode(code);
+            setCardPools.set(code, allCards);
+        }
+
+        // 2. Filter locally in 0ms; only call Scryfall directly for queries with unsupported syntax (e.g. date:ecl)
         const cardsByRawQuery = new Map();
         for (const info of uniqueQueries.values()) {
             if (!cardsByRawQuery.has(info.query)) {
-                const cards = await fetchScryfallQuery(info.query);
-                cardsByRawQuery.set(info.query, cards);
-                await new Promise(r => setTimeout(r, 150));
+                const localMatch = tryFilterSetCardsLocally(info.query, setCardPools);
+                if (localMatch !== null) {
+                    cardsByRawQuery.set(info.query, localMatch);
+                } else {
+                    const cards = await fetchScryfallQuery(info.query);
+                    cardsByRawQuery.set(info.query, cards);
+                }
             }
         }
 
